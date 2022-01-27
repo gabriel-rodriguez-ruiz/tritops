@@ -7,6 +7,10 @@ Created on Tue Jan 25 10:53:47 2022
 import numpy as np
 import matplotlib.pyplot as plt
 import kwant
+import os
+
+directory = os.getcwd()
+path, file = os.path.split(directory)
 
 sigma_x = np.array([[0, 1], [1, 0]])
 sigma_y = np.array([[0, -1j], [1j, 0]])
@@ -126,7 +130,8 @@ def main():
     ax.grid()
     ax.set_xlabel(r"$k_y$")
     ax.set_ylabel(r"$E(k_y)$")
-    fig.savefig(f"../Images/Ribbon_pm_mu={params['mu']}_t={params['t']}_Delta={params['Delta']}.png")
+    #fig.savefig(os.path.join(path, "Images", f"Ribbon_pm_mu={params['mu']}_t={params['t']}_Delta={params['Delta']}.png"))
+    fig.savefig(f"C:\\Users\\gabri\\OneDrive\\Doctorado\\Python\\Tritops\\Images\\Ribbon_pm_mu={params['mu']}_t={params['t']}_Delta={params['Delta']}.png")
 
     mu = 3
     t = -1
@@ -147,8 +152,9 @@ def main():
     ax.grid()
     ax.set_xlabel(r"$k_y$")
     ax.set_ylabel(r"$E(k_y)$")
-    fig.savefig(f"../Images/Ribbon_0_mu={params['mu']}_t={params['t']}_Delta={params['Delta']}.png")
-
+    #fig.savefig(os.path.join(path, "Images", f"Ribbon_0_mu={params['mu']}_t={params['t']}_Delta={params['Delta']}.png"))
+    fig.savefig(f"C:\\Users\\gabri\\OneDrive\\Doctorado\\Python\\Tritops\\Images\\Ribbon_0_mu={params['mu']}_t={params['t']}_Delta={params['Delta']}.png")
+    fig.savefig("C:\\Users\\gabri\\OneDrive\\Doctorado\\Python\\Tritops\\fig1.pdf")
 
 if __name__ == '__main__':
     main()

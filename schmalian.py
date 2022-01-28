@@ -20,6 +20,8 @@ tau_x = np.array([[0, 1], [1, 0]])
 tau_y = np.array([[0, -1j], [1j, 0]])
 tau_z = np.array([[1, 0], [0, -1]])
 
+#%% Hamiltonians +- and 0
+
 def onsite(site, mu):
     return -mu * np.kron(tau_z, np.eye(2))
 
@@ -110,7 +112,73 @@ def make_ribbon_0(mu=0, t=1, Delta=1, L=25):
     ribbon.fill(syst, shape=(lambda site: 0 <= site.pos[0] < L), start=[0, 0])
     return ribbon
 
+def onsite_ZKM(site, mu, Delta_0):
+    return -mu * np.kron(sigma_z, np.eye(2)) + Delta_0 * np.kron(tau_x, np.eye(2))
+
+def hopping_ZKM_x(site1, site2, t, lambda_R, Delta_1):     #np.kron() is the tensor product
+    return (-t * np.kron(sigma_z, np.eye(2)) - lambda_R * np.kron(sigma_z, 1j*sigma_z)
+            + Delta_1 * np.kron(tau_x, np.eye(2)))
+
+def hopping_ZKM_y(site1, site2, t, lambda_R, Delta_1):     #np.kron() is the tensor product
+    return (-t * np.kron(sigma_z, np.eye(2)) + lambda_R * np.kron(1j*tau_z, sigma_x)
+            + Delta_1 * np.kron(tau_x, np.eye(2)))
+
+def make_ribbon_ZKM(mu=0, t=1, Delta_0=-0.4, Delta_1=0.8, lambda_R=0.5, L=25):
+    """
+    2D TRITOPS system based on [Schmalian] equation 3
+    with finite boundary conditions in x and periodic in y.
+    A factor 1/2 is left out. H=1/2 psi* H_BdG psi
+
+    Parameters
+    ----------
+    mu : float
+        Chemical potential.
+    t : float
+        Hopping parameter.
+    Delta : float
+        Pairing potential.
+    L : int, optional
+        Width of the ribbon. The default is 25.
+ 
+    Returns
+    -------
+    syst : kwant.builder.Builder
+        The representation for the 2D-tritops model.
+    """
+    #Create a 2D template
+    sym = kwant.TranslationalSymmetry((1,0), (0,1))
+    syst = kwant.Builder(sym)
+    lat = kwant.lattice.square(1, norbs=4)
+    syst[lat(0,0)] = onsite_ZKM
+    syst[kwant.HoppingKind((1, 0), lat)] = hopping_ZKM_x
+    syst[kwant.HoppingKind((0, 1), lat)] = hopping_ZKM_y
+    #Fill the target ribbon inside the template syst
+    ribbon = kwant.Builder(kwant.TranslationalSymmetry([0,1]))
+    ribbon.fill(syst, shape=(lambda site: 0 <= site.pos[0] < L), start=[0, 0])
+    return ribbon
+
+def energy_bands(k_x, t, mu, Lambda):
+    return [np.sqrt( (2*t*(np.cos(k_x)+1)+mu)**2/4 + 4*Lambda**2*np.sin(k_x)**2 + 
+                   (2*t*(np.cos(k_x)+1)+mu)*2*Lambda*np.sin(k_x) ),
+            np.sqrt( (2*t*(np.cos(k_x)+1)+mu)**2/4 + 4*Lambda**2*np.sin(k_x)**2 - 
+                (2*t*(np.cos(k_x)+1)+mu)*2*Lambda*np.sin(k_x) )]
+
+def plot_energy_bands():
+    """
+    Figure 2a from [Schmalian].
+    """
+    k_x = np.linspace(-np.pi, np.pi, 1000)
+    fig, ax = plt.subplots(dpi=300)
+    ax.plot(k_x, [energy_bands(k_x, t=-1, mu=5, Lambda=0.5)[0] for k_x in k_x])
+    ax.plot(k_x, [energy_bands(k_x, t=-1, mu=5, Lambda=0.5)[1] for k_x in k_x])
+    ax.grid()
+    ax.set_xlabel(r"$k_x$")
+    ax.set_ylabel(r"$E(k_x)$")
+    ax.set_xticks([-np.pi, -np.pi/2,0, np.pi/2, np.pi],
+               [r"$-\pi$",r"$-\frac{\pi}{2}$",r"0", r"$\frac{\pi}{2}$", "$\pi$"])
+
 def main():
+    #Hamiltonian +-
     mu = 3
     t = -1
     Delta = 0.5
@@ -132,7 +200,8 @@ def main():
     ax.set_ylabel(r"$E(k_y)$")
     #fig.savefig(os.path.join(path, "Images", f"Ribbon_pm_mu={params['mu']}_t={params['t']}_Delta={params['Delta']}.png"))
     fig.savefig(f"C:\\Users\\gabri\\OneDrive\\Doctorado\\Python\\Tritops\\Images\\Ribbon_pm_mu={params['mu']}_t={params['t']}_Delta={params['Delta']}.png")
-
+    
+    #Hamiltonian 0
     mu = 3
     t = -1
     Delta = 0.5
@@ -155,6 +224,33 @@ def main():
     #fig.savefig(os.path.join(path, "Images", f"Ribbon_0_mu={params['mu']}_t={params['t']}_Delta={params['Delta']}.png"))
     fig.savefig(f"C:\\Users\\gabri\\OneDrive\\Doctorado\\Python\\Tritops\\Images\\Ribbon_0_mu={params['mu']}_t={params['t']}_Delta={params['Delta']}.png")
     fig.savefig("C:\\Users\\gabri\\OneDrive\\Doctorado\\Python\\Tritops\\fig1.pdf")
+    
+    #Hamiltonian 0
+    t = 1
+    mu = -2*t
+    Delta_0 = -0.4*t
+    Delta_1 = 0.2*t
+    lambda_R = 0.5*t
+    L = 50
+    ribbon_ZKM = make_ribbon_ZKM(mu=mu, t=t, lambda_R=lambda_R, Delta_0=Delta_0, Delta_1=Delta_1, L=L)
+    # Check that the system looks as intended.
+    #kwant.plot(ribbon_pm)
+    # Finalize the system.
+    ribbon_ZKM = ribbon_ZKM.finalized()
+    # We should see the energy bands.
+    params = dict(mu=mu, t=t, lambda_R=lambda_R, Delta_0=Delta_0, Delta_1=Delta_1)
+    momenta = np.linspace(0, np.pi, 1000)
+    fig, ax = plt.subplots(dpi=300)
+    kwant.plotter.bands(ribbon_ZKM, momenta=momenta, params=params, ax=ax)
+    ax.set_title(f"Ribbon ZKM with mu={params['mu']}, lambda_R={params['lambda_R']},t={params['t']}, Delta_0={params['Delta_0']}, Delta_1={params['Delta_1']}")
+    ax.set_xticks([0, np.pi/2, np.pi],
+               [r"0", r"$\frac{\pi}{2}$", "$\pi$"])
+    ax.grid()
+    ax.set_xlabel(r"$k_z$")
+    ax.set_ylabel(r"$E(k_z)$")
+    ax.set_ylim((-4, 4))
+    #fig.savefig(os.path.join(path, "Images", f"Ribbon_0_mu={params['mu']}_t={params['t']}_Delta={params['Delta']}.png"))
+    fig.savefig(f"C:\\Users\\gabri\\OneDrive\\Doctorado\\Python\\Tritops\\Images\\Ribbon_ZKM_mu={params['mu']}_lambda_R={params['lambda_R']}_t={params['t']}_Delta_0={params['Delta_0']}_Delta_1={params['Delta_1']}.png")
 
 if __name__ == '__main__':
     main()

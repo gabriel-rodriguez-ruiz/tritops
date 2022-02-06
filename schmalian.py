@@ -158,25 +158,31 @@ def make_ribbon_ZKM(mu=0, t=1, Delta_0=-0.4, Delta_1=0.8, lambda_R=0.5, L=25):
     return ribbon
 
 def energy_bands(k_x, t, mu, Lambda):
-    return [np.sqrt( (2*t*(np.cos(k_x)+1)+mu)**2/4 + 4*Lambda**2*np.sin(k_x)**2 + 
-                   (2*t*(np.cos(k_x)+1)+mu)*2*Lambda*np.sin(k_x) ),
-            np.sqrt( (2*t*(np.cos(k_x)+1)+mu)**2/4 + 4*Lambda**2*np.sin(k_x)**2 - 
-                (2*t*(np.cos(k_x)+1)+mu)*2*Lambda*np.sin(k_x) )]
+    return [ -t * ( np.cos(k_x) + 1 ) - mu/2 -
+            2*Lambda * np.sin(k_x),
+            -t * ( np.cos(k_x) + 1 ) - mu/2 +
+            2*Lambda * np.sin(k_x)]
 
+#%% Energy bands
 def plot_energy_bands():
     """
     Figure 2a from [Schmalian].
     """
     k_x = np.linspace(-np.pi, np.pi, 1000)
     fig, ax = plt.subplots(dpi=300)
-    ax.plot(k_x, [energy_bands(k_x, t=-1, mu=5, Lambda=0.5)[0] for k_x in k_x])
-    ax.plot(k_x, [energy_bands(k_x, t=-1, mu=5, Lambda=0.5)[1] for k_x in k_x])
+    ax.plot(k_x, [energy_bands(k_x, t=1, mu=-2, Lambda=0.5)[0] for k_x in k_x], label="+")
+    ax.plot(k_x, [energy_bands(k_x, t=1, mu=-2, Lambda=0.5)[1] for k_x in k_x], label="-")
     ax.grid()
     ax.set_xlabel(r"$k_x$")
     ax.set_ylabel(r"$E(k_x)$")
     ax.set_xticks([-np.pi, -np.pi/2,0, np.pi/2, np.pi],
                [r"$-\pi$",r"$-\frac{\pi}{2}$",r"0", r"$\frac{\pi}{2}$", "$\pi$"])
+    ax.legend()
+    fig.savefig("C:\\Users\\gabri\\OneDrive\\Doctorado\\Python\\Tritops\\Images\\Energy_bands.png")
+    
+plot_energy_bands()
 
+#%%
 def main():
     #Hamiltonian +-
     mu = 3
@@ -225,7 +231,7 @@ def main():
     fig.savefig(f"C:\\Users\\gabri\\OneDrive\\Doctorado\\Python\\Tritops\\Images\\Ribbon_0_mu={params['mu']}_t={params['t']}_Delta={params['Delta']}.png")
     fig.savefig("C:\\Users\\gabri\\OneDrive\\Doctorado\\Python\\Tritops\\fig1.pdf")
     
-    #Hamiltonian 0
+    #Hamiltonian ZKM
     t = 1
     mu = -2*t
     Delta_0 = -0.4*t

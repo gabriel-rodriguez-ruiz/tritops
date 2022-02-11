@@ -180,12 +180,13 @@ def plot_energy_bands():
     ax.legend()
     fig.savefig("C:\\Users\\gabri\\OneDrive\\Doctorado\\Python\\Tritops\\Images\\Energy_bands.png")
     
-#plot_energy_bands()
+def onsite_Josephson_pm(site, mu, t, k):
+    return ( (-2*t*np.cos(k) - mu) * np.kron(tau_z, np.eye(2)) )
 
 def hopping_Josephson_pm(site1, site2, t, Delta, phi):
     if (site1.pos == [0.0] and site2.pos == [-1.0]) or (site1.pos == [-1.0] and site2.pos == [0.0]):
-        return 2*t * (np.kron((np.eye(2)+tau_z)/2, np.eye(2))*np.exp(1j*phi/2)
-                    + np.kron((np.eye(2)-tau_z)/2, np.eye(2))*np.exp(-1j*phi/2))
+        return 2*t * (np.kron((tau_z + np.eye(2))/2, np.eye(2))*np.exp(1j*phi/2)
+                    + np.kron((tau_z - np.eye(2))/2, np.eye(2))*np.exp(-1j*phi/2))
     else:
         return ( -t * np.kron(tau_z, np.eye(2)) +
                 1j * Delta * np.kron(tau_x, sigma_y) )
@@ -215,17 +216,13 @@ def make_Josephson_junction_pm(t=1, mu=0, Delta=1, L=25, phi=0):
         The representation for the tight-binding model.
     """
     Josephson_junction_pm = kwant.Builder()
-    lat = kwant.lattice.chain(norbs=2)  
+    lat = kwant.lattice.chain(norbs=4)  
     # The superconducting order parameter couples electron and hole orbitals
     # on each site, and hence enters as an onsite potential
     # There are L sites in each superconductor
-    Josephson_junction_pm[(lat(x) for x in range(-L, L))] = onsite
+    Josephson_junction_pm[(lat(x) for x in range(-L, L))] = onsite_Josephson_pm
     # Hoppings
     Josephson_junction_pm[lat.neighbors()] = hopping_Josephson_pm
-    # The hopping in the contact has a phase dependence.
-    #kitaev_chain_finite[lat(-1), lat(0)] = hopping_contact
-    #kitaev_chain_finite[lat(0), lat(-1)] = hopping_contact
-    #kwant.plot(kitaev_chain_finite)
     return Josephson_junction_pm
 
 def Josephson_current(syst, params):
@@ -237,24 +234,6 @@ def Josephson_current(syst, params):
         fundamental_energy.append(-np.sum(eigenvalues, where=eigenvalues>0) / 2)
     current = np.diff(fundamental_energy)
     return current
-
-def plot_spectrum(syst, phi, params):
-    """
-    Plot the spectrum by changing the parameter 'phi'.
-
-    Parameters
-    ----------
-    syst : kwant.builder.FiniteSystem
-        Finite Kitaev chain.
-    phi : np.array
-        Phase difference between superconductors.
-
-    """
-    fig = kwant.plotter.spectrum(syst, ("phi", phi), params=params)
-    fig.canvas.manager.set_window_title("Bandas de energía de una cadena finita")    
-    plt.title("Bandas")
-    plt.xlabel(r"$\frac{\phi}{\phi_0}$")
-    plt.ylabel(r"Energía")
 
 #%%
 def main():
@@ -330,7 +309,41 @@ def main():
     ax.set_ylabel(r"$E(k_z)$")
     ax.set_ylim((-4, 4))
     #fig.savefig(os.path.join(path, "Images", f"Ribbon_0_mu={params['mu']}_t={params['t']}_Delta={params['Delta']}.png"))
-    fig.savefig(f"C:\\Users\\gabri\\OneDrive\\Doctorado\\Python\\Tritops\\Images\\Ribbon_ZKM_mu={params['mu']}_lambda_R={params['lambda_R']}_t={params['t']}_Delta_0={params['Delta_0']}_Delta_1={params['Delta_1']}.png")
+    fig.savefig(f"C:\\Users\\gabri\\Mi unidad\\Doctorado\\Python\\Tritops\\Images\\Ribbon_ZKM_mu={params['mu']}_lambda_R={params['lambda_R']}_t={params['t']}_Delta_0={params['Delta_0']}_Delta_1={params['Delta_1']}.png")
+
+def main_Josephson():
+    #Hamiltonian +-
+    mu = 3
+    t = -1
+    Delta = 0.5
+    L = 10
+    fig, ax = plt.subplots()
+    ax.set_title("k-resolved Josephson current for H+")
+    ax.set_xlabel(r"$\phi$")
+    ax.set_ylabel(r"$J_k$")
+    ax.set_xticks([0, np.pi/2, np.pi, 3*np.pi/2, 2*np.pi]),
+    ax.set_xticklabels([r"0", r"$\frac{\pi}{2}$", "$\pi$", r"$\frac{3\pi}{2}$","$2\pi$"])
+    ax.grid()
+    plt.tight_layout()
+    syst = make_Josephson_junction_pm(L=L)
+    #kwant.plot(syst, site_color=site_color, hop_color=hop_color)
+    syst = syst.finalized()
+    phi = np.linspace(0, 2*np.pi, 100)
+    for k in np.linspace(0, 2*np.pi, 50):
+        params = dict(t=t, mu=mu, Delta=Delta, L=L, phi=phi, k=k)
+        #plot_spectrum(kitaev, mu)
+        current = Josephson_current(syst, params)
+        ax.plot(phi[:-1], current)
+        #ax.plot(phi[:-1], current, label=f"{k:.2f}")        #plot as function of the phase difference
+        #energy = Josephson_current(kitaev, params)
+    for k in [-np.pi, -np.pi/2, 0, np.pi/2, np.pi]:
+        params = dict(t=t, mu=mu, Delta=Delta, L=L, phi=phi, k=k)
+        current = Josephson_current(syst, params)
+        ax.plot(phi[:-1], current, label=f"{k:.2f}")        #plot as function of the phase difference
+    plt.legend()
+    print('\007')  # Ending bell
+
 
 if __name__ == '__main__':
-    main()
+    #main()
+    main_Josephson()

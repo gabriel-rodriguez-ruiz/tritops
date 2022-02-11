@@ -178,7 +178,7 @@ def plot_energy_bands():
     ax.set_xticks([-np.pi, -np.pi/2,0, np.pi/2, np.pi],
                [r"$-\pi$",r"$-\frac{\pi}{2}$",r"0", r"$\frac{\pi}{2}$", "$\pi$"])
     ax.legend()
-    fig.savefig("C:\\Users\\gabri\\OneDrive\\Doctorado\\Python\\Tritops\\Images\\Energy_bands.png")
+    fig.savefig("C:\\Users\\gabri\\Mi unidad\\Doctorado\\Python\\Tritops\\Images\\Energy_bands.png")
     
 def onsite_Josephson_pm(site, mu, t, k):
     return ( (-2*t*np.cos(k) - mu) * np.kron(tau_z, np.eye(2)) )
@@ -191,6 +191,16 @@ def hopping_Josephson_pm(site1, site2, t, Delta, phi):
         return ( -t * np.kron(tau_z, np.eye(2)) +
                 1j * Delta * np.kron(tau_x, sigma_y) )
         
+def onsite_Josephson_0(site, mu, t, k):
+    return ( (-2*t*np.cos(k) - mu) * np.kron(tau_z, np.eye(2)) )
+
+def hopping_Josephson_0(site1, site2, t, Delta, phi):
+    if (site1.pos == [0.0] and site2.pos == [-1.0]) or (site1.pos == [-1.0] and site2.pos == [0.0]):
+        return 2*t * (np.kron((tau_z + np.eye(2))/2, np.eye(2))*np.exp(1j*phi/2)
+                    + np.kron((tau_z - np.eye(2))/2, np.eye(2))*np.exp(-1j*phi/2))
+    else:
+        return ( -t * np.kron(tau_z, np.eye(2)) +
+                1j * Delta * np.kron(tau_x, sigma_z) )
 
 def make_Josephson_junction_pm(t=1, mu=0, Delta=1, L=25, phi=0):
     """
@@ -224,6 +234,39 @@ def make_Josephson_junction_pm(t=1, mu=0, Delta=1, L=25, phi=0):
     # Hoppings
     Josephson_junction_pm[lat.neighbors()] = hopping_Josephson_pm
     return Josephson_junction_pm
+
+def make_Josephson_junction_0(t=1, mu=0, Delta=1, L=25, phi=0):
+    """
+    Create a 1D tight-binding model for
+    Josephson's junction with magnetic flux.
+    
+    Parameters
+    ----------
+    t : float, optional
+        Hopping parameter. The default is 1.
+    mu : float optional
+        Chemical potential. The default is 1.
+    Delta : float, optional
+        Superconducting gap. The default is 1.
+    L : int, optional
+        Number of sites in the chain. The default is 25.
+    phi : float, optional
+        Magnetic flux in units of quantum flux h/(2e).
+    
+    Returns
+    -------
+    kwant.builder.Builder
+        The representation for the tight-binding model.
+    """
+    Josephson_junction_0 = kwant.Builder()
+    lat = kwant.lattice.chain(norbs=4)  
+    # The superconducting order parameter couples electron and hole orbitals
+    # on each site, and hence enters as an onsite potential
+    # There are L sites in each superconductor
+    Josephson_junction_0[(lat(x) for x in range(-L, L))] = onsite_Josephson_0
+    # Hoppings
+    Josephson_junction_0[lat.neighbors()] = hopping_Josephson_0
+    return Josephson_junction_0
 
 def Josephson_current(syst, params):
     fundamental_energy = []
@@ -325,20 +368,50 @@ def main_Josephson():
     ax.set_xticklabels([r"0", r"$\frac{\pi}{2}$", "$\pi$", r"$\frac{3\pi}{2}$","$2\pi$"])
     ax.grid()
     plt.tight_layout()
-    syst = make_Josephson_junction_pm(L=L)
+    syst_pm = make_Josephson_junction_pm(L=L)
     #kwant.plot(syst, site_color=site_color, hop_color=hop_color)
-    syst = syst.finalized()
+    syst_pm = syst_pm.finalized()
     phi = np.linspace(0, 2*np.pi, 100)
     for k in np.linspace(0, 2*np.pi, 50):
         params = dict(t=t, mu=mu, Delta=Delta, L=L, phi=phi, k=k)
         #plot_spectrum(kitaev, mu)
-        current = Josephson_current(syst, params)
+        current = Josephson_current(syst_pm, params)
         ax.plot(phi[:-1], current)
         #ax.plot(phi[:-1], current, label=f"{k:.2f}")        #plot as function of the phase difference
         #energy = Josephson_current(kitaev, params)
     for k in [-np.pi, -np.pi/2, 0, np.pi/2, np.pi]:
         params = dict(t=t, mu=mu, Delta=Delta, L=L, phi=phi, k=k)
-        current = Josephson_current(syst, params)
+        current = Josephson_current(syst_pm, params)
+        ax.plot(phi[:-1], current, label=f"{k:.2f}")        #plot as function of the phase difference
+    plt.legend()
+    
+    #Hamiltonian 0
+    mu = 3
+    t = -1
+    Delta = 0.5
+    L = 10
+    fig, ax = plt.subplots()
+    ax.set_title("k-resolved Josephson current for H0")
+    ax.set_xlabel(r"$\phi$")
+    ax.set_ylabel(r"$J_k$")
+    ax.set_xticks([0, np.pi/2, np.pi, 3*np.pi/2, 2*np.pi]),
+    ax.set_xticklabels([r"0", r"$\frac{\pi}{2}$", "$\pi$", r"$\frac{3\pi}{2}$","$2\pi$"])
+    ax.grid()
+    plt.tight_layout()
+    syst_0 = make_Josephson_junction_0(L=L)
+    #kwant.plot(syst, site_color=site_color, hop_color=hop_color)
+    syst_0 = syst_0.finalized()
+    phi = np.linspace(0, 2*np.pi, 100)
+    for k in np.linspace(0, 2*np.pi, 50):
+        params = dict(t=t, mu=mu, Delta=Delta, L=L, phi=phi, k=k)
+        #plot_spectrum(kitaev, mu)
+        current = Josephson_current(syst_0, params)
+        ax.plot(phi[:-1], current)
+        #ax.plot(phi[:-1], current, label=f"{k:.2f}")        #plot as function of the phase difference
+        #energy = Josephson_current(kitaev, params)
+    for k in [-np.pi, -np.pi/2, 0, np.pi/2, np.pi]:
+        params = dict(t=t, mu=mu, Delta=Delta, L=L, phi=phi, k=k)
+        current = Josephson_current(syst_0, params)
         ax.plot(phi[:-1], current, label=f"{k:.2f}")        #plot as function of the phase difference
     plt.legend()
     print('\007')  # Ending bell

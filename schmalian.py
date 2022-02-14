@@ -183,25 +183,32 @@ def plot_energy_bands():
 def onsite_Josephson_pm(site, mu, t, k):
     return ( (-2*t*np.cos(k) - mu) * np.kron(tau_z, np.eye(2)) )
 
-def hopping_Josephson_pm(site1, site2, t, Delta, phi):
+def hopping_Josephson_pm(site1, site2, t, Delta, phi, k):
     if (site1.pos == [0.0] and site2.pos == [-1.0]) or (site1.pos == [-1.0] and site2.pos == [0.0]):
         return 2*t * (np.kron((tau_z + np.eye(2))/2, np.eye(2))*np.exp(1j*phi/2)
                     + np.kron((tau_z - np.eye(2))/2, np.eye(2))*np.exp(-1j*phi/2))
     else:
+#        return ( -t * np.kron(tau_z, np.eye(2)) +
+#                1j * Delta * np.kron(tau_x, sigma_x) )
         return ( -t * np.kron(tau_z, np.eye(2)) +
-                1j * Delta * np.kron(tau_x, sigma_y) )
+                np.sin(k) * Delta * np.kron(tau_x, sigma_x) +
+                1j * Delta * np.kron(tau_x, sigma_y))
+
         
 def onsite_Josephson_0(site, mu, t, k):
     return ( (-2*t*np.cos(k) - mu) * np.kron(tau_z, np.eye(2)) )
 
-def hopping_Josephson_0(site1, site2, t, Delta, phi):
+def hopping_Josephson_0(site1, site2, t, Delta, phi, k):
     if (site1.pos == [0.0] and site2.pos == [-1.0]) or (site1.pos == [-1.0] and site2.pos == [0.0]):
         return 2*t * (np.kron((tau_z + np.eye(2))/2, np.eye(2))*np.exp(1j*phi/2)
                     + np.kron((tau_z - np.eye(2))/2, np.eye(2))*np.exp(-1j*phi/2))
     else:
+#        return ( -t * np.kron(tau_z, np.eye(2)) +
+#                1j * Delta * np.kron(tau_x, sigma_z) )
         return ( -t * np.kron(tau_z, np.eye(2)) +
-                1j * Delta * np.kron(tau_x, sigma_z) )
-
+                np.sin(k) * Delta * np.kron(tau_x, sigma_x) +
+                1j * Delta * np.kron(tau_x, sigma_z))
+    
 def make_Josephson_junction_pm(t=1, mu=0, Delta=1, L=25, phi=0):
     """
     Create a 1D tight-binding model for
@@ -225,15 +232,19 @@ def make_Josephson_junction_pm(t=1, mu=0, Delta=1, L=25, phi=0):
     kwant.builder.Builder
         The representation for the tight-binding model.
     """
-    Josephson_junction_pm = kwant.Builder()
-    lat = kwant.lattice.chain(norbs=4)  
-    # The superconducting order parameter couples electron and hole orbitals
-    # on each site, and hence enters as an onsite potential
-    # There are L sites in each superconductor
-    Josephson_junction_pm[(lat(x) for x in range(-L, L))] = onsite_Josephson_pm
-    # Hoppings
-    Josephson_junction_pm[lat.neighbors()] = hopping_Josephson_pm
-    return Josephson_junction_pm
+    sym = kwant.TranslationalSymmetry((1,0), (0,1))
+    syst = kwant.Builder(sym)
+    lat = kwant.lattice.square(1, norbs=4)
+    syst[lat(0,0)] = onsite_Josephson_pm
+    syst[kwant.HoppingKind((1, 0), lat)] = hopping_x
+    syst[kwant.HoppingKind((0, 1), lat)] = hopping_y
+    #Fill the target ribbon inside the template syst
+    ribbon = kwant.Builder(kwant.TranslationalSymmetry([0,1]))
+    ribbon.fill(syst, shape=(lambda site: -L <= site.pos[0] < 0), start=[-L, 0])
+    ribbon.fill(syst, shape=(lambda site: 0 <= site.pos[0] < L), start=[0, 0])
+    ribbon[lat(-1, 0), lat(0, 0)] = hopping_Josephson_pm
+    #kwant.plot(ribbon)
+    return ribbon
 
 def make_Josephson_junction_0(t=1, mu=0, Delta=1, L=25, phi=0):
     """
@@ -360,7 +371,7 @@ def main_Josephson():
     t = -1
     Delta = 0.5
     L = 10
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(dpi=300)
     ax.set_title("k-resolved Josephson current for H+")
     ax.set_xlabel(r"$\phi$")
     ax.set_ylabel(r"$J_k$")
@@ -368,20 +379,20 @@ def main_Josephson():
     ax.set_xticklabels([r"0", r"$\frac{\pi}{2}$", "$\pi$", r"$\frac{3\pi}{2}$","$2\pi$"])
     ax.grid()
     plt.tight_layout()
-    syst_pm = make_Josephson_junction_pm(L=L)
+    ribbon_pm = make_Josephson_junction_pm(mu=mu, L=L)
     #kwant.plot(syst, site_color=site_color, hop_color=hop_color)
-    syst_pm = syst_pm.finalized()
+    ribbon_pm = ribbon_pm.finalized()
     phi = np.linspace(0, 2*np.pi, 100)
-    for k in np.linspace(0, 2*np.pi, 50):
+    for k in np.linspace(0, 2*np.pi, 20):
         params = dict(t=t, mu=mu, Delta=Delta, L=L, phi=phi, k=k)
         #plot_spectrum(kitaev, mu)
-        current = Josephson_current(syst_pm, params)
+        current = Josephson_current(ribbon_pm, params)
         ax.plot(phi[:-1], current)
         #ax.plot(phi[:-1], current, label=f"{k:.2f}")        #plot as function of the phase difference
         #energy = Josephson_current(kitaev, params)
     for k in [-np.pi, -np.pi/2, 0, np.pi/2, np.pi]:
         params = dict(t=t, mu=mu, Delta=Delta, L=L, phi=phi, k=k)
-        current = Josephson_current(syst_pm, params)
+        current = Josephson_current(ribbon_pm, params)
         ax.plot(phi[:-1], current, label=f"{k:.2f}")        #plot as function of the phase difference
     plt.legend()
     
@@ -390,7 +401,7 @@ def main_Josephson():
     t = -1
     Delta = 0.5
     L = 10
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(dpi=300)
     ax.set_title("k-resolved Josephson current for H0")
     ax.set_xlabel(r"$\phi$")
     ax.set_ylabel(r"$J_k$")
@@ -402,7 +413,7 @@ def main_Josephson():
     #kwant.plot(syst, site_color=site_color, hop_color=hop_color)
     syst_0 = syst_0.finalized()
     phi = np.linspace(0, 2*np.pi, 100)
-    for k in np.linspace(0, 2*np.pi, 50):
+    for k in np.linspace(0, 2*np.pi, 20):
         params = dict(t=t, mu=mu, Delta=Delta, L=L, phi=phi, k=k)
         #plot_spectrum(kitaev, mu)
         current = Josephson_current(syst_0, params)

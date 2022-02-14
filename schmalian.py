@@ -289,6 +289,23 @@ def Josephson_current(syst, params):
     current = np.diff(fundamental_energy)
     return current
 
+def plot_spectrum(syst, phi, params):
+    """
+    Plot the spectrum by changing the parameter 'phi'.
+
+    Parameters
+    ----------
+    syst : kwant.builder.FiniteSystem
+        Finite Kitaev chain.
+    phi : np.array
+        Phase difference between superconductors.
+
+    """
+    fig = kwant.plotter.spectrum(syst, ("phi", phi), params=params)
+    fig.canvas.manager.set_window_title("Bandas de energía de una cadena finita")    
+    plt.xlabel(r"$\frac{\phi}{\phi_0}$")
+    plt.ylabel(r"Energía")
+
 #%%
 def main():
     #Hamiltonian +-

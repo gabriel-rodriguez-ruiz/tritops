@@ -206,7 +206,7 @@ def hopping_Josephson_0(site1, site2, t, Delta, phi, k):
 #        return ( -t * np.kron(tau_z, np.eye(2)) +
 #                1j * Delta * np.kron(tau_x, sigma_z) )
         return ( -t * np.kron(tau_z, np.eye(2)) +
-                np.sin(k) * Delta * np.kron(tau_x, sigma_x) +
+                np.sin(k) * Delta * np.kron(tau_x, sigma_z) +
                 1j * Delta * np.kron(tau_x, sigma_z))
     
 def make_Josephson_junction_pm(t=1, mu=0, Delta=1, L=25, phi=0):
@@ -232,19 +232,15 @@ def make_Josephson_junction_pm(t=1, mu=0, Delta=1, L=25, phi=0):
     kwant.builder.Builder
         The representation for the tight-binding model.
     """
-    sym = kwant.TranslationalSymmetry((1,0), (0,1))
-    syst = kwant.Builder(sym)
-    lat = kwant.lattice.square(1, norbs=4)
-    syst[lat(0,0)] = onsite_Josephson_pm
-    syst[kwant.HoppingKind((1, 0), lat)] = hopping_x
-    syst[kwant.HoppingKind((0, 1), lat)] = hopping_y
-    #Fill the target ribbon inside the template syst
-    ribbon = kwant.Builder(kwant.TranslationalSymmetry([0,1]))
-    ribbon.fill(syst, shape=(lambda site: -L <= site.pos[0] < 0), start=[-L, 0])
-    ribbon.fill(syst, shape=(lambda site: 0 <= site.pos[0] < L), start=[0, 0])
-    ribbon[lat(-1, 0), lat(0, 0)] = hopping_Josephson_pm
-    #kwant.plot(ribbon)
-    return ribbon
+    Josephson_junction_pm = kwant.Builder()
+    lat = kwant.lattice.chain(norbs=4)  
+    # The superconducting order parameter couples electron and hole orbitals
+    # on each site, and hence enters as an onsite potential
+    # There are L sites in each superconductor
+    Josephson_junction_pm[(lat(x) for x in range(-L, L))] = onsite_Josephson_pm
+    # Hoppings
+    Josephson_junction_pm[lat.neighbors()] = hopping_Josephson_pm
+    return Josephson_junction_pm
 
 def make_Josephson_junction_0(t=1, mu=0, Delta=1, L=25, phi=0):
     """
@@ -400,7 +396,7 @@ def main_Josephson():
     #kwant.plot(syst, site_color=site_color, hop_color=hop_color)
     ribbon_pm = ribbon_pm.finalized()
     phi = np.linspace(0, 2*np.pi, 100)
-    for k in np.linspace(0, 2*np.pi, 20):
+    for k in np.linspace(0, 2*np.pi, 50):
         params = dict(t=t, mu=mu, Delta=Delta, L=L, phi=phi, k=k)
         #plot_spectrum(kitaev, mu)
         current = Josephson_current(ribbon_pm, params)
@@ -430,7 +426,7 @@ def main_Josephson():
     #kwant.plot(syst, site_color=site_color, hop_color=hop_color)
     syst_0 = syst_0.finalized()
     phi = np.linspace(0, 2*np.pi, 100)
-    for k in np.linspace(0, 2*np.pi, 20):
+    for k in np.linspace(0, 2*np.pi, 50):
         params = dict(t=t, mu=mu, Delta=Delta, L=L, phi=phi, k=k)
         #plot_spectrum(kitaev, mu)
         current = Josephson_current(syst_0, params)

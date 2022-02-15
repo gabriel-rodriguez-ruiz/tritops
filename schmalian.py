@@ -284,6 +284,7 @@ def Josephson_current(syst, params):
         fundamental_energy.append(-np.sum(eigenvalues, where=eigenvalues>0) / 2)
     current = np.diff(fundamental_energy)
     return current
+    #return 40*current
 
 #%%
 def main():
@@ -366,7 +367,7 @@ def main_Josephson():
     mu = 3
     t = -1
     Delta = 0.5
-    L = 10
+    L = 200
     fig, ax = plt.subplots(dpi=300)
     ax.set_title("k-resolved Josephson current for H+")
     ax.set_xlabel(r"$\phi$")
@@ -379,7 +380,7 @@ def main_Josephson():
     #kwant.plot(syst, site_color=site_color, hop_color=hop_color)
     ribbon_pm = ribbon_pm.finalized()
     phi = np.linspace(0, 2*np.pi, 100)
-    for k in np.linspace(0, 2*np.pi, 50):
+    for k in np.linspace(0, 2*np.pi, 20):
         params = dict(t=t, mu=mu, Delta=Delta, L=L, phi=phi, k=k)
         #plot_spectrum(kitaev, mu)
         current = Josephson_current(ribbon_pm, params)
@@ -391,12 +392,14 @@ def main_Josephson():
         current = Josephson_current(ribbon_pm, params)
         ax.plot(phi[:-1], current, label=f"{k:.2f}")        #plot as function of the phase difference
     plt.legend()
+    fig.savefig("../Images/Josephson_H+")
+
     
     #Hamiltonian 0
     mu = 3
     t = -1
     Delta = 0.5
-    L = 10
+    L = 200
     fig, ax = plt.subplots(dpi=300)
     ax.set_title("k-resolved Josephson current for H0")
     ax.set_xlabel(r"$\phi$")
@@ -409,7 +412,7 @@ def main_Josephson():
     #kwant.plot(syst, site_color=site_color, hop_color=hop_color)
     syst_0 = syst_0.finalized()
     phi = np.linspace(0, 2*np.pi, 100)
-    for k in np.linspace(0, 2*np.pi, 50):
+    for k in np.linspace(0, 2*np.pi, 20):
         params = dict(t=t, mu=mu, Delta=Delta, L=L, phi=phi, k=k)
         #plot_spectrum(kitaev, mu)
         current = Josephson_current(syst_0, params)
@@ -421,6 +424,7 @@ def main_Josephson():
         current = Josephson_current(syst_0, params)
         ax.plot(phi[:-1], current, label=f"{k:.2f}")        #plot as function of the phase difference
     plt.legend()
+    fig.savefig("../Images/Josephson_H0")
     print('\007')  # Ending bell
 
 

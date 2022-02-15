@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 Created on Tue Jan 25 10:53:47 2022
-
 @author: gabri
 """
 import numpy as np
@@ -49,7 +48,6 @@ def make_ribbon_pm(mu=0, t=1, Delta=1, L=25):
     2D TRITOPS system based on [Schmalian] equation 1
     with finite boundary conditions in x and periodic in y.
     A factor 1/2 is left out. H=1/2 psi* H_BdG psi
-
     Parameters
     ----------
     mu : float
@@ -83,7 +81,6 @@ def make_ribbon_0(mu=0, t=1, Delta=1, L=25):
     2D TRITOPS system based on [Schmalian] equation 2
     with finite boundary conditions in x and periodic in y.
     A factor 1/2 is left out. H=1/2 psi* H_BdG psi
-
     Parameters
     ----------
     mu : float
@@ -128,7 +125,6 @@ def make_ribbon_ZKM(mu=0, t=1, Delta_0=-0.4, Delta_1=0.8, lambda_R=0.5, L=25):
     2D TRITOPS system based on [Schmalian] equation 3
     with finite boundary conditions in x and periodic in y.
     A factor 1/2 is left out. H=1/2 psi* H_BdG psi
-
     Parameters
     ----------
     mu : float
@@ -280,19 +276,16 @@ def Josephson_current(syst, params):
         fundamental_energy.append(-np.sum(eigenvalues, where=eigenvalues>0) / 2)
     current = np.diff(fundamental_energy)
     return current
-    #return 40*current
 
 def plot_spectrum(syst, phi, params, ax=None):
     """
     Plot the spectrum by changing the parameter 'phi'.
-
     Parameters
     ----------
     syst : kwant.builder.FiniteSystem
         Finite Kitaev chain.
     phi : np.array
         Phase difference between superconductors.
-
     """
     kwant.plotter.spectrum(syst, ("phi", phi), params=params, ax=ax)
 
@@ -389,7 +382,7 @@ def main_Josephson():
     #kwant.plot(syst, site_color=site_color, hop_color=hop_color)
     ribbon_pm = ribbon_pm.finalized()
     phi = np.linspace(0, 2*np.pi, 100)
-    for k in np.linspace(0, 2*np.pi, 20):
+    for k in np.linspace(0, 2*np.pi, 50):
         params = dict(t=t, mu=mu, Delta=Delta, L=L, phi=phi, k=k)
         #plot_spectrum(kitaev, mu)
         current = Josephson_current(ribbon_pm, params)
@@ -412,7 +405,7 @@ def main_Josephson():
     #kwant.plot(syst, site_color=site_color, hop_color=hop_color)
     syst_0 = syst_0.finalized()
     phi = np.linspace(0, 2*np.pi, 100)
-    for k in np.linspace(0, 2*np.pi, 20):
+    for k in np.linspace(0, 2*np.pi, 50):
         params = dict(t=t, mu=mu, Delta=Delta, L=L, phi=phi, k=k)
         #plot_spectrum(kitaev, mu)
         current = Josephson_current(syst_0, params)

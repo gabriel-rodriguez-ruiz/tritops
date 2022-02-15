@@ -376,7 +376,7 @@ def main_Josephson():
     mu = 3
     t = -1
     Delta = 0.5
-    L = 200
+    L = 10
     fig, ax = plt.subplots(dpi=300)
     ax.set_title("k-resolved Josephson current for H+")
     ax.set_xlabel(r"$\phi$")
@@ -394,24 +394,12 @@ def main_Josephson():
         #plot_spectrum(kitaev, mu)
         current = Josephson_current(ribbon_pm, params)
         ax.plot(phi[:-1], current)
-<<<<<<< HEAD
-        #ax.plot(phi[:-1], current, label=f"{k:.2f}")        #plot as function of the phase difference
-        #energy = Josephson_current(kitaev, params)
-    for k in [-np.pi, -np.pi/2, 0, np.pi/2, np.pi]:
-        params = dict(t=t, mu=mu, Delta=Delta, L=L, phi=phi, k=k)
-        current = Josephson_current(ribbon_pm, params)
-        ax.plot(phi[:-1], current, label=f"{k:.2f}")        #plot as function of the phase difference
-    plt.legend()
-    fig.savefig("../Images/Josephson_H+")
-
-=======
->>>>>>> 5e7ca3c5aa9f3051e8bb19a11135603ee4c4dc9d
     
     #Hamiltonian 0
     mu = 3
     t = -1
     Delta = 0.5
-    L = 200
+    L = 10
     fig, ax = plt.subplots(dpi=300)
     ax.set_title("k-resolved Josephson current for H0")
     ax.set_xlabel(r"$\phi$")
@@ -429,17 +417,6 @@ def main_Josephson():
         #plot_spectrum(kitaev, mu)
         current = Josephson_current(syst_0, params)
         ax.plot(phi[:-1], current)
-<<<<<<< HEAD
-        #ax.plot(phi[:-1], current, label=f"{k:.2f}")        #plot as function of the phase difference
-        #energy = Josephson_current(kitaev, params)
-    for k in [-np.pi, -np.pi/2, 0, np.pi/2, np.pi]:
-        params = dict(t=t, mu=mu, Delta=Delta, L=L, phi=phi, k=k)
-        current = Josephson_current(syst_0, params)
-        ax.plot(phi[:-1], current, label=f"{k:.2f}")        #plot as function of the phase difference
-    plt.legend()
-    fig.savefig("../Images/Josephson_H0")
-=======
->>>>>>> 5e7ca3c5aa9f3051e8bb19a11135603ee4c4dc9d
     print('\007')  # Ending bell
 
 #%%

@@ -369,7 +369,7 @@ def main_Josephson():
     mu = 3
     t = -1
     Delta = 0.5
-    L = 10
+    L = 200
     fig, ax = plt.subplots(dpi=300)
     ax.set_title("k-resolved Josephson current for H+")
     ax.set_xlabel(r"$\phi$")
@@ -381,18 +381,19 @@ def main_Josephson():
     ribbon_pm = make_Josephson_junction_pm(mu=mu, L=L)
     #kwant.plot(syst, site_color=site_color, hop_color=hop_color)
     ribbon_pm = ribbon_pm.finalized()
-    phi = np.linspace(0, 2*np.pi, 100)
-    for k in np.linspace(0, 2*np.pi, 50):
+    phi = np.linspace(0, 2*np.pi, 1000)
+    for k in np.linspace(0, 2*np.pi, 100):
         params = dict(t=t, mu=mu, Delta=Delta, L=L, phi=phi, k=k)
         #plot_spectrum(kitaev, mu)
         current = Josephson_current(ribbon_pm, params)
         ax.plot(phi[:-1], current)
+    fig.savefig(os.getcwd()+f"/Images/Josephson_H+_L={L}")
     
     #Hamiltonian 0
     mu = 3
     t = -1
     Delta = 0.5
-    L = 10
+    L = 200
     fig, ax = plt.subplots(dpi=300)
     ax.set_title("k-resolved Josephson current for H0")
     ax.set_xlabel(r"$\phi$")
@@ -404,12 +405,13 @@ def main_Josephson():
     syst_0 = make_Josephson_junction_0(L=L)
     #kwant.plot(syst, site_color=site_color, hop_color=hop_color)
     syst_0 = syst_0.finalized()
-    phi = np.linspace(0, 2*np.pi, 100)
-    for k in np.linspace(0, 2*np.pi, 50):
+    phi = np.linspace(0, 2*np.pi, 1000)
+    for k in np.linspace(0, 2*np.pi, 100):
         params = dict(t=t, mu=mu, Delta=Delta, L=L, phi=phi, k=k)
         #plot_spectrum(kitaev, mu)
         current = Josephson_current(syst_0, params)
         ax.plot(phi[:-1], current)
+    fig.savefig(os.getcwd()+f"/Images/Josephson_H0_L={L}")
     print('\007')  # Ending bell
 
 #%%
@@ -436,7 +438,7 @@ plt.tight_layout()
 ribbon_pm = make_Josephson_junction_pm(mu=mu, L=L)
 ribbon_pm = ribbon_pm.finalized()
 params = dict(t=t, mu=mu, Delta=Delta, L=L, phi=0, k=k)
-phi = np.linspace(0, 2*np.pi, 1000)
+phi = np.linspace(0, 2*np.pi, 100)
 params["phi"] = phi
 plot_spectrum(ribbon_pm, phi, params, ax=ax)    
 
@@ -457,6 +459,6 @@ plt.tight_layout()
 ribbon_0 = make_Josephson_junction_0(mu=mu, L=L)
 ribbon_0 = ribbon_0.finalized()
 params = dict(t=t, mu=mu, Delta=Delta, L=L, phi=0, k=k)
-phi = np.linspace(0, 2*np.pi, 1000)
+phi = np.linspace(0, 2*np.pi, 100)
 params["phi"] = phi
 plot_spectrum(ribbon_0, phi, params, ax=ax)  

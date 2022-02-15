@@ -188,8 +188,6 @@ def hopping_Josephson_pm(site1, site2, t, Delta, phi, k):
         return 2*t * (np.kron((tau_z + np.eye(2))/2, np.eye(2))*np.exp(1j*phi/2)
                     + np.kron((tau_z - np.eye(2))/2, np.eye(2))*np.exp(-1j*phi/2))
     else:
-#        return ( -t * np.kron(tau_z, np.eye(2)) +
-#                1j * Delta * np.kron(tau_x, sigma_x) )
         return ( -t * np.kron(tau_z, np.eye(2)) +
                 np.sin(k) * Delta * np.kron(tau_x, sigma_x) +
                 1j * Delta * np.kron(tau_x, sigma_y))
@@ -203,8 +201,6 @@ def hopping_Josephson_0(site1, site2, t, Delta, phi, k):
         return 2*t * (np.kron((tau_z + np.eye(2))/2, np.eye(2))*np.exp(1j*phi/2)
                     + np.kron((tau_z - np.eye(2))/2, np.eye(2))*np.exp(-1j*phi/2))
     else:
-#        return ( -t * np.kron(tau_z, np.eye(2)) +
-#                1j * Delta * np.kron(tau_x, sigma_z) )
         return ( -t * np.kron(tau_z, np.eye(2)) +
                 np.sin(k) * Delta * np.kron(tau_x, sigma_z) +
                 1j * Delta * np.kron(tau_x, sigma_z))
@@ -285,7 +281,7 @@ def Josephson_current(syst, params):
     current = np.diff(fundamental_energy)
     return current
 
-def plot_spectrum(syst, phi, params):
+def plot_spectrum(syst, phi, params, ax=None):
     """
     Plot the spectrum by changing the parameter 'phi'.
 
@@ -297,12 +293,8 @@ def plot_spectrum(syst, phi, params):
         Phase difference between superconductors.
 
     """
-    fig = kwant.plotter.spectrum(syst, ("phi", phi), params=params)
-    fig.canvas.manager.set_window_title("Bandas de energía de una cadena finita")    
-    plt.xlabel(r"$\frac{\phi}{\phi_0}$")
-    plt.ylabel(r"Energía")
+    kwant.plotter.spectrum(syst, ("phi", phi), params=params, ax=ax)
 
-#%%
 def main():
     #Hamiltonian +-
     mu = 3
@@ -401,13 +393,6 @@ def main_Josephson():
         #plot_spectrum(kitaev, mu)
         current = Josephson_current(ribbon_pm, params)
         ax.plot(phi[:-1], current)
-        #ax.plot(phi[:-1], current, label=f"{k:.2f}")        #plot as function of the phase difference
-        #energy = Josephson_current(kitaev, params)
-    for k in [-np.pi, -np.pi/2, 0, np.pi/2, np.pi]:
-        params = dict(t=t, mu=mu, Delta=Delta, L=L, phi=phi, k=k)
-        current = Josephson_current(ribbon_pm, params)
-        ax.plot(phi[:-1], current, label=f"{k:.2f}")        #plot as function of the phase difference
-    plt.legend()
     
     #Hamiltonian 0
     mu = 3
@@ -431,16 +416,53 @@ def main_Josephson():
         #plot_spectrum(kitaev, mu)
         current = Josephson_current(syst_0, params)
         ax.plot(phi[:-1], current)
-        #ax.plot(phi[:-1], current, label=f"{k:.2f}")        #plot as function of the phase difference
-        #energy = Josephson_current(kitaev, params)
-    for k in [-np.pi, -np.pi/2, 0, np.pi/2, np.pi]:
-        params = dict(t=t, mu=mu, Delta=Delta, L=L, phi=phi, k=k)
-        current = Josephson_current(syst_0, params)
-        ax.plot(phi[:-1], current, label=f"{k:.2f}")        #plot as function of the phase difference
-    plt.legend()
     print('\007')  # Ending bell
 
+#%%
 
 if __name__ == '__main__':
     #main()
     main_Josephson()
+    
+#%% Spectrum vs. phi
+#Hamiltonian +-
+mu = 3
+t = -1
+Delta = 0.5
+L = 10
+k = 0
+fig, ax = plt.subplots(dpi=300)
+ax.set_title(f"Spectrum for H+ and k={k}")
+ax.set_xlabel(r"$\phi$")
+ax.set_ylabel(r"$E(\phi)$")
+ax.set_xticks([0, np.pi/2, np.pi, 3*np.pi/2, 2*np.pi]),
+ax.set_xticklabels([r"0", r"$\frac{\pi}{2}$", "$\pi$", r"$\frac{3\pi}{2}$","$2\pi$"])
+ax.grid()
+plt.tight_layout()
+ribbon_pm = make_Josephson_junction_pm(mu=mu, L=L)
+ribbon_pm = ribbon_pm.finalized()
+params = dict(t=t, mu=mu, Delta=Delta, L=L, phi=0, k=k)
+phi = np.linspace(0, 2*np.pi, 1000)
+params["phi"] = phi
+plot_spectrum(ribbon_pm, phi, params, ax=ax)    
+
+#Hamiltonian H0
+mu = 3
+t = -1
+Delta = 0.5
+L = 10
+k = 0
+fig, ax = plt.subplots(dpi=300)
+ax.set_title(f"Spectrum for H0 and k={k}")
+ax.set_xlabel(r"$\phi$")
+ax.set_ylabel(r"$E(\phi)$")
+ax.set_xticks([0, np.pi/2, np.pi, 3*np.pi/2, 2*np.pi]),
+ax.set_xticklabels([r"0", r"$\frac{\pi}{2}$", "$\pi$", r"$\frac{3\pi}{2}$","$2\pi$"])
+ax.grid()
+plt.tight_layout()
+ribbon_0 = make_Josephson_junction_0(mu=mu, L=L)
+ribbon_0 = ribbon_0.finalized()
+params = dict(t=t, mu=mu, Delta=Delta, L=L, phi=0, k=k)
+phi = np.linspace(0, 2*np.pi, 1000)
+params["phi"] = phi
+plot_spectrum(ribbon_0, phi, params, ax=ax)  

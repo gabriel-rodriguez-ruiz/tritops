@@ -369,7 +369,7 @@ def main_Josephson():
     mu = 3
     t = -1
     Delta = 0.5
-    L = 200
+    L = 100
     fig, ax = plt.subplots(dpi=300)
     ax.set_title("k-resolved Josephson current for H+")
     ax.set_xlabel(r"$\phi$")
@@ -381,8 +381,8 @@ def main_Josephson():
     ribbon_pm = make_Josephson_junction_pm(mu=mu, L=L)
     #kwant.plot(syst, site_color=site_color, hop_color=hop_color)
     ribbon_pm = ribbon_pm.finalized()
-    phi = np.linspace(0, 2*np.pi, 1000)
-    for k in np.linspace(0, 2*np.pi, 100):
+    phi = np.linspace(0, 2*np.pi, 200)
+    for k in np.linspace(0, 2*np.pi, 20):
         params = dict(t=t, mu=mu, Delta=Delta, L=L, phi=phi, k=k)
         #plot_spectrum(kitaev, mu)
         current = Josephson_current(ribbon_pm, params)
@@ -393,7 +393,7 @@ def main_Josephson():
     mu = 3
     t = -1
     Delta = 0.5
-    L = 200
+    L = 100
     fig, ax = plt.subplots(dpi=300)
     ax.set_title("k-resolved Josephson current for H0")
     ax.set_xlabel(r"$\phi$")

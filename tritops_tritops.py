@@ -125,7 +125,7 @@ mu = -2*t
 Delta_0 = -0.4*t
 Delta_1 = 0.2*t
 lambda_R = 0.5*t
-L = 50
+L = 10
 fig, ax = plt.subplots(dpi=300)
 ax.set_title("k-resolved Josephson current for H_ZKM")
 ax.set_xlabel(r"$\phi$")
@@ -138,20 +138,20 @@ ribbon_ZKM = make_Josephson_junction_ZKM(mu=mu, L=L)
 #kwant.plot(syst, site_color=site_color, hop_color=hop_color)
 ribbon_ZKM = ribbon_ZKM.finalized()
 phi = np.linspace(0, 2*np.pi, 100)
-for k in np.linspace(0, 2*np.pi, 20):
+for k in np.linspace(0, 0.5, 10):
     params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1, lambda_R=lambda_R, L=L, phi=phi, k=k)
     #plot_spectrum(kitaev, mu)
     current = Josephson_current(ribbon_ZKM, params)
     ax.plot(phi[:-1], current)
-for k in [-np.pi, -np.pi/2, 0, np.pi/2, np.pi]:
-    params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1, lambda_R=lambda_R, L=L, phi=phi, k=k)
-    #plot_spectrum(kitaev, mu)
-    current = Josephson_current(ribbon_ZKM, params)
-    ax.plot(phi[:-1], current, label=f"k={k}")
-plt.legend()
-fig.savefig(os.getcwd()+f"/Images/Josephson_H_ZKM_L={L}")
+# for k in [-np.pi, -np.pi/2, 0, np.pi/2, np.pi]:
+#     params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1, lambda_R=lambda_R, L=L, phi=phi, k=k)
+#     #plot_spectrum(kitaev, mu)
+#     current = Josephson_current(ribbon_ZKM, params)
+#     ax.plot(phi[:-1], current, label=f"k={k}")
+#plt.legend()
+fig.savefig(os.getcwd()+f"/Images/Josephson_H_ZKM_L={L}_near_k=0")
 
-k = -np.pi
+k = 0
 fig, ax = plt.subplots(dpi=300)
 ax.set_title(f"Spectrum for H0 and k={k}")
 ax.set_xlabel(r"$\phi$")
@@ -163,6 +163,6 @@ plt.tight_layout()
 ribbon_ZKM = make_Josephson_junction_ZKM(mu=mu, L=L)
 ribbon_ZKM = ribbon_ZKM.finalized()
 params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1, lambda_R=lambda_R, L=L, phi=phi, k=0)
-phi = np.linspace(0, 2*np.pi, 100)
+phi = np.linspace(0, 2*np.pi, 50)
 params["phi"] = phi
 plot_spectrum(ribbon_ZKM, phi, params, ax=ax)  

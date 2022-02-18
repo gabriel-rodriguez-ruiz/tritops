@@ -21,6 +21,7 @@ tau_x = np.array([[0, 1], [1, 0]])
 tau_y = np.array([[0, -1j], [1j, 0]])
 tau_z = np.array([[1, 0], [0, -1]])
 
+#%%
 def J(phi, k, v=1):
     t = -1
     return 2*t**2 * np.cos(phi/2) * np.sin(phi/2) / np.sqrt((v*k)**2 + t**2*np.cos(phi/2)**2)
@@ -79,12 +80,12 @@ def onsite_Josephson_ZKM(site, mu, Delta_0, Delta_1, lambda_R, k):
 
 def hopping_Josephson_ZKM(site1, site2, t, Delta_0, Delta_1,lambda_R, phi, k):
     if (site1.pos == [0.0] and site2.pos == [-1.0]) or (site1.pos == [-1.0] and site2.pos == [0.0]):
-        return 2*t * (np.kron((tau_z + np.eye(2))/2, np.eye(2))*np.exp(1j*phi/2)
+        return t * (np.kron((tau_z + np.eye(2))/2, np.eye(2))*np.exp(1j*phi/2)
                     + np.kron((tau_z - np.eye(2))/2, np.eye(2))*np.exp(-1j*phi/2))
     else:
         return ( -t * np.kron(tau_z, np.eye(2)) -
-                1j*2*lambda_R * np.kron(tau_z, sigma_z) +
-                2*Delta_1 * np.kron(tau_x, np.eye(2)))
+                1j*lambda_R * np.kron(tau_z, sigma_z) +
+                Delta_1 * np.kron(tau_x, np.eye(2)))
                                                
 
 def make_Josephson_junction_ZKM(t=1, mu=0, Delta=1, L=25, phi=0):
@@ -125,7 +126,7 @@ mu = -2*t
 Delta_0 = -0.4*t
 Delta_1 = 0.2*t
 lambda_R = 0.5*t
-L = 10
+L = 50
 fig, ax = plt.subplots(dpi=300)
 ax.set_title("k-resolved Josephson current for H_ZKM")
 ax.set_xlabel(r"$\phi$")
@@ -138,7 +139,7 @@ ribbon_ZKM = make_Josephson_junction_ZKM(mu=mu, L=L)
 #kwant.plot(syst, site_color=site_color, hop_color=hop_color)
 ribbon_ZKM = ribbon_ZKM.finalized()
 phi = np.linspace(0, 2*np.pi, 100)
-for k in np.linspace(0, 0.5, 10):
+for k in np.linspace(0, 2*np.pi, 10):
     params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1, lambda_R=lambda_R, L=L, phi=phi, k=k)
     #plot_spectrum(kitaev, mu)
     current = Josephson_current(ribbon_ZKM, params)
@@ -149,7 +150,7 @@ for k in np.linspace(0, 0.5, 10):
 #     current = Josephson_current(ribbon_ZKM, params)
 #     ax.plot(phi[:-1], current, label=f"k={k}")
 #plt.legend()
-fig.savefig(os.getcwd()+f"/Images/Josephson_H_ZKM_L={L}_near_k=0")
+#fig.savefig(os.getcwd()+f"/Images/Josephson_H_ZKM_L={L}_near_k=0")
 
 k = 0
 fig, ax = plt.subplots(dpi=300)

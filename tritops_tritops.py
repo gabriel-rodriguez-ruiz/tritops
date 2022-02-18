@@ -74,13 +74,13 @@ def plot_spectrum(syst, phi, params, ax=None):
     """
     kwant.plotter.spectrum(syst, ("phi", phi), params=params, ax=ax)
 
-def onsite_Josephson_ZKM(site, mu, Delta_0, Delta_1, lambda_R, k):
+def onsite_Josephson_ZKM(site, mu, Delta_0, Delta_1, lambda_R, k, t_J):
     return ( (-2*t*np.cos(k) - mu) * np.kron(tau_z, np.eye(2)) + (Delta_0 + 2*Delta_1*np.cos(k)) * np.kron(tau_x, np.eye(2))  +
             2*lambda_R*np.sin(k) * np.kron(tau_z, sigma_x) )
 
-def hopping_Josephson_ZKM(site1, site2, t, Delta_0, Delta_1,lambda_R, phi, k):
+def hopping_Josephson_ZKM(site1, site2, t, Delta_0, Delta_1,lambda_R, phi, k, t_J):
     if (site1.pos == [0.0] and site2.pos == [-1.0]) or (site1.pos == [-1.0] and site2.pos == [0.0]):
-        return t * (np.kron((tau_z + np.eye(2))/2, np.eye(2))*np.exp(1j*phi/2)
+        return t_J * (np.kron((tau_z + np.eye(2))/2, np.eye(2))*np.exp(1j*phi/2)
                     + np.kron((tau_z - np.eye(2))/2, np.eye(2))*np.exp(-1j*phi/2))
     else:
         return ( -t * np.kron(tau_z, np.eye(2)) -
@@ -88,7 +88,7 @@ def hopping_Josephson_ZKM(site1, site2, t, Delta_0, Delta_1,lambda_R, phi, k):
                 Delta_1 * np.kron(tau_x, np.eye(2)))
                                                
 
-def make_Josephson_junction_ZKM(t=1, mu=0, Delta=1, L=25, phi=0):
+def make_Josephson_junction_ZKM(t=1, mu=0, Delta=1, L=25, phi=0, t_J=1):
     """
     Create a 1D tight-binding model for
     Josephson's junction with magnetic flux.
@@ -121,11 +121,21 @@ def make_Josephson_junction_ZKM(t=1, mu=0, Delta=1, L=25, phi=0):
     Josephson_junction_ZKM[lat.neighbors()] = hopping_Josephson_ZKM
     return Josephson_junction_ZKM
 
+# without crossing 
 t = 1
-mu = -2*t
-Delta_0 = -0.4*t
+t_J = t/2
+mu = 2*t
+Delta_0 = 0.4*t
 Delta_1 = 0.2*t
 lambda_R = 0.5*t
+
+# with crossing
+# t = 1
+# t_J = t
+# mu = t
+# Delta_0 = 0.4*t
+# Delta_1 = 0.4*t
+# lambda_R = 0.5*t
 L = 50
 fig, ax = plt.subplots(dpi=300)
 ax.set_title("k-resolved Josephson current for H_ZKM")
@@ -139,11 +149,12 @@ ribbon_ZKM = make_Josephson_junction_ZKM(mu=mu, L=L)
 #kwant.plot(syst, site_color=site_color, hop_color=hop_color)
 ribbon_ZKM = ribbon_ZKM.finalized()
 phi = np.linspace(0, 2*np.pi, 100)
-for k in np.linspace(0, 2*np.pi, 10):
-    params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1, lambda_R=lambda_R, L=L, phi=phi, k=k)
+for k in np.linspace(-np.pi, -np.pi+1, 10):
+    params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1, lambda_R=lambda_R, L=L, phi=phi, k=k, t_J=t_J)
     #plot_spectrum(kitaev, mu)
     current = Josephson_current(ribbon_ZKM, params)
-    ax.plot(phi[:-1], current)
+    ax.plot(phi[:-1], current, label=f"{k:.2f}")
+plt.legend(loc="upper right")
 # for k in [-np.pi, -np.pi/2, 0, np.pi/2, np.pi]:
 #     params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1, lambda_R=lambda_R, L=L, phi=phi, k=k)
 #     #plot_spectrum(kitaev, mu)
@@ -152,7 +163,7 @@ for k in np.linspace(0, 2*np.pi, 10):
 #plt.legend()
 #fig.savefig(os.getcwd()+f"/Images/Josephson_H_ZKM_L={L}_near_k=0")
 
-k = 0
+k = np.pi
 fig, ax = plt.subplots(dpi=300)
 ax.set_title(f"Spectrum for H0 and k={k}")
 ax.set_xlabel(r"$\phi$")
@@ -163,7 +174,7 @@ ax.grid()
 plt.tight_layout()
 ribbon_ZKM = make_Josephson_junction_ZKM(mu=mu, L=L)
 ribbon_ZKM = ribbon_ZKM.finalized()
-params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1, lambda_R=lambda_R, L=L, phi=phi, k=0)
+params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1, lambda_R=lambda_R, L=L, phi=phi, k=0, t_J=t_J)
 phi = np.linspace(0, 2*np.pi, 50)
 params["phi"] = phi
 plot_spectrum(ribbon_ZKM, phi, params, ax=ax)  

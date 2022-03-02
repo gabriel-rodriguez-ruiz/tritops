@@ -149,35 +149,35 @@ def plot_total_current(t, t_J, mu, Delta_0, Delta_1, lambda_R,
 
 def main():
     # without crossing 
-    t = 1
-    t_J = t/2
-    mu = 2*t
-    Delta_0 = 0.4*t
-    Delta_1 = 0.2*t
-    lambda_R = 0.5*t
-    
-    # with crossing
     # t = 1
-    # t_J = t
-    # mu = t
+    # t_J = t/2
+    # mu = 2*t
     # Delta_0 = 0.4*t
-    # Delta_1 = 0.4*t
+    # Delta_1 = 0.2*t
     # lambda_R = 0.5*t
     
-    theta = 0
+    # with crossing
+    t = 1
+    t_J = t
+    mu = t
+    Delta_0 = 0.4*t
+    Delta_1 = 0.4*t
+    lambda_R = 0.5*t
+    
+    theta = np.pi
     L = 50
-    k = np.linspace(-np.pi, np.pi, 100)
+    k = np.linspace(-np.pi, -np.pi+0.5, 10)
     params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1,
                   lambda_R=lambda_R, L=L,
                   t_J=t_J, theta=theta)
     
-    #fig, ax = plot_k_resolved_current(k=k, **params)
+    fig, ax = plot_k_resolved_current(k=k, **params)
     #fig.savefig(os.getcwd()+f"/Images/Tilted/Josephson_H_ZKM_crossing_L={L}_theta={theta:.2f}.png")
 
     params.pop("theta")
     theta = [0, np.pi/4, np.pi/2, np.pi, 3*np.pi/2, 7*np.pi/4]
-    fig, ax = plot_total_current(k=k, theta=theta, **params)
-    fig.savefig(os.getcwd()+f"/Images/Tilted/Total_Josephson_H_ZKM_without_crossing_L={L}.png")
+    #fig, ax = plot_total_current(k=k, theta=theta, **params)
+    #fig.savefig(os.getcwd()+f"/Images/Tilted/Total_Josephson_H_ZKM_without_crossing_L={L}.png")
 
 if __name__ == '__main__':
     main()

@@ -25,9 +25,9 @@ plt.figure()
 dphi = np.diff(phi)[0]
 plt.plot(phi[:-1], np.diff(-np.sqrt( (np.cos(phi/2) + np.sign(np.cos(phi/2)))**2 + np.cos(phi/2)**2 ) )/dphi)
 plt.plot(phi[:-1], np.diff(-np.sqrt( (np.cos(phi/2) - np.sign(np.cos(phi/2)))**2 + np.cos(phi/2)**2 ) )/dphi)
-
+# Numerical derivative
 plt.plot(phi[:-1], np.diff(-np.sqrt( (np.cos(phi/2) + np.sign(np.cos(phi/2)))**2 + np.cos(phi/2)**2 )  - np.sqrt( (np.cos(phi/2) - np.sign(np.cos(phi/2)))**2 + np.cos(phi/2)**2 ) )/dphi)
-
+# Analytical derivative
 plt.plot(phi, 1/2*np.sin(phi/2)*np.sign(np.cos(phi/2))*( ( 2*abs(np.cos(phi/2)) + 1 )/
                         (np.sqrt( (np.cos(phi/2) + np.sign(np.cos(phi/2)))**2 + np.cos(phi/2)**2 ) ) +
                         ( 2*abs(np.cos(phi/2)) - 1 )/

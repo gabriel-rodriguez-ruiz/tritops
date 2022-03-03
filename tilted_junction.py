@@ -74,12 +74,13 @@ def make_Josephson_junction_ZKM(t=1, mu=0, Delta=1, L=25, phi=0, t_J=1, theta=0)
 
 def Josephson_current(syst, params):
     fundamental_energy = []
+    dphi = np.diff(params["phi"])[0]
     for phi in params["phi"]:
         params["phi"] = phi
         H = syst.hamiltonian_submatrix(params=params)
         eigenvalues, eigenvectors = np.linalg.eig(H)
         fundamental_energy.append(-np.sum(eigenvalues, where=eigenvalues>0) / 2)
-    current = np.diff(fundamental_energy)
+    current = np.diff(fundamental_energy) / dphi
     return current
 
 def plot_spectrum(syst, phi, params, ax=None):
@@ -165,7 +166,7 @@ def main():
     lambda_R = 0.5*t
     
     theta = np.pi
-    L = 50
+    L = 10
     k = np.linspace(-np.pi, -np.pi+0.5, 10)
     params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1,
                   lambda_R=lambda_R, L=L,

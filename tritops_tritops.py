@@ -54,12 +54,13 @@ def plot_Josephson_current(v=1):
 #%% Josephson for ZKM
 def Josephson_current(syst, params):
     fundamental_energy = []
+    dphi = np.diff(params["phi"])[0]
     for phi in params["phi"]:
         params["phi"] = phi
         H = syst.hamiltonian_submatrix(params=params)
         eigenvalues, eigenvectors = np.linalg.eig(H)
         fundamental_energy.append(-np.sum(eigenvalues, where=eigenvalues>0) / 2)
-    current = np.diff(fundamental_energy)
+    current = np.diff(fundamental_energy) / dphi
     return current
 
 def plot_spectrum(syst, phi, params, ax=None):

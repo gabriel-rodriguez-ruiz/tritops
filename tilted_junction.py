@@ -150,23 +150,23 @@ def plot_total_current(t, t_J, mu, Delta_0, Delta_1, lambda_R,
 
 def main():
     # without crossing 
-    # t = 1
-    # t_J = t/2
-    # mu = 2*t
-    # Delta_0 = 0.4*t
-    # Delta_1 = 0.2*t
-    # lambda_R = 0.5*t
-    
-    # with crossing
     t = 1
-    t_J = t
-    mu = t
+    t_J = t/2
+    mu = 2*t
     Delta_0 = 0.4*t
-    Delta_1 = 0.4*t
+    Delta_1 = 0.2*t
     lambda_R = 0.5*t
     
-    theta = np.pi
-    L = 10
+    # with crossing
+    # t = 1
+    # t_J = t
+    # mu = t
+    # Delta_0 = 0.4*t
+    # Delta_1 = 0.4*t
+    # lambda_R = 0.5*t
+    
+    theta = np.pi/4
+    L = 50
     k = np.linspace(-np.pi, -np.pi+0.5, 10)
     params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1,
                   lambda_R=lambda_R, L=L,

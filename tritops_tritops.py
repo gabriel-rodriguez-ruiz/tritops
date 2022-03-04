@@ -124,20 +124,20 @@ def make_Josephson_junction_ZKM(t=1, mu=0, Delta=1, L=25, phi=0, t_J=1):
 
 def main():
     # without crossing 
-    # t = 1
-    # t_J = t/2
-    # mu = 2*t
-    # Delta_0 = 0.4*t
-    # Delta_1 = 0.2*t
-    # lambda_R = 0.5*t
+    t = 1
+    t_J = t/2
+    mu = 2*t
+    Delta_0 = 0.4*t
+    Delta_1 = 0.2*t
+    lambda_R = 0.5*t
     
     # with crossing
-    t = 1
-    t_J = t
-    mu = t
-    Delta_0 = 0.4*t
-    Delta_1 = 0.4*t
-    lambda_R = 0.5*t
+    # t = 1
+    # t_J = t
+    # mu = t
+    # Delta_0 = 0.4*t
+    # Delta_1 = 0.4*t
+    # lambda_R = 0.5*t
     
     L = 50
     fig, ax = plt.subplots(dpi=300)

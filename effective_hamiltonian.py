@@ -9,12 +9,15 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 phi = np.linspace(0, 2*np.pi, 1000)
-#plt.plot(phi,  np.sqrt( (np.cos(phi/2) + 1)**2 + np.cos(phi/2)**2 ) )
-plt.plot(phi,  -np.sqrt( (np.cos(phi/2) + 1)**2 + np.cos(phi/2)**2 ) )
-#plt.plot(phi,  np.sqrt( (np.cos(phi/2) - 1)**2 + np.cos(phi/2)**2 ) )
-plt.plot(phi,  -np.sqrt( (np.cos(phi/2) - 1)**2 + np.cos(phi/2)**2 ) )
-plt.plot(phi,  -np.sqrt( (np.cos(phi/2) - 1)**2 + np.cos(phi/2)**2) -
-                        np.sqrt( (np.cos(phi/2) + 1)**2 + np.cos(phi/2)**2 ) )
+# plt.plot(phi,  -np.sqrt( (np.cos(phi/2) + 1)**2 + np.cos(phi/2)**2 ) )
+# plt.plot(phi,  -np.sqrt( (np.cos(phi/2) - 1)**2 + np.cos(phi/2)**2 ) )
+# plt.plot(phi,  -np.sqrt( (np.cos(phi/2) - 1)**2 + np.cos(phi/2)**2) -
+#                           np.sqrt( (np.cos(phi/2) + 1)**2 + np.cos(phi/2)**2 ) )
+plt.plot(phi,  -np.sign(np.cos(phi/2))*np.sqrt( (np.cos(phi/2) + 1)**2 + np.cos(phi/2)**2 ) )
+plt.plot(phi,  np.sign(np.cos(phi/2))*np.sqrt( (np.cos(phi/2) - 1)**2 + np.cos(phi/2)**2 ) )
+
+plt.plot(phi,  np.sign(np.cos(phi/2)) * ( np.sqrt( (np.cos(phi/2) - 1)**2 + np.cos(phi/2)**2) -
+                        np.sqrt( (np.cos(phi/2) + 1)**2 + np.cos(phi/2)**2 ) ) )
 
 
 plt.figure()

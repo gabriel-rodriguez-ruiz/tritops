@@ -13,11 +13,13 @@ phi = np.linspace(0, 2*np.pi, 1000)
 # plt.plot(phi,  -np.sqrt( (np.cos(phi/2) - 1)**2 + np.cos(phi/2)**2 ) )
 # plt.plot(phi,  -np.sqrt( (np.cos(phi/2) - 1)**2 + np.cos(phi/2)**2) -
 #                           np.sqrt( (np.cos(phi/2) + 1)**2 + np.cos(phi/2)**2 ) )
-plt.plot(phi,  -np.sign(np.cos(phi/2))*np.sqrt( (np.cos(phi/2) + 1)**2 + np.cos(phi/2)**2 ) )
-plt.plot(phi,  np.sign(np.cos(phi/2))*np.sqrt( (np.cos(phi/2) - 1)**2 + np.cos(phi/2)**2 ) )
+plt.plot(phi,  -np.sqrt( (np.cos(phi/2) + 1)**2 + np.cos(phi/2)**2 ) )
+plt.plot(phi,  -np.sqrt( (np.cos(phi/2) - 1)**2 + np.cos(phi/2)**2 ) )
 
 plt.plot(phi,  np.sign(np.cos(phi/2)) * ( np.sqrt( (np.cos(phi/2) - 1)**2 + np.cos(phi/2)**2) -
                         np.sqrt( (np.cos(phi/2) + 1)**2 + np.cos(phi/2)**2 ) ) )
+plt.plot(phi,  -np.sqrt( (np.cos(phi/2) - 1)**2 + np.cos(phi/2)**2) -
+                        np.sqrt( (np.cos(phi/2) + 1)**2 + np.cos(phi/2)**2 ) )
 
 
 plt.figure()
@@ -43,9 +45,10 @@ def effective_current(k, phi, theta, lambda_R=0.5, t_J=0.5, w2=1):
     Equation (43) of [Schmalian] for the effective
     current for the ZKM model.
     """
-    w2 = 1
-    t_1 = 2 * t_J * np.abs(w2) * np.cos(theta/2)
-    t_2 = 2 * t_J * np.abs(w2) * np.sin(theta/2)
+    w2 = (0.19+1j) / (np.sqrt(0.19**2 + 1**2))
+    theta_k = np.arctan(np.real(w2)/np.imag(w2))
+    t_1 = 2 * t_J * np.abs(w2) * np.cos(theta_k+theta/2)
+    t_2 = 2 * t_J * np.abs(w2) * np.sin(theta_k+theta/2)
     t_lambda = -2*lambda_R*np.sin(k)
     E_k_plus = np.sqrt( (t_1 * np.cos(phi/2) + t_lambda)**2 + t_2**2*np.cos(phi/2)**2 )
     E_k_minus = np.sqrt( (t_1 * np.cos(phi/2) - t_lambda)**2 + t_2**2*np.cos(phi/2)**2 )
@@ -62,12 +65,13 @@ phi = np.linspace(0, 2*np.pi, 1000)
 
 
 theta = 0
-for k in np.linspace(-np.pi, -np.pi+0.5, 10):
+for k in np.linspace(-np.pi, -np.pi+0.5, 5):
     plt.plot(phi, [effective_current(k, phi, theta) for phi in phi], label=f"{k:.2f}")
 plt.legend(loc="upper right")
 plt.title(rf"Effective current for $\theta = {theta:.2f}$")
 plt.xlabel(r"$\phi$")
 plt.ylabel(r"$J_k$")
+plt.grid()
 # k = -np.pi/2    
 # for theta in np.linspace(0, np.pi, 10):
 #     plt.plot(phi, [effective_current(k, phi, theta) for phi in phi])

@@ -108,13 +108,11 @@ def plot_k_resolved_current(t, t_J, mu, Delta_0, Delta_1, lambda_R,
     ribbon_ZKM = make_Josephson_junction_ZKM(mu=mu, L=L)
     ribbon_ZKM = ribbon_ZKM.finalized()
     phi = np.linspace(0, 2*np.pi, 100)
-    total_current = []
     for k_value in k:
         params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1,
                       lambda_R=lambda_R, L=L, phi=phi, k=k_value,
                       t_J=t_J, theta=theta)
         current = Josephson_current(ribbon_ZKM, params)
-        total_current.append(current)
         if k_value in [-np.pi, -np.pi/2, 0, np.pi/2, np.pi]:
             ax.plot(phi[:-1], current, label=f"{k_value:.2f}")
         else:

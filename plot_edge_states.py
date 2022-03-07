@@ -117,7 +117,7 @@ def main():
     mu = 3
     t = -1
     Delta = 0.5
-    L = 100
+    L = 50
     ribbon_pm = make_ribbon_pm(mu=mu, L=L)
     # Check that the system looks as intended.
     #kwant.plot(ribbon_pm)

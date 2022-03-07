@@ -165,9 +165,9 @@ def main():
     # Delta_1 = 0.4*t
     # lambda_R = 0.5*t
     
-    theta = np.pi/4
-    L = 50
-    k = np.linspace(-np.pi, -np.pi+0.5, 10)
+    theta = np.pi/2
+    L = 100
+    k = np.linspace(-np.pi, -np.pi+0.5, 5)
     params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1,
                   lambda_R=lambda_R, L=L,
                   t_J=t_J, theta=theta)

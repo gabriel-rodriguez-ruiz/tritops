@@ -167,13 +167,13 @@ def main():
     
     theta = np.pi/2
     L = 100
-    k = np.linspace(-np.pi, -np.pi+0.5, 5)
+    k = np.linspace(-np.pi, 0, 100)
     params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1,
                   lambda_R=lambda_R, L=L,
                   t_J=t_J, theta=theta)
     
     current = plot_k_resolved_current(k=k, **params)
-    np.savetxt("prueba", current)
+    np.save("current", current)
     #fig.savefig(os.getcwd()+f"/Images/Tilted/Josephson_H_ZKM_crossing_L={L}_theta={theta:.2f}.png")
 
     params.pop("theta")

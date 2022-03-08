@@ -107,18 +107,20 @@ def plot_k_resolved_current(t, t_J, mu, Delta_0, Delta_1, lambda_R,
     plt.tight_layout()
     ribbon_ZKM = make_Josephson_junction_ZKM(mu=mu, L=L)
     ribbon_ZKM = ribbon_ZKM.finalized()
-    phi = np.linspace(0, 2*np.pi, 100)
+    phi = np.linspace(0, 2*np.pi, 240)
+    total_current = []
     for k_value in k:
         params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1,
                       lambda_R=lambda_R, L=L, phi=phi, k=k_value,
                       t_J=t_J, theta=theta)
         current = Josephson_current(ribbon_ZKM, params)
+        total_current.append(current)
         if k_value in [-np.pi, -np.pi/2, 0, np.pi/2, np.pi]:
             ax.plot(phi[:-1], current, label=f"{k_value:.2f}")
         else:
             ax.plot(phi[:-1], current, label="_nolegend_")
     plt.legend(loc="upper right")
-    return fig, ax
+    return total_current
     
 def plot_total_current(t, t_J, mu, Delta_0, Delta_1, lambda_R,
                             theta, L, k):
@@ -170,7 +172,8 @@ def main():
                   lambda_R=lambda_R, L=L,
                   t_J=t_J, theta=theta)
     
-    fig, ax = plot_k_resolved_current(k=k, **params)
+    current = plot_k_resolved_current(k=k, **params)
+    np.savetxt("prueba", current)
     #fig.savefig(os.getcwd()+f"/Images/Tilted/Josephson_H_ZKM_crossing_L={L}_theta={theta:.2f}.png")
 
     params.pop("theta")

@@ -58,16 +58,16 @@ def effective_current(k, phi, theta, lambda_R=0.5, t_J=0.5, w2=1):
 
 
 plt.figure()
-phi = np.linspace(0, 2*np.pi, 1000)
+phi = np.linspace(0, 2*np.pi, 240)
 # k = -np.pi+0.1
 # theta = np.pi/2
 #plt.plot(phi, [effective_current(k, phi, theta) for phi in phi])
 
 
-theta = 0
-for k in np.linspace(-np.pi, -np.pi+0.5, 5):
-    plt.plot(phi, [effective_current(k, phi, theta) for phi in phi], label=f"{k:.2f}")
-plt.legend(loc="upper right")
+theta = np.pi/2
+for k in np.linspace(-np.pi, 0, 150):
+    plt.plot(phi, [effective_current(k, phi, theta) for phi in phi], label=f"{k:.2f}", linewidth=0.5)
+#plt.legend(loc="upper right")
 plt.title(rf"Effective current for $\theta = {theta:.2f}$")
 plt.xlabel(r"$\phi$")
 plt.ylabel(r"$J_k$")

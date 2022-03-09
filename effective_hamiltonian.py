@@ -8,38 +8,6 @@ Created on Wed Mar  2 16:12:14 2022
 import matplotlib.pyplot as plt
 import numpy as np
 
-phi = np.linspace(0, 2*np.pi, 1000)
-# plt.plot(phi,  -np.sqrt( (np.cos(phi/2) + 1)**2 + np.cos(phi/2)**2 ) )
-# plt.plot(phi,  -np.sqrt( (np.cos(phi/2) - 1)**2 + np.cos(phi/2)**2 ) )
-# plt.plot(phi,  -np.sqrt( (np.cos(phi/2) - 1)**2 + np.cos(phi/2)**2) -
-#                           np.sqrt( (np.cos(phi/2) + 1)**2 + np.cos(phi/2)**2 ) )
-plt.plot(phi,  -np.sqrt( (np.cos(phi/2) + 1)**2 + np.cos(phi/2)**2 ) )
-plt.plot(phi,  -np.sqrt( (np.cos(phi/2) - 1)**2 + np.cos(phi/2)**2 ) )
-
-plt.plot(phi,  np.sign(np.cos(phi/2)) * ( np.sqrt( (np.cos(phi/2) - 1)**2 + np.cos(phi/2)**2) -
-                        np.sqrt( (np.cos(phi/2) + 1)**2 + np.cos(phi/2)**2 ) ) )
-plt.plot(phi,  -np.sqrt( (np.cos(phi/2) - 1)**2 + np.cos(phi/2)**2) -
-                        np.sqrt( (np.cos(phi/2) + 1)**2 + np.cos(phi/2)**2 ) )
-
-
-plt.figure()
-#The derivative dy/dx is np.diff(y)/np.diff(x)
-dphi = np.diff(phi)[0]
-plt.plot(phi[:-1], np.diff(-np.sqrt( (np.cos(phi/2) + 1)**2 + np.cos(phi/2)**2 ) )/dphi)
-plt.plot(phi[:-1], np.diff(-np.sqrt( (np.cos(phi/2) - 1)**2 + np.cos(phi/2)**2 ) )/dphi)
-# Numerical derivative
-plt.plot(phi[:-1], np.diff(-np.sqrt( (np.cos(phi/2) + 1)**2 + np.cos(phi/2)**2 )  - np.sqrt( (np.cos(phi/2) - 1)**2 + np.cos(phi/2)**2 ) )/dphi)
-# Analytical derivative
-plt.plot(phi, 1/2*np.sin(phi/2)*np.sign(np.cos(phi/2))*( ( 2*abs(np.cos(phi/2)) + 1 )/
-                        (np.sqrt( (np.cos(phi/2) + np.sign(np.cos(phi/2)))**2 + np.cos(phi/2)**2 ) ) +
-                        ( 2*abs(np.cos(phi/2)) - 1 )/
-                        (np.sqrt( (np.cos(phi/2) - np.sign(np.cos(phi/2)))**2 + np.cos(phi/2)**2 ) ) ))
-# plt.plot(phi, 1/2*np.sin(phi/2)*np.sign(np.cos(phi/2))*( ( 2*np.cos(phi/2) + 1 )/
-#                         (np.sqrt( (np.cos(phi/2) + 1)**2 + np.cos(phi/2)**2 ) ) +
-#                         ( 2*np.cos(phi/2) - 1 )/
-#                         (np.sqrt( (np.cos(phi/2) - 1)**2 + np.cos(phi/2)**2 ) ) ))
-
-#%%
 def effective_current(k, phi, theta, lambda_R=0.5, t_J=0.5, w2=1):
     """
     Equation (43) of [Schmalian] for the effective
@@ -56,14 +24,11 @@ def effective_current(k, phi, theta, lambda_R=0.5, t_J=0.5, w2=1):
            ( ( t_1*np.cos(phi/2) - t_lambda )*t_1 + t_2**2 * np.cos(phi/2) )/E_k_minus )
     return 1/2 * J_0 * np.sin(phi/2)
 
-
-plt.figure()
-phi = np.linspace(0, 2*np.pi, 240)
 # k = -np.pi+0.1
 # theta = np.pi/2
 #plt.plot(phi, [effective_current(k, phi, theta) for phi in phi])
 
-
+phi = np.linspace(0, 2*np.pi, 240)
 theta = np.pi/2
 for k in np.linspace(-np.pi, 0, 150):
     plt.plot(phi, [effective_current(k, phi, theta) for phi in phi], label=f"{k:.2f}", linewidth=0.5)
@@ -76,3 +41,35 @@ plt.grid()
 # for theta in np.linspace(0, np.pi, 10):
 #     plt.plot(phi, [effective_current(k, phi, theta) for phi in phi])
 
+#%% Determination of w2
+
+# without crossing 
+t = 1
+t_J = t/2
+mu = 2*t
+Delta_0 = 0.4*t
+Delta_1 = 0.2*t
+lambda_R = 0.5*t
+
+s = 1
+k = -np.pi
+Delta_k = Delta_0 + 2*Delta_1*np.cos(k)
+chi_k = -2*t*np.cos(k)
+# Solve a*z**2 + b*z + c = 0
+a = s*Delta_1 + lambda_R - 1j*t
+b = s*Delta_k + 1j*chi_k
+c = s*Delta_1 - lambda_R - 1j*t
+z_1 = (-b + np.sqrt(b**2 - 4*a*c)) / (2*a)
+z_2 = (-b - np.sqrt(b**2 - 4*a*c)) / (2*a)
+a_1 = chi_k - (t+1j*lambda_R) * z_1
+a_2 = chi_k - (t+1j*lambda_R) * z_2
+b_1 = Delta_k + Delta_1*z_1
+b_2 = Delta_k + Delta_1*z_2
+alpha_1 = a_2 + 1j*s*b_2
+alpha_2 = -( a_1 + 1j*s*b_2 )
+N_k = np.sqrt( 1/ (2* (abs(alpha_1)**2/(1-abs(z_1)**2) + 
+                       abs(alpha_2)**2/(1-abs(z_2)**2) +
+                       alpha_1*np.conjugate(alpha_2)/(1-z_1*np.conjugate(z_2)) +
+                       alpha_1*np.conjugate(alpha_2)/(1-z_2*np.conjugate(z_2)) +
+                       np.conjugate(alpha_1)*alpha_2/(1-np.conjugate(z_1)*z_2))
+                   ) )

@@ -165,15 +165,15 @@ def main():
     # Delta_1 = 0.4*t
     # lambda_R = 0.5*t
     
-    theta = np.pi/2
+    theta = np.pi/4
     L = 100
-    k = np.linspace(-np.pi, 0, 100)
+    k = np.linspace(-np.pi, 0, 240)
     params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1,
                   lambda_R=lambda_R, L=L,
                   t_J=t_J, theta=theta)
     
     current = plot_k_resolved_current(k=k, **params)
-    np.save("current", current)
+    np.save(f"k_current_L=100_no_crossing_theta={theta:.2}", current)
     #fig.savefig(os.getcwd()+f"/Images/Tilted/Josephson_H_ZKM_crossing_L={L}_theta={theta:.2f}.png")
 
     params.pop("theta")
@@ -184,3 +184,23 @@ def main():
 if __name__ == '__main__':
     main()
     print('\007')  # Ending bell
+
+def reshape_dat(current, phi, name):
+    """
+    Saves a .txt file with the right shape for grace
+    """
+    x, y = np.shape(current)
+    phi_list = list(phi[:-1])    #because of np.diff
+    phi_list += (y-1)*(["\n"] + phi_list)    #I extend the phi list
+    phi = np.array(phi_list)
+    phi = np.reshape(phi, (x+(x+1)*(y-1),1))
+    current_bis = np.reshape(np.real(current), (x*y,1), order="F")
+    current_bis_list = []
+    for item in current_bis:
+        current_bis_list.append(item[0])
+    for i in np.arange(x, x*y, x+1):
+        current_bis_list.insert(i, "\n")
+    current_bis = np.array(current_bis_list)
+    current_bis = np.reshape(current_bis, (x+(x+1)*(y-1),1))
+    result = np.append(phi, current_bis, axis=1)
+    np.savetxt(name, result, fmt="%s")

@@ -117,7 +117,7 @@ def hopping_ZKM_x(site1, site2, t, lambda_R, Delta_1):     #np.kron() is the ten
             + Delta_1 * np.kron(tau_x, np.eye(2)))
 
 def hopping_ZKM_y(site1, site2, t, lambda_R, Delta_1):     #np.kron() is the tensor product
-    return (-t * np.kron(sigma_z, np.eye(2)) + lambda_R * np.kron(1j*tau_z, sigma_x)
+    return (-t * np.kron(sigma_z, np.eye(2)) - lambda_R * np.kron(1j*tau_z, sigma_x)
             + Delta_1 * np.kron(tau_x, np.eye(2)))
 
 def make_ribbon_ZKM(mu=0, t=1, Delta_0=-0.4, Delta_1=0.8, lambda_R=0.5, L=25):
@@ -388,7 +388,7 @@ def main_Josephson():
         #plot_spectrum(kitaev, mu)
         current = Josephson_current(ribbon_pm, params)
         ax.plot(phi[:-1], current)
-    fig.savefig(os.getcwd()+f"/Images/Josephson_H+_L={L}")
+    #fig.savefig(os.getcwd()+f"/Images/Josephson_H+_L={L}")
     
     #Hamiltonian 0
     mu = 3
@@ -412,14 +412,14 @@ def main_Josephson():
         #plot_spectrum(kitaev, mu)
         current = Josephson_current(syst_0, params)
         ax.plot(phi[:-1], current)
-    fig.savefig(os.getcwd()+f"/Images/Josephson_H0_L={L}")
+    #fig.savefig(os.getcwd()+f"/Images/Josephson_H0_L={L}")
     print('\007')  # Ending bell
 
 #%%
 
 if __name__ == '__main__':
-    #main()
-    main_Josephson()
+    main()
+    #main_Josephson()
     
 #%% Spectrum vs. phi
 #Hamiltonian +-

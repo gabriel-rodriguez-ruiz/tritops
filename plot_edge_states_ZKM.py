@@ -26,7 +26,7 @@ tau_z = np.array([[1, 0], [0, -1]])
 def onsite_ZKM(site, mu, Delta_0, Delta_1, lambda_R, k, t):
     return ( (-2*t*np.cos(k) - mu) * np.kron(tau_z, np.eye(2)) +
             (Delta_0 + 2*Delta_1*np.cos(k)) * np.kron(tau_x, np.eye(2))  +
-            2*lambda_R*np.sin(k) * np.kron(tau_z, sigma_x) 
+            (-2)*lambda_R*np.sin(k) * np.kron(tau_z, sigma_x) 
              )
 
 def hopping_ZKM(site1, site2, t, Delta_0, Delta_1,lambda_R, k):
@@ -84,11 +84,11 @@ def plot_wave_function_imaginary(syst, params, n):
 
 def main():
     # without crossing 
-    t = 1
-    mu = 2*t
-    Delta_0 = 0.4*t
-    Delta_1 = 0.2*t
-    lambda_R = 0.5*t
+    # t = 1
+    # mu = 2*t
+    # Delta_0 = 0.4*t
+    # Delta_1 = 0.2*t
+    # lambda_R = 0.5*t
     
     # with crossing
     # t = 1
@@ -98,10 +98,17 @@ def main():
     # Delta_1 = 0.4*t
     # lambda_R = 0.5*t
     
+    #Aligia
+    t = 1
+    mu = 2*t
+    Delta_0 = 4*t
+    Delta_1 = 2.2*t
+    lambda_R = -7*t
+    k = 0.95*np.pi
+
     L = 100
     params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1,
                   lambda_R=lambda_R, L=L)
-    k = -np.pi
     chain = make_chain_finite(**params, k=k)
     chain = chain.finalized()
     #probability
@@ -111,14 +118,14 @@ def main():
     eigenvector = plot_density(chain, params, n=1)
     
     #real part of the wavefunction
-    fig, ax = plt.subplots(dpi=300)
-    plot_wave_function_real(chain, params, n=0)
-    plt.title("Real part of the wavefunction for spin up electron")
+    #fig, ax = plt.subplots(dpi=300)
+    #plot_wave_function_real(chain, params, n=0)
+    #plt.title("Real part of the wavefunction for spin up electron")
     
     #imaginary part of the wavefunction
-    fig, ax = plt.subplots(dpi=300)
-    plot_wave_function_imaginary(chain, params, n=0)
-    plt.title("Imaginary part of the wavefunction for spin up electron")
+    #fig, ax = plt.subplots(dpi=300)
+    #plot_wave_function_imaginary(chain, params, n=0)
+    #plt.title("Imaginary part of the wavefunction for spin up electron")
     
 #%%
 if __name__ == '__main__':

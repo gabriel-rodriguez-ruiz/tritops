@@ -31,10 +31,12 @@ def onsite_Josephson_ZKM(site, mu, Delta_0, Delta_1, lambda_R, k, t, theta):
             (-2)*lambda_R*np.sin(k) * ( np.cos(theta)*np.kron(tau_z, sigma_x) +
             np.sin(theta)*np.kron(tau_z, sigma_y) ) )
 
-def hopping_Josephson_ZKM(site1, site2, t, Delta_0, Delta_1,lambda_R, phi, k, t_J):
+def hopping_Josephson_ZKM(site1, site2, t, Delta_0, Delta_1,lambda_R, phi, k, t_J, theta):
     if (site1.pos == [0.0] and site2.pos == [-1.0]) or (site1.pos == [-1.0] and site2.pos == [0.0]):
-        return t_J * (np.kron((tau_z + np.eye(2))/2, np.eye(2))*np.exp(1j*phi/2)
-                    + np.kron((tau_z - np.eye(2))/2, np.eye(2))*np.exp(-1j*phi/2))
+        return t_J * (np.kron( (tau_z + np.eye(2))/2*np.exp(1j*phi/2) + 
+                               (tau_z - np.eye(2))/2*np.exp(-1j*phi/2),
+                               (np.eye(2) + sigma_z)/2*np.exp(1j*theta/2) + 
+                               (np.eye(2) - sigma_z)/2*np.exp(-1j*theta/2) ) )
     else:
         return ( -t * np.kron(tau_z, np.eye(2)) +
                 1j*lambda_R * np.kron(tau_z, sigma_z) +
@@ -119,7 +121,8 @@ def plot_k_resolved_current(t, t_J, mu, Delta_0, Delta_1, lambda_R,
     plt.tight_layout()
     ribbon_ZKM = make_Josephson_junction_ZKM(mu=mu, L=L)
     ribbon_ZKM = ribbon_ZKM.finalized()
-    phi = np.linspace(0, 2*np.pi, 240)
+    #phi = np.linspace(0, 2*np.pi, 240)
+    phi = np.linspace(0, 2*np.pi, 50)
     total_current = []
     for k_value in k:
         params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1,
@@ -198,10 +201,10 @@ def main():
     # Delta_1 = 0.4*t
     # lambda_R = 0.5*t
     
-    theta = 0
-    L = 10
+    theta = np.pi
+    L = 100
     # k = np.linspace(-np.pi, 0, 240)
-    k = np.linspace(-np.pi, 0, 10)
+    k = np.linspace(-np.pi, -np.pi+0.1, 10)
 
     params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1,
                   lambda_R=lambda_R, L=L,

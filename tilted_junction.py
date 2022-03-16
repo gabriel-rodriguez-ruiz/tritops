@@ -122,7 +122,7 @@ def plot_k_resolved_current(t, t_J, mu, Delta_0, Delta_1, lambda_R,
     ribbon_ZKM = make_Josephson_junction_ZKM(mu=mu, L=L)
     ribbon_ZKM = ribbon_ZKM.finalized()
     #phi = np.linspace(0, 2*np.pi, 240)
-    phi = np.linspace(0, 2*np.pi, 50)
+    phi = np.linspace(0, 2*np.pi, 100)
     total_current = []
     for k_value in k:
         params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1,
@@ -186,12 +186,12 @@ def reshape_dat(current, phi, name):
 
 def main():
     # without crossing 
-    t = 1
-    t_J = t/2
-    mu = 2*t
-    Delta_0 = 0.4*t
-    Delta_1 = 0.2*t
-    lambda_R = 0.5*t
+    # t = 1
+    # t_J = t/2
+    # mu = 2*t
+    # Delta_0 = 0.4*t
+    # Delta_1 = 0.2*t
+    # lambda_R = 0.5*t
     
     # with crossing
     # t = 1
@@ -201,10 +201,18 @@ def main():
     # Delta_1 = 0.4*t
     # lambda_R = 0.5*t
     
+    #Aligia
+    t = 1
+    t_J = t/2
+    mu = 2*t
+    Delta_0 = 4*t
+    Delta_1 = 2.2*t
+    lambda_R = 7*t
+    
     theta = np.pi
     L = 100
     # k = np.linspace(-np.pi, 0, 240)
-    k = np.linspace(-np.pi, -np.pi+0.1, 10)
+    k = np.linspace(0.95*np.pi, np.pi, 5)
 
     params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1,
                   lambda_R=lambda_R, L=L,

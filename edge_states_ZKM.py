@@ -28,6 +28,8 @@ def Hamiltonian(t, k, mu, L, Delta_0, Delta_1, lambda_R):
             -2\lambda\sin(k)\tau_z\sigma_z\right]\vec{c}_n+
             \sum_n^{L-1}\vec{c}^\dagger_n(-t\tau_z\sigma_0-i\lambda\tau_z\sigma_x + \Delta_1\tau_x\sigma_0 )\vec{c}_{n+1}
             + H.c.
+            
+       \vec{c} = (c_{k,\uparrow}, c_{k,\downarrow},c^\dagger_{-k,\downarrow},-c^\dagger_{-k,\uparrow})^T
     """
     chi_k = -mu - 2*t * np.cos(k)
     Delta_k = Delta_0 + 2*Delta_1*np.cos(k)
@@ -47,7 +49,7 @@ Delta_0 = -0.4*t
 Delta_1 = 0.2*t
 lambda_R = 0.5*t
 k = 0
-L = 100
+L = 200
 params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1,
               lambda_R=lambda_R, L=L, k=k)
 
@@ -68,3 +70,7 @@ k = np.linspace(0, np.pi)
 fig, ax = plt.subplots(dpi=300)
 ax.plot(k, [spectrum(value, **params) for value in k], linestyle="None",
         marker=".", markersize=0.5)
+
+#%% Edge state
+fig, ax = plt.subplots(dpi=300)
+ax.plot(abs(eigenvectors[0::2,0])**2)

@@ -26,15 +26,15 @@ def Hamiltonian(t, k, mu, L, Delta_0, Delta_1, lambda_R):
         H_k = \sum_n^L \vec{c}^\dagger_n\left[ 
             \xi_k\tau_z\sigma_0+\Delta_k\tau_x\sigma_0
             -2\lambda\sin(k)\tau_z\sigma_z\right]\vec{c}_n+
-            \sum_n^{L-1}\vec{c}^\dagger_n(-t\tau_z\sigma_0-i\lambda\tau_z\sigma_x)\vec{c}_{n+1}
+            \sum_n^{L-1}\vec{c}^\dagger_n(-t\tau_z\sigma_0-i\lambda\tau_z\sigma_x + \Delta_1\tau_x\sigma_0 )\vec{c}_{n+1}
             + H.c.
     """
     chi_k = -mu - 2*t * np.cos(k)
     Delta_k = Delta_0 + 2*Delta_1*np.cos(k)
     onsite = chi_k * np.kron(tau_z, sigma_0) + \
-            Delta_k * np.kron(tau_x,sigma_0) - \
-            2*lambda_R*np.sin(k) * np.kron(tau_x, sigma_x)
-    hopping = -t*np.kron(tau_z, sigma_0) - 1j*lambda_R * np.kron(tau_z, sigma_z)
+            Delta_k * np.kron(tau_x, sigma_0) - \
+            2*lambda_R*np.sin(k) * np.kron(tau_z, sigma_x)
+    hopping = -t*np.kron(tau_z, sigma_0) - 1j*lambda_R * np.kron(tau_z, sigma_z) + Delta_1*np.kron(tau_x, sigma_0)
     matrix_diagonal = np.kron(np.eye(L), onsite)     #diagonal part of matrix
     matrix_outside_diagonal = np.block([ [np.zeros((4*(L-1),4)),np.kron(np.eye(L-1), hopping)],
                                          [np.zeros((4,4*L))] ])     #upper diagonal part
@@ -46,7 +46,7 @@ mu = -2*t
 Delta_0 = -0.4*t
 Delta_1 = 0.2*t
 lambda_R = 0.5*t
-k = np.pi/2
+k = 0
 L = 100
 params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1,
               lambda_R=lambda_R, L=L, k=k)
@@ -56,7 +56,7 @@ eigenvalues, eigenvectors = np.linalg.eigh(H)
 # Sort according to the absolute values of energy
 eigenvectors = eigenvectors[:, np.argsort(np.abs(eigenvalues))]
 eigenvalues = eigenvalues[np.argsort(np.abs(eigenvalues))]
-edge_mode = eigenvectors[:4,0]
+edge_mode = eigenvectors[::4,0]
 
 #%% Spectrum
 def spectrum(k_values, **params):
@@ -66,4 +66,5 @@ def spectrum(k_values, **params):
     return eigenvalues
 k = np.linspace(0, np.pi)
 fig, ax = plt.subplots(dpi=300)
-ax.plot(k, [spectrum(value, **params) for value in k], linestyle="None", marker=".")
+ax.plot(k, [spectrum(value, **params) for value in k], linestyle="None",
+        marker=".", markersize=0.5)

@@ -84,11 +84,11 @@ def plot_wave_function_imaginary(syst, params, n):
 
 def main():
     # without crossing 
-    # t = 1
-    # mu = 2*t
-    # Delta_0 = 0.4*t
-    # Delta_1 = 0.2*t
-    # lambda_R = 0.5*t
+    t = 1
+    mu = -2*t
+    Delta_0 = -0.4*t
+    Delta_1 = 0.2*t
+    lambda_R = 0.5*t
     
     # with crossing
     # t = 1
@@ -99,14 +99,14 @@ def main():
     # lambda_R = 0.5*t
     
     #Aligia
-    t = 1
-    mu = 2*t
-    Delta_0 = 4*t
-    Delta_1 = 2.2*t
-    lambda_R = -7*t
-    k = 0.95*np.pi
-
-    L = 100
+    # t = 1
+    # mu = 2*t
+    # Delta_0 = 4*t
+    # Delta_1 = 2.2*t
+    # lambda_R = -7*t
+    # k = 0.95*np.pi
+    k = 0
+    L = 10
     params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1,
                   lambda_R=lambda_R, L=L)
     chain = make_chain_finite(**params, k=k)

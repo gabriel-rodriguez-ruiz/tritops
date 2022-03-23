@@ -295,7 +295,7 @@ def main():
     mu = 3
     t = -1
     Delta = 0.5
-    ribbon_pm = make_ribbon_pm(mu=mu, L=50)
+    ribbon_pm = make_ribbon_pm(mu=mu, L=5)
     # Check that the system looks as intended.
     #kwant.plot(ribbon_pm)
     # Finalize the system.
@@ -312,13 +312,13 @@ def main():
     ax.set_xlabel(r"$k_y$")
     ax.set_ylabel(r"$E(k_y)$")
     #fig.savefig(os.path.join(path, "Images", f"Ribbon_pm_mu={params['mu']}_t={params['t']}_Delta={params['Delta']}.png"))
-    fig.savefig(f"C:\\Users\\gabri\\OneDrive\\Doctorado\\Python\\Tritops\\Images\\Ribbon_pm_mu={params['mu']}_t={params['t']}_Delta={params['Delta']}.png")
+    #fig.savefig(f"C:\\Users\\gabri\\OneDrive\\Doctorado\\Python\\Tritops\\Images\\Ribbon_pm_mu={params['mu']}_t={params['t']}_Delta={params['Delta']}.png")
     
     #Hamiltonian 0
     mu = 3
     t = -1
     Delta = 0.5
-    ribbon_0 = make_ribbon_0(mu=mu, L=50)
+    ribbon_0 = make_ribbon_0(mu=mu, L=5)
     # Check that the system looks as intended.
     #kwant.plot(ribbon_pm)
     # Finalize the system.
@@ -335,8 +335,8 @@ def main():
     ax.set_xlabel(r"$k_y$")
     ax.set_ylabel(r"$E(k_y)$")
     #fig.savefig(os.path.join(path, "Images", f"Ribbon_0_mu={params['mu']}_t={params['t']}_Delta={params['Delta']}.png"))
-    fig.savefig(f"C:\\Users\\gabri\\OneDrive\\Doctorado\\Python\\Tritops\\Images\\Ribbon_0_mu={params['mu']}_t={params['t']}_Delta={params['Delta']}.png")
-    fig.savefig("C:\\Users\\gabri\\OneDrive\\Doctorado\\Python\\Tritops\\fig1.pdf")
+    #fig.savefig(f"C:\\Users\\gabri\\OneDrive\\Doctorado\\Python\\Tritops\\Images\\Ribbon_0_mu={params['mu']}_t={params['t']}_Delta={params['Delta']}.png")
+    #fig.savefig("C:\\Users\\gabri\\OneDrive\\Doctorado\\Python\\Tritops\\fig1.pdf")
     
     #Hamiltonian ZKM
     t = 1
@@ -344,7 +344,7 @@ def main():
     Delta_0 = -0.4*t
     Delta_1 = 0.2*t
     lambda_R = 0.5*t
-    L = 50
+    L = 200
     ribbon_ZKM = make_ribbon_ZKM(mu=mu, t=t, lambda_R=lambda_R, Delta_0=Delta_0, Delta_1=Delta_1, L=L)
     # Check that the system looks as intended.
     #kwant.plot(ribbon_pm)
@@ -352,7 +352,7 @@ def main():
     ribbon_ZKM = ribbon_ZKM.finalized()
     # We should see the energy bands.
     params = dict(mu=mu, t=t, lambda_R=lambda_R, Delta_0=Delta_0, Delta_1=Delta_1)
-    momenta = np.linspace(0, np.pi, 1000)
+    momenta = np.linspace(0, np.pi, 50)
     fig, ax = plt.subplots(dpi=300)
     kwant.plotter.bands(ribbon_ZKM, momenta=momenta, params=params, ax=ax)
     ax.set_title(f"Ribbon ZKM with mu={params['mu']}, lambda_R={params['lambda_R']},t={params['t']}, Delta_0={params['Delta_0']}, Delta_1={params['Delta_1']}")
@@ -363,7 +363,7 @@ def main():
     ax.set_ylabel(r"$E(k_z)$")
     ax.set_ylim((-4, 4))
     #fig.savefig(os.path.join(path, "Images", f"Ribbon_0_mu={params['mu']}_t={params['t']}_Delta={params['Delta']}.png"))
-    fig.savefig(f"C:\\Users\\gabri\\Mi unidad\\Doctorado\\Python\\Tritops\\Images\\Ribbon_ZKM_mu={params['mu']}_lambda_R={params['lambda_R']}_t={params['t']}_Delta_0={params['Delta_0']}_Delta_1={params['Delta_1']}.png")
+    #fig.savefig(f"C:\\Users\\gabri\\Mi unidad\\Doctorado\\Python\\Tritops\\Images\\Ribbon_ZKM_mu={params['mu']}_lambda_R={params['lambda_R']}_t={params['t']}_Delta_0={params['Delta_0']}_Delta_1={params['Delta_1']}.png")
 
 def main_Josephson():
     #Hamiltonian +-

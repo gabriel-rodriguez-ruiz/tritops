@@ -74,3 +74,5 @@ ax.plot(k, [spectrum(value, **params) for value in k], linestyle="None",
 #%% Edge state
 fig, ax = plt.subplots(dpi=300)
 ax.plot(abs(eigenvectors[0::2,0])**2)
+
+

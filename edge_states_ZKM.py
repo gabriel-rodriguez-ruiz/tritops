@@ -62,9 +62,14 @@ edge_mode = eigenvectors[::4,0]
 
 #%% Spectrum
 def spectrum(k_values, **params):
-    params["k"] = k_values
-    H = Hamiltonian(**params)
-    eigenvalues = np.linalg.eigvals(H)
+    """Returns an array whose columns are the eigenvalues of the system for
+    for a definite k.
+    """
+    eigenvalues = np.array([[]])
+    for k in k_values:
+        params["k"] = k
+        H = Hamiltonian(**params)
+        eigenvalues.append(np.linalg.eigvals(H))
     return eigenvalues
 k = np.linspace(0, np.pi)
 fig, ax = plt.subplots(dpi=300)

@@ -49,6 +49,7 @@ Delta_0 = -0.4*t
 Delta_1 = 0.2*t
 lambda_R = 0.5*t
 k = 0+0.05*np.pi
+#k = 0.0001
 L = 200
 params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1,
               lambda_R=lambda_R, L=L, k=k)

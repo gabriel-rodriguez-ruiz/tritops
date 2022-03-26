@@ -98,3 +98,18 @@ ax.set_xlabel(r"$k_z/\pi$")
 ax.set_ylabel(r"$E(k_z)$")
 ax.set_yticks(np.arange(-2,3,step=1))
 plt.tight_layout()
+
+#%% Bands without pairing
+
+k_x = np.linspace(-np.pi, np.pi)
+t = 1
+mu = 0
+lambda_R = 0.5
+E_plus = np.array([-2*t*(np.cos(k_x) + 1) - mu - 2*lambda_R*np.sin(k_x) for k_x in k_x])
+E_minus = np.array([-2*t*(np.cos(k_x) + 1) - mu + 2*lambda_R*np.sin(k_x) for k_x in k_x])
+
+fig, ax = plt.subplots()
+ax.plot(k_x, E_plus)
+ax.plot(k_x, E_minus)
+ax.plot(k_x, np.ones(len(k_x))*(-2*t-2*lambda_R))
+ax.plot(k_x, np.ones(len(k_x))*(-2*t+2*lambda_R))

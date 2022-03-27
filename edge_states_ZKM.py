@@ -17,7 +17,7 @@ tau_x = np.array([[0, 1], [1, 0]])
 tau_y = np.array([[0, -1j], [1j, 0]])
 tau_z = np.array([[1, 0], [0, -1]])
 
-def Hamiltonian(t, k, mu, L, Delta_0, Delta_1, lambda_R):
+def Hamiltonian(t, k, mu, L, Delta_0, Delta_1, lambda_R, theta):
     r"""Returns the H_k matrix for ZKM model with:
 
     .. math::
@@ -25,7 +25,7 @@ def Hamiltonian(t, k, mu, L, Delta_0, Delta_1, lambda_R):
         
         H_k = \sum_n^L \vec{c}^\dagger_n\left[ 
             \xi_k\tau_z\sigma_0+\Delta_k\tau_x\sigma_0
-            +2\lambda\sin(k)\tau_z\sigma_x\right]\vec{c}_n+
+            +2\lambda\sin(k)\tau_z(cos(\theta)\sigma_x + sin(\theta)\sigma_y)\right]\vec{c}_n+
             \sum_n^{L-1}\vec{c}^\dagger_n(-t\tau_z\sigma_0-i\lambda\tau_z\sigma_z + \Delta_1\tau_x\sigma_0 )\vec{c}_{n+1}
             + H.c.
             
@@ -35,7 +35,7 @@ def Hamiltonian(t, k, mu, L, Delta_0, Delta_1, lambda_R):
     Delta_k = Delta_0 + 2*Delta_1*np.cos(k)
     onsite = chi_k * np.kron(tau_z, sigma_0) + \
             Delta_k * np.kron(tau_x, sigma_0) + \
-            2*lambda_R*np.sin(k) * np.kron(tau_z, sigma_x)
+            2*lambda_R*np.sin(k) * (np.cos(theta)*np.kron(tau_z, sigma_x) + np.sin(theta)*np.kron(tau_z, sigma_x))
     hopping = -t*np.kron(tau_z, sigma_0) - 1j*lambda_R * np.kron(tau_z, sigma_z) + Delta_1*np.kron(tau_x, sigma_0)
     matrix_diagonal = np.kron(np.eye(L), onsite)     #diagonal part of matrix
     matrix_outside_diagonal = np.block([ [np.zeros((4*(L-1),4)),np.kron(np.eye(L-1), hopping)],
@@ -51,8 +51,9 @@ lambda_R = 0.5*t
 k = 0+0.05*np.pi
 #k = 0.0001
 L = 200
+theta = 0
 params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1,
-              lambda_R=lambda_R, L=L, k=k)
+              lambda_R=lambda_R, L=L, k=k, theta=theta)
 
 H = Hamiltonian(**params)
 eigenvalues, eigenvectors = np.linalg.eigh(H)

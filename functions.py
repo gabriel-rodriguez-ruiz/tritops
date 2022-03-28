@@ -1,9 +1,11 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Tue Mar 22 06:53:27 2022
+Created on Mon Mar 28 10:34:48 2022
 
-@author: gabri
+@author: usuario
 """
+
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -43,13 +45,6 @@ def Hamiltonian(t, k, mu, L, Delta_0, Delta_1, lambda_R, theta):
     matrix = (matrix_diagonal + matrix_outside_diagonal + matrix_outside_diagonal.conj().T)
     return matrix
 
-#H = Hamiltonian(**params)
-#eigenvalues, eigenvectors = np.linalg.eigh(H)
-# Sort according to the absolute values of energy
-#eigenvectors = eigenvectors[:, np.argsort(np.abs(eigenvalues))]
-#eigenvalues = eigenvalues[np.argsort(np.abs(eigenvalues))]
-
-#%% Spectrum
 def spectrum(system, k_values, **params):
     """Returns an array whose rows are the eigenvalues of the system for
     for a definite k. System should be a function that returns an array.
@@ -63,8 +58,6 @@ def spectrum(system, k_values, **params):
         eigenvalues.append(energies)
     eigenvalues = np.array(eigenvalues)
     return eigenvalues
- 	
-#%% k-resolved Josephson junction
 
 def Junction(t, k, mu, L, Delta_0, Delta_1, lambda_R, theta, t_J, phi):
     r"""Returns the array for the Hamiltonian of Josephson junction tilted in an angle theta.
@@ -111,44 +104,8 @@ def Josephson_current(k_values, phi_values, **params):
     for k in k_values:
         fundamental_energy = []
         eigenvalues_phi = phi_spectrum(k, phi_values, **params) #each row are the energies for a definite phi
-        for i in range(len(phi)):
+        for i in range(len(phi_values)):
             fundamental_energy.append(-np.sum(eigenvalues_phi[i,:], where=eigenvalues_phi[i,:]>0))  #the fundamental energy for each phi
         current.append(list(np.gradient(fundamental_energy, dphi)))
     current = np.array(current)
     return current
-
-#with crossing
-t = 1
-t_J = t
-Delta_0 = 0.4*t
-Delta_1 = 0.4*t
-mu = Delta_0/Delta_1
-lambda_R = 0.5*t
-#phi = np.linspace(0, 2*np.pi, 240)
-phi = np.linspace(0, 2*np.pi, 750)
-#k = np.linspace(0, np.pi, 150)
-k = np.linspace(0, np.pi, 75)
-
-L = 150
-theta = 0
-
-params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1,
-              lambda_R=lambda_R, L=L,
-              t_J=t_J, theta=theta, phi=phi)
-
-current = Josephson_current(k, phi, **params)
-
-#%%
-phi = np.linspace(0, 2*np.pi, 240)
-plt.rc('text', usetex=False)
-fig, ax = plt.subplots(figsize=(4,3), dpi=300)
-ax.plot(phi, current.T, linewidth=0.1)
-ax.set_xlabel(r"$\Phi/\pi$")
-ax.set_ylabel(r"$J(k)$")
-# ax.set_xlim((0, 2*np.pi))
-# ax.set_xticks(np.arange(0,2.5,step=0.5)*np.pi)
-# ax.set_xticklabels(["0"]+list(np.array(np.round(np.arange(0.5,2,step=0.5),1), dtype=str)) + ["2"])
-# ax.set_xticks(np.arange(0,2,step=0.25)*np.pi, minor=True)
-# ax.set_yticks(np.arange(-0.08,0.1,step=0.04))
-# ax.set_yticks(np.arange(-0.08,0.1,step=0.02), minor=True)
-plt.tight_layout()

@@ -44,9 +44,9 @@ def Hamiltonian(t, k, mu, L, Delta_0, Delta_1, lambda_R, theta):
     return matrix
 # without crossing 
 t = 1
-mu = -2*t
 Delta_0 = 0.4*t
 Delta_1 = 0.2*t
+mu = Delta_0/Delta_1
 #Delta_1 = -0.4*t
 lambda_R = 0.5*t
 k = 0+0.05*np.pi
@@ -161,7 +161,7 @@ params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1,
               lambda_R=lambda_R, L=L, k=k, theta=theta, phi=phi, t_J=t_J)
 k = 0
 phi = np.linspace(0, np.pi)
-eigenvalues_phi = phi_spectrum(k, phi, **params)
+#eigenvalues_phi = phi_spectrum(k, phi, **params)
 
 def Josephson_current(k_values, phi_values, **params): 
     """ Returns an array whose columns are the Josephson current for
@@ -180,6 +180,7 @@ def Josephson_current(k_values, phi_values, **params):
     return current
 
 params["L"] = 100
+#k = np.array([0,np.pi/2,np.pi])
 k = np.linspace(0, np.pi, 150)
 phi = np.linspace(0, 2*np.pi, 240)
 current = Josephson_current(k, phi, **params)
@@ -191,10 +192,10 @@ fig, ax = plt.subplots(figsize=(4,3))
 ax.plot(phi, current.T, linewidth=0.5)
 ax.set_xlabel(r"$\Phi/\pi$")
 ax.set_ylabel(r"$J(k)$")
-ax.set_xlim((0, 2*np.pi))
-ax.set_xticks(np.arange(0,2.5,step=0.5)*np.pi)
-ax.set_xticklabels(["0"]+list(np.array(np.round(np.arange(0.5,2,step=0.5),1), dtype=str)) + ["2"])
-ax.set_xticks(np.arange(0,2,step=0.25)*np.pi, minor=True)
-ax.set_yticks(np.arange(-0.08,0.1,step=0.04))
-ax.set_yticks(np.arange(-0.08,0.1,step=0.02), minor=True)
+# ax.set_xlim((0, 2*np.pi))
+# ax.set_xticks(np.arange(0,2.5,step=0.5)*np.pi)
+# ax.set_xticklabels(["0"]+list(np.array(np.round(np.arange(0.5,2,step=0.5),1), dtype=str)) + ["2"])
+# ax.set_xticks(np.arange(0,2,step=0.25)*np.pi, minor=True)
+# ax.set_yticks(np.arange(-0.08,0.1,step=0.04))
+# ax.set_yticks(np.arange(-0.08,0.1,step=0.02), minor=True)
 plt.tight_layout()

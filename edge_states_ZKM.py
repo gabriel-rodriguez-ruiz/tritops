@@ -139,7 +139,7 @@ params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1,
 current = Josephson_current(k, phi, **params)
 
 #%%
-phi = np.linspace(0, 2*np.pi, 240)
+phi = np.linspace(0, 2*np.pi, 750)
 plt.rc('text', usetex=False)
 fig, ax = plt.subplots(figsize=(4,3), dpi=300)
 ax.plot(phi, current.T, linewidth=0.1)

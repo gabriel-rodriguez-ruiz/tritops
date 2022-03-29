@@ -13,7 +13,7 @@ from functions import spectrum, Hamiltonian
 t = 1
 Delta_0 = -0.4 * t
 Delta_1 = 0.2 * t
-mu = -2 * t
+mu = -2*t   
 lambda_R = 0.5 * t
 k = np.linspace(0, np.pi, 150)
 L = 200

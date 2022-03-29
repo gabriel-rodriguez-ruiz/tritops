@@ -1,9 +1,11 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Tue Mar 22 06:53:27 2022
+Created on Tue Mar 29 16:00:03 2022
 
-@author: gabri
+@author: usuario
 """
+
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -17,39 +19,30 @@ tau_x = np.array([[0, 1], [1, 0]])
 tau_y = np.array([[0, -1j], [1j, 0]])
 tau_z = np.array([[1, 0], [0, -1]])
 
-def Hamiltonian(t, k, mu, L, Delta_0, Delta_1, lambda_R, theta):
-    r"""Returns the H_k matrix for ZKM model with:
+def Hamiltonian_B2u(t, k, mu, L, Delta):
+    r"""Returns the H_k matrix for B2u model with:
 
     .. math::
         H_{ZKM} = \frac{1}{2}\sum_k H_k
         
         H_k = \sum_n^L \vec{c}^\dagger_n\left[ 
-            \xi_k\tau_z\sigma_0+\Delta_k\tau_x\sigma_0
-            +2\lambda\sin(k)\tau_z(cos(\theta)\sigma_x + sin(\theta)\sigma_y)\right]\vec{c}_n+
-            \sum_n^{L-1}\vec{c}^\dagger_n(-t\tau_z\sigma_0-i\lambda\tau_z\sigma_z + \Delta_1\tau_x\sigma_0 )\vec{c}_{n+1}
+            \xi_k\tau_z\sigma_0 +
+            \Delta sin(k_y)\tau_x\sigma_y \right] +
+            \sum_n^{L-1}\vec{c}^\dagger_n(-t\tau_z\sigma_0 + i\frac{\Delta}{2}\tau_x\sigma_x)\vec{c}_{n+1}
             + H.c.
             
        \vec{c} = (c_{k,\uparrow}, c_{k,\downarrow},c^\dagger_{-k,\downarrow},-c^\dagger_{-k,\uparrow})^T
     """
     chi_k = -mu - 2*t * np.cos(k)
-    Delta_k = Delta_0 + 2*Delta_1*np.cos(k)
     onsite = chi_k * np.kron(tau_z, sigma_0) + \
-            Delta_k * np.kron(tau_x, sigma_0) + \
-            2*lambda_R*np.sin(k) * (np.cos(theta)*np.kron(tau_z, sigma_x) + np.sin(theta)*np.kron(tau_z, sigma_y))
-    hopping = -t*np.kron(tau_z, sigma_0) - 1j*lambda_R * np.kron(tau_z, sigma_z) + Delta_1*np.kron(tau_x, sigma_0)
+            Delta *np.sin(k)* np.kron(tau_x, sigma_y)
+    hopping = -t*np.kron(tau_z, sigma_0) + 1j*Delta/2 * np.kron(tau_x, sigma_x)
     matrix_diagonal = np.kron(np.eye(L), onsite)     #diagonal part of matrix
     matrix_outside_diagonal = np.block([ [np.zeros((4*(L-1),4)),np.kron(np.eye(L-1), hopping)],
                                          [np.zeros((4,4*L))] ])     #upper diagonal part
     matrix = (matrix_diagonal + matrix_outside_diagonal + matrix_outside_diagonal.conj().T)
     return matrix
 
-#H = Hamiltonian(**params)
-#eigenvalues, eigenvectors = np.linalg.eigh(H)
-# Sort according to the absolute values of energy
-#eigenvectors = eigenvectors[:, np.argsort(np.abs(eigenvalues))]
-#eigenvalues = eigenvalues[np.argsort(np.abs(eigenvalues))]
-
-#%% Spectrum
 def spectrum(system, k_values, **params):
     """Returns an array whose rows are the eigenvalues of the system for
     for a definite k. System should be a function that returns an array.
@@ -66,7 +59,7 @@ def spectrum(system, k_values, **params):
  	
 #%% k-resolved Josephson junction
 
-def Junction(t, k, mu, L, Delta_0, Delta_1, lambda_R, theta, t_J, phi):
+def Junction(t, k, mu, L, Delta, phi, t_J):
     r"""Returns the array for the Hamiltonian of Josephson junction tilted in an angle theta.
     
     .. math::
@@ -76,8 +69,8 @@ def Junction(t, k, mu, L, Delta_0, Delta_1, lambda_R, theta, t_J, phi):
             \frac{\tau^z+\tau^0}{2} e^{i\phi/2} + \frac{\tau^z-\tau^0}{2} e^{-i\phi/2}
             \right)\vec{c}_{S2,k,1} + H.c.
     """
-    H_S1 = Hamiltonian(t, k, mu, L, Delta_0, Delta_1, lambda_R, theta=0)
-    H_S2 = Hamiltonian(t, k, mu, L, Delta_0, Delta_1, lambda_R, theta=theta)
+    H_S1 = Hamiltonian_B2u(t, k, mu, L, Delta)
+    H_S2 = Hamiltonian_B2u(t, k, mu, L, Delta)
     block_diagonal_matrix = np.block([[H_S1, np.zeros((4*L,4*L))],
                              [np.zeros((4*L,4*L)), H_S2]]) 
     tau_phi = t_J * (np.kron((tau_z + np.eye(2))/2, np.eye(2))*np.exp(1j*phi/2)
@@ -117,25 +110,20 @@ def Josephson_current(k_values, phi_values, **params):
     current = np.array(current)
     return current
 
-#with crossing
 t = 1
-t_J = t
-Delta_0 = 0.4*t
-Delta_1 = 0.4*t
-mu = Delta_0/Delta_1
-lambda_R = 0.5*t
+t_J = 1
+Delta = 0.4*t
+mu = 2
 phi = np.linspace(0, 2*np.pi, 240)
 #phi = np.linspace(0, 2*np.pi, 750)
 #k = np.linspace(0, np.pi, 150)
-k = np.array([-2.3])
+k = np.array([0])
 #k = np.linspace(-3, -, 5)
 
 L = 100
-theta = 0
 
-params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1,
-              lambda_R=lambda_R, L=L,
-              t_J=t_J, theta=theta, phi=phi)
+params = dict(t=t, mu=mu, Delta=Delta,
+              L=L, phi=phi, t_J=t_J)
 
 current = Josephson_current(k, phi, **params)
 print('\007')  # Ending bell

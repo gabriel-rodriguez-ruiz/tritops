@@ -35,7 +35,7 @@ def Hamiltonian(t, k, mu, L, Delta_0, Delta_1, lambda_R, theta):
     Delta_k = Delta_0 + 2*Delta_1*np.cos(k)
     onsite = chi_k * np.kron(tau_z, sigma_0) + \
             Delta_k * np.kron(tau_x, sigma_0) + \
-            2*lambda_R*np.sin(k) * (np.cos(theta)*np.kron(tau_z, sigma_x) + np.sin(theta)*np.kron(tau_z, sigma_x))
+            2*lambda_R*np.sin(k) * (np.cos(theta)*np.kron(tau_z, sigma_x) + np.sin(theta)*np.kron(tau_z, sigma_y))
     hopping = -t*np.kron(tau_z, sigma_0) - 1j*lambda_R * np.kron(tau_z, sigma_z) + Delta_1*np.kron(tau_x, sigma_0)
     matrix_diagonal = np.kron(np.eye(L), onsite)     #diagonal part of matrix
     matrix_outside_diagonal = np.block([ [np.zeros((4*(L-1),4)),np.kron(np.eye(L-1), hopping)],
@@ -124,11 +124,11 @@ Delta_0 = 0.4*t
 Delta_1 = 0.4*t
 mu = Delta_0/Delta_1
 lambda_R = 0.5*t
-#phi = np.linspace(0, 2*np.pi, 240)
-phi = np.linspace(0, 2*np.pi, 750)
+phi = np.linspace(0, 2*np.pi, 240)
+#phi = np.linspace(0, 2*np.pi, 750)
 #k = np.linspace(0, np.pi, 150)
 #k = np.array([-2.72])
-k = np.linspace(-2.5, -2, 2)
+k = np.linspace(-2, -1.5, 10)
 
 L = 200
 theta = 0
@@ -141,7 +141,7 @@ current = Josephson_current(k, phi, **params)
 print('\007')  # Ending bell
 
 #%%
-phi = np.linspace(0, 2*np.pi, 750)
+phi = np.linspace(0, 2*np.pi, 240)
 plt.rc('text', usetex=False)
 fig, ax = plt.subplots(figsize=(4,3), dpi=300)
 ax.plot(phi, current.T, linewidth=0.1)

@@ -155,12 +155,6 @@ def phi_spectrum(k_value, phi_values, **params):
     eigenvalues = np.array(eigenvalues)
     return eigenvalues
 
-t_J = 0.5
-phi = 0
-params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1,
-              lambda_R=lambda_R, L=L, k=k, theta=theta, phi=phi, t_J=t_J)
-k = 0
-phi = np.linspace(0, np.pi)
 #eigenvalues_phi = phi_spectrum(k, phi, **params)
 
 def Josephson_current(k_values, phi_values, **params): 
@@ -179,10 +173,22 @@ def Josephson_current(k_values, phi_values, **params):
     current = np.array(current)
     return current
 
-params["L"] = 100
-#k = np.array([0,np.pi/2,np.pi])
+t = 1
+t_J = 0.5
+Delta_0 = 0.4*t
+Delta_1 = 0.2*t
+mu = Delta_0/Delta_1
+#Delta_1 = -0.4*t
+lambda_R = 0.5*t
+#k = 0+0.05*np.pi
 k = np.linspace(0, np.pi, 150)
+#k = 0
+L = 100
+theta = np.pi/4
 phi = np.linspace(0, 2*np.pi, 240)
+params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1,
+              lambda_R=lambda_R, L=L, k=k, theta=theta, t_J=t_J, phi=phi)
+#k = np.array([0,np.pi/2,np.pi])
 current = Josephson_current(k, phi, **params)
 
 #%%

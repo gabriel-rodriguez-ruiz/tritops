@@ -127,9 +127,10 @@ lambda_R = 0.5*t
 #phi = np.linspace(0, 2*np.pi, 240)
 phi = np.linspace(0, 2*np.pi, 750)
 #k = np.linspace(0, np.pi, 150)
-k = np.linspace(0, np.pi, 75)
+#k = np.array([-2.72])
+k = np.linspace(-2.5, -2, 2)
 
-L = 150
+L = 200
 theta = 0
 
 params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1,
@@ -137,9 +138,10 @@ params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1,
               t_J=t_J, theta=theta, phi=phi)
 
 current = Josephson_current(k, phi, **params)
+print('\007')  # Ending bell
 
 #%%
-phi = np.linspace(0, 2*np.pi, 240)
+phi = np.linspace(0, 2*np.pi, 750)
 plt.rc('text', usetex=False)
 fig, ax = plt.subplots(figsize=(4,3), dpi=300)
 ax.plot(phi, current.T, linewidth=0.1)

@@ -38,14 +38,14 @@ plt.rcParams['ytick.labelright'] = False
 fig, ax = plt.subplots(figsize=(4, 3), dpi=300)
 # fig.set_figwidth(246/72)    # in inches, \columnwith=246pt and 1pt=1/72 inch
 ax.plot(
-    k, spectrum, linewidth=0.5, color="m"
+    k, spectrum, linewidth=0.1, color="m"
 )  # each column in spectrum is a separate dataset
 ax.plot(
-    k, spectrum[:, 398:402], marker=".", markersize=0.5, color="c"
+    k, spectrum[:, 398:402], linewidth=1, color="c"
 )  # each column in spectrum is a separate dataset
 
-ax.set_ylim((-3, 3))
-ax.set_xlim((0, np.pi))
+ax.set_ylim([-3, 3])
+ax.set_xlim([0, np.pi])
 ax.set_xticks(np.arange(0, 1.2, step=0.2) * np.pi)
 ax.set_xticklabels(
     ["0"] + list(np.array(np.round(np.arange(0.2, 1, step=0.2), 1), dtype=str)) + ["1"])
@@ -55,7 +55,7 @@ ax.set_yticks(np.arange(-2, 3, step=0.5), minor=True)
 ax.set_xlabel(r"$k_z/\pi$")
 ax.set_ylabel(r"$E(k_z)$")
 
-plt.tight_layout()
+#plt.tight_layout()
 
 #%% Plotting bands without pairing
 

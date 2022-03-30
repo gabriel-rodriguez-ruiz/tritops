@@ -119,8 +119,8 @@ def Josephson_current(k_values, phi_values, **params):
 
 #with crossing
 t = 1
-t_J = t
-Delta_0 = 0.2    #0.4
+t_J = 0.5*t
+Delta_0 = 0.4    #0.4
 Delta_1 = 0.2     #0.4
 mu = t*Delta_0/Delta_1
 lambda_R = 0.5*t

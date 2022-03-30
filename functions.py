@@ -73,7 +73,7 @@ def Junction(t, k, mu, L, Delta_0, Delta_1, lambda_R, theta, t_J, phi):
     H_S2 = Hamiltonian(t, k, mu, L, Delta_0, Delta_1, lambda_R, theta=theta)
     block_diagonal_matrix = np.block([[H_S1, np.zeros((4*L,4*L))],
                              [np.zeros((4*L,4*L)), H_S2]]) 
-    tau_phi = t_J * (np.kron((tau_z + np.eye(2))/2, np.eye(2))*np.exp(1j*phi/2)
+    tau_phi = (np.kron((tau_z + np.eye(2))/2, np.eye(2))*np.exp(1j*phi/2)
                 + np.kron((tau_z - np.eye(2))/2, np.eye(2))*np.exp(-1j*phi/2))
     block_diagonal_matrix[4*(L-1):4*L, 4*L:4*(L+1)] = t_J*tau_phi
     block_diagonal_matrix[4*L:4*(L+1), 4*(L-1):4*L] = t_J*tau_phi.conj().T

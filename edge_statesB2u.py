@@ -56,7 +56,56 @@ def spectrum(system, k_values, **params):
         eigenvalues.append(energies)
     eigenvalues = np.array(eigenvalues)
     return eigenvalues
- 	
+
+#%% Spectrum
+t = -1
+t_J = 1
+Delta = 1
+mu = 3
+k = np.linspace(0, np.pi, 150)
+
+L = 100
+
+params = dict(t=t, mu=mu, Delta=Delta,
+              L=L)
+
+spectrum_B2u = spectrum(Hamiltonian_B2u, k, **params)
+
+#%% Plotting of spectrum
+plt.close()
+
+plt.rc("font", family="serif")  # set font family
+plt.rc("xtick", labelsize="small")  # reduced tick label size
+plt.rc("ytick", labelsize="small")
+plt.rc("text", usetex=True) # for better LaTex (slower)
+plt.rcParams['xtick.top'] = True    #ticks on top
+plt.rcParams['xtick.labeltop'] = False
+plt.rcParams['ytick.right'] = True    #ticks on left
+plt.rcParams['ytick.labelright'] = False
+
+
+fig, ax = plt.subplots(figsize=(4, 3), dpi=300)
+# fig.set_figwidth(246/72)    # in inches, \columnwith=246pt and 1pt=1/72 inch
+ax.plot(
+    k, spectrum_B2u, linewidth=0.5, color="m"
+)  # each column in spectrum is a separate dataset
+ax.plot(
+    k, spectrum_B2u[:, 398:402], marker=".", markersize=0.5, color="c"
+)  # each column in spectrum is a separate dataset
+
+ax.set_ylim((-7, 7))
+ax.set_xlim((0, np.pi))
+ax.set_xticks(np.arange(0, 1.2, step=0.2) * np.pi)
+ax.set_xticklabels(
+    ["0"] + list(np.array(np.round(np.arange(0.2, 1, step=0.2), 1), dtype=str)) + ["1"])
+ax.set_xticks(np.arange(0, 1.1, step=0.1) * np.pi, minor=True)
+ax.set_yticks(np.arange(-6, 7, step=2))
+ax.set_yticks(np.arange(-6, 7, step=1), minor=True)
+ax.set_xlabel(r"$k_y/\pi$")
+ax.set_ylabel(r"$E(k_y)$")
+
+plt.tight_layout()
+
 #%% k-resolved Josephson junction
 
 def Junction(t, k, mu, L, Delta, phi, t_J):
@@ -73,7 +122,7 @@ def Junction(t, k, mu, L, Delta, phi, t_J):
     H_S2 = Hamiltonian_B2u(t, k, mu, L, Delta)
     block_diagonal_matrix = np.block([[H_S1, np.zeros((4*L,4*L))],
                              [np.zeros((4*L,4*L)), H_S2]]) 
-    tau_phi = t_J * (np.kron((tau_z + np.eye(2))/2, np.eye(2))*np.exp(1j*phi/2)
+    tau_phi = (np.kron((tau_z + np.eye(2))/2, np.eye(2))*np.exp(1j*phi/2)
                 + np.kron((tau_z - np.eye(2))/2, np.eye(2))*np.exp(-1j*phi/2))
     block_diagonal_matrix[4*(L-1):4*L, 4*L:4*(L+1)] = t_J*tau_phi
     block_diagonal_matrix[4*L:4*(L+1), 4*(L-1):4*L] = t_J*tau_phi.conj().T
@@ -110,10 +159,10 @@ def Josephson_current(k_values, phi_values, **params):
     current = np.array(current)
     return current
 
-t = 1
+t = -1
 t_J = 1
-Delta = 0.4*t
-mu = 2
+Delta = 1
+mu = 3
 phi = np.linspace(0, 2*np.pi, 240)
 #phi = np.linspace(0, 2*np.pi, 750)
 #k = np.linspace(0, np.pi, 150)
@@ -130,6 +179,8 @@ print('\007')  # Ending bell
 
 #%%
 phi = np.linspace(0, 2*np.pi, 240)
+#phi = np.linspace(0, 2*np.pi, 750)
+
 plt.rc('text', usetex=False)
 fig, ax = plt.subplots(figsize=(4,3), dpi=300)
 ax.plot(phi, current.T, linewidth=0.1)

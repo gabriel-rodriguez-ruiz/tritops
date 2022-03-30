@@ -58,15 +58,14 @@ def spectrum(system, k_values, **params):
     return eigenvalues
 
 #%% Spectrum
-t = -1
-t_J = 1
+t = 1
 Delta = 1
-mu = 3
+mu = -3
 k = np.linspace(0, np.pi, 150)
 
 L = 100
 
-params = dict(t=t, mu=mu, Delta=Delta,
+params = dict(t=t, mu=mu, Delta=    Delta,
               L=L)
 
 spectrum_B2u = spectrum(Hamiltonian_B2u, k, **params)
@@ -159,13 +158,13 @@ def Josephson_current(k_values, phi_values, **params):
     current = np.array(current)
     return current
 
-t = -1
-t_J = 1
+t = 1
+t_J = 0.5
 Delta = 1
-mu = 3
+mu = -3
 phi = np.linspace(0, 2*np.pi, 240)
 #phi = np.linspace(0, 2*np.pi, 750)
-#k = np.linspace(0, np.pi, 150)
+#k = np.linspace(0, np.pi, 75)
 k = np.array([0])
 #k = np.linspace(-3, -, 5)
 

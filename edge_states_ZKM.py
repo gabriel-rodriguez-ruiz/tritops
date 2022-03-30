@@ -80,7 +80,7 @@ def Junction(t, k, mu, L, Delta_0, Delta_1, lambda_R, theta, t_J, phi):
     H_S2 = Hamiltonian(t, k, mu, L, Delta_0, Delta_1, lambda_R, theta=theta)
     block_diagonal_matrix = np.block([[H_S1, np.zeros((4*L,4*L))],
                              [np.zeros((4*L,4*L)), H_S2]]) 
-    tau_phi = t_J * (np.kron((tau_z + np.eye(2))/2, np.eye(2))*np.exp(1j*phi/2)
+    tau_phi = (np.kron((tau_z + np.eye(2))/2, np.eye(2))*np.exp(1j*phi/2)
                 + np.kron((tau_z - np.eye(2))/2, np.eye(2))*np.exp(-1j*phi/2))
     block_diagonal_matrix[4*(L-1):4*L, 4*L:4*(L+1)] = t_J*tau_phi
     block_diagonal_matrix[4*L:4*(L+1), 4*(L-1):4*L] = t_J*tau_phi.conj().T
@@ -120,14 +120,15 @@ def Josephson_current(k_values, phi_values, **params):
 #with crossing
 t = 1
 t_J = t
-Delta_0 = 0.4*t
-Delta_1 = 0.4*t
-mu = Delta_0/Delta_1
+Delta_0 = 0.2    #0.4
+Delta_1 = 0.2     #0.4
+mu = t*Delta_0/Delta_1
 lambda_R = 0.5*t
 phi = np.linspace(0, 2*np.pi, 240)
 #phi = np.linspace(0, 2*np.pi, 750)
-#k = np.linspace(0, np.pi, 150)
-k = np.array([-2.3])
+k = np.linspace(-np.pi, 0, 75)
+#k = np.array([0.75*np.pi])
+#k = np.array([np.pi])
 #k = np.linspace(-3, -, 5)
 
 L = 100

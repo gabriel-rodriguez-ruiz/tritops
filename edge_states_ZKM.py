@@ -131,7 +131,7 @@ k = np.linspace(-np.pi, 0, 75)
 #k = np.array([np.pi])
 #k = np.linspace(-3, -, 5)
 
-L = 100
+L = 200
 theta = 0
 
 params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1,

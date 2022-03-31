@@ -30,7 +30,7 @@ lambda_R = 0.5*t
 phi = np.linspace(0, 2*np.pi, 240)
 k = np.linspace(-np.pi, 0, 75)
 
-L = 100
+L = 200
 theta = 0
 
 params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1,
@@ -41,7 +41,7 @@ params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1,
 print('\007')  # Ending bell
 
 #%%
-current = np.load("k_current_L_100_Delta0_0.2_Delta1_0.2_lambda_0.5_mu_1_tJ_1_theta_0.npy")
+current = np.load("k_current_L_200_Delta0_0.2_Delta1_0.2_lambda_0.5_mu_1_tJ_1_theta_0.npy")
 phi = np.linspace(0, 2*np.pi, 240)
 
 plt.rc("font", family="serif")  # set font family
@@ -74,7 +74,7 @@ ax1.set_yticks(np.arange(-0.15,0.2,step=0.05), minor=True)
 
 #%% all together
 
-current = np.load("k_current_L_100_Delta0_0.2_Delta1_0.2_lambda_0.5_mu_1_tJ_1_theta_0.npy")
+current = np.load("k_current_L_200_Delta0_0.2_Delta1_0.2_lambda_0.5_mu_1_tJ_1_theta_0.npy")
 phi = np.linspace(0, 2*np.pi, 240)
 
 plt.rc("font", family="serif")  # set font family

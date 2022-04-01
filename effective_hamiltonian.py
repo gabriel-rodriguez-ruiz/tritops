@@ -89,11 +89,29 @@ def parameters(k):
     return w_k**2, rho_k, phi_k
 
 
-fig, ax = plt.subplots()
+fig, ax = plt.subplots(figsize=(4,3), dpi=300)
 # fig.title(rf"Effective current for $\theta = {theta:.2f}$")
 ax.set_xlabel(r"$\phi$")
 ax.set_ylabel(r"$J_k$")
 ax.grid()
 ax.set_xlim([0, np.pi])
-for k in np.linspace(-np.pi, -np.pi/4, 37):
-    plt.plot(phi, [effective_current(k, phi, theta, t_J=t_J, lambda_R=lambda_R, w2=parameters(k)[0], phi_k=parameters(k)[2], rho_k=parameters(k)[1]) for phi in phi], label=f"{k:.2f}")
+k = np.linspace(-np.pi, -3/4*np.pi, 10)
+for k in k:
+    plt.plot(phi, [1/2*effective_current(k, phi, theta, t_J=t_J, lambda_R=lambda_R, w2=parameters(k)[0], phi_k=parameters(k)[2], rho_k=parameters(k)[1]) for phi in phi], label=f"{k:.2f}")
+
+#%%
+current = np.load("k_current_L_200_Delta0_0.4_Delta1_0.2_lambda_0.5_mu_1_tJ_0.5_theta_0.npy")
+phi = np.linspace(0, 2*np.pi, 240)
+
+#plt.rc('text', usetex=False)
+#fig, ax = plt.subplots(figsize=(4,3), dpi=300)
+ax.plot(phi, current.T, linewidth=0.2)
+#ax.set_xlabel(r"$\Phi/\pi$")
+#ax.set_ylabel(r"$J(k)$")
+# ax.set_xlim((0, 2*np.pi))
+# ax.set_xticks(np.arange(0,2.5,step=0.5)*np.pi)
+# ax.set_xticklabels(["0"]+list(np.array(np.round(np.arange(0.5,2,step=0.5),1), dtype=str)) + ["2"])
+# ax.set_xticks(np.arange(0,2,step=0.25)*np.pi, minor=True)
+# ax.set_yticks(np.arange(-0.08,0.1,step=0.04))
+# ax.set_yticks(np.arange(-0.08,0.1,step=0.02), minor=True)
+plt.tight_layout()

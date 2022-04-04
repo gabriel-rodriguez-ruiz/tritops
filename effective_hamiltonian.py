@@ -48,7 +48,7 @@ mu = 2*t
 Delta_0 = 0.4*t
 Delta_1 = 0.2*t
 lambda_R = 0.5*t
-theta = 0
+theta = np.pi/4
 phi = np.linspace(0, 2*np.pi, 240)
 #Aligia
 # t = 1

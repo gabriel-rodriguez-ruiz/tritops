@@ -41,7 +41,7 @@ params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1,
 print('\007')  # Ending bell
 
 #%%
-current = np.load("k_current_L_100_Delta0_0.2_Delta1_0.2_lambda_0.5_mu_1_tJ_1_theta_pi_over_4.npy")
+current = np.load("k_current_L_200_Delta0_0.4_Delta1_0.2_lambda_0.5_mu_2_tJ_0.5_theta_pi_over_4.npy")
 phi = np.linspace(0, 2*np.pi, 240)
 
 plt.rc("font", family="serif")  # set font family
@@ -56,16 +56,31 @@ plt.rcParams['ytick.labelright'] = False
 
 fig, ax = plt.subplots(figsize=(4,3), dpi=300)
 ax.plot(phi, current.T[:,0], linewidth=1, color="c")
-ax.plot(phi, current.T[:,1:50], linewidth=0.1, color="m")
-ax.plot(phi, current.T[:,50:], linewidth=0.1, color="r")
+ax.plot(phi, current.T[:,1:20], linewidth=0.1, color="m")
+ax.plot(phi, current.T[:,20:], linewidth=0.1, color="r")
+# ax.plot(phi, current.T[:,1:50], linewidth=0.1, color="m")
+# ax.plot(phi, current.T[:,50:], linewidth=0.1, color="r")
+
+
+
+# ax.set_xlabel(r"$\Phi/\pi$")
+# ax.set_ylabel(r"$J(k)$")
+# ax.set_xlim((0, 2*np.pi))
+# ax.set_ylim((-0.15, 0.15))
+# ax.set_xticks(np.arange(0,2.5,step=0.5)*np.pi)
+# ax.set_xticklabels(["0"]+list(np.array(np.round(np.arange(0.5,2,step=0.5),1), dtype=str)) + ["2"])
+# ax.set_xticks(np.arange(0,2,step=0.25)*np.pi, minor=True)
+# ax.set_yticks(np.arange(-0.1,0.15,step=0.1))
+# ax.set_yticks(np.arange(-0.15,0.2,step=0.05), minor=True)
 
 ax.set_xlabel(r"$\Phi/\pi$")
-ax.set_ylabel(r"$J(k_z)$")
-ax.set_xlim((0, 2*np.pi))
-ax.set_ylim((-0.15, 0.15))
-ax.set_xticks(np.arange(0,2.5,step=0.5)*np.pi)
-ax.set_xticklabels(["0"]+list(np.array(np.round(np.arange(0.5,2,step=0.5),1), dtype=str)) + ["2"])
-ax.set_xticks(np.arange(0,2,step=0.25)*np.pi, minor=True)
+ax.set_ylabel(r"$J(k)$")
+ax.set_xlim((0, 1*np.pi))
+ax.set_ylim((0, 0.15))
+ax.set_xticks(np.arange(0,1.5,step=0.5)*np.pi)
+ax.set_xticklabels(["0"]+ ["0.5"]+ [""])
+ax.set_xticks(np.arange(0,1,step=0.25)*np.pi, minor=True)
 ax.set_yticks(np.arange(-0.1,0.15,step=0.1))
 ax.set_yticks(np.arange(-0.15,0.2,step=0.05), minor=True)
+
 plt.tight_layout()

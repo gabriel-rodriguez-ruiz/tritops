@@ -82,6 +82,7 @@ ax.set_xlim([-np.pi, np.pi])
 ax.set_xticks(np.arange(-1, 1.5, step=0.5) * np.pi)
 ax.set_xticklabels(["-1", "-0.5", "0", "0.5", "1"])
 ax.set_ylim([-5, 1])
+plt.tight_layout()
 
 #%% All together
 plt.close()

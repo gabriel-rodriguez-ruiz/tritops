@@ -57,3 +57,5 @@ ax.legend([nodal_legend[0], fermi1_legend[0], fermi2_legend[0]],
           [r"$\Delta_{\mathbf{k}}=0$", r"$\epsilon_{F-}$", r"$\epsilon_{F+}$"],
           loc="upper left", ncol=3)
 ax.text(-np.pi/2, -3/4*np.pi, r"$-2t-2\lambda<\mu<-2t+2\lambda$")
+
+plt.tight_layout()

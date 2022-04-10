@@ -59,6 +59,20 @@ def spectrum(system, k_values, **params):
     eigenvalues = np.array(eigenvalues)
     return eigenvalues
 
+def wave_function(system, k_values, **params):
+    """Returns an array whose first dimension is a 2-D square array with the eigenvectors of the system in columns for
+    for a definite k. System should be a function that returns an array.
+    """
+    eigenvectors = []
+    for k in k_values:
+        params["k"] = k
+        H = system(**params)
+        energies, eigenvector = np.linalg.eigh(H)
+        eigenvector = list(eigenvector)
+        eigenvectors.append(eigenvector)
+    eigenvectors = np.array(eigenvectors)
+    return energies, eigenvectors
+
 def Junction(t, k, mu, L, Delta_0, Delta_1, lambda_R, theta, t_J, phi):
     r"""Returns the array for the Hamiltonian of Josephson junction tilted in an angle theta.
     

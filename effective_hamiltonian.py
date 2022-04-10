@@ -42,21 +42,23 @@ def effective_current(k, phi, theta, w2, lambda_R, t_J, phi_k, rho_k):
 #%% Determination of w2
 
 # without crossing 
-t = 1
-t_J = t/2
-mu = 2*t
-Delta_0 = 0.4*t
-Delta_1 = 0.2*t
-lambda_R = 0.5*t
-theta = np.pi/4
-phi = np.linspace(0, 2*np.pi, 240)
-#Aligia
 # t = 1
 # t_J = t/2
 # mu = 2*t
-# Delta_0 = 4*t
-# Delta_1 = 2.2*t
-# lambda_R = 7*t
+# Delta_0 = 0.4*t
+# Delta_1 = 0.2*t
+# lambda_R = 0.5*t
+
+#Aligia
+t = 1
+t_J = t/2
+mu = 2*t
+Delta_0 = 4*t
+Delta_1 = 2.2*t
+lambda_R = 7*t
+
+theta = 0
+phi = np.linspace(0, 2*np.pi, 240)
 
 def parameters(k):
     s = np.sign(lambda_R*Delta_1)
@@ -86,8 +88,7 @@ def parameters(k):
                   (2*alpha_1*alpha_2)/(1-z_1*z_2) )
     rho_k = abs(Z)
     phi_k = np.angle(Z)
-    return w_k**2, rho_k, phi_k
-
+    return w_k**2, rho_k, phi_k, z_1, z_2
 
 fig, ax = plt.subplots(figsize=(4,3), dpi=300)
 # fig.title(rf"Effective current for $\theta = {theta:.2f}$")
@@ -95,7 +96,7 @@ ax.set_xlabel(r"$\phi$")
 ax.set_ylabel(r"$J_k$")
 ax.grid()
 ax.set_xlim([0, np.pi])
-k = np.linspace(-np.pi, -3/4*np.pi, 10)
+k = np.linspace(-np.pi, -99/100*np.pi, 10)
 for k in k:
     plt.plot(phi, [1/2*effective_current(k, phi, theta, t_J=t_J, lambda_R=lambda_R, w2=parameters(k)[0], phi_k=parameters(k)[2], rho_k=parameters(k)[1]) for phi in phi], label=f"{k:.2f}")
 

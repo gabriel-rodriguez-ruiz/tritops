@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 import kwant
 import os
 import scipy.linalg
+from functions import wave_function, Hamiltonian
 
 directory = os.getcwd()
 path, file = os.path.split(directory)
@@ -82,51 +83,41 @@ def plot_wave_function_imaginary(syst, params, n):
     eigenvectors = eigenvectors[::4, :]
     plt.plot(np.imag(eigenvectors[:, n])) 
 
-def main():
-    # without crossing 
-    t = 1
-    mu = -2*t
-    Delta_0 = -0.4*t
-    Delta_1 = 0.2*t
-    lambda_R = 0.5*t
-    
-    # with crossing
-    # t = 1
-    # t_J = t
-    # mu = t
-    # Delta_0 = 0.4*t
-    # Delta_1 = 0.4*t
-    # lambda_R = 0.5*t
-    
-    #Aligia
-    # t = 1
-    # mu = 2*t
-    # Delta_0 = 4*t
-    # Delta_1 = 2.2*t
-    # lambda_R = -7*t
-    # k = 0.95*np.pi
-    k = 0
-    L = 10
-    params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1,
-                  lambda_R=lambda_R, L=L)
-    chain = make_chain_finite(**params, k=k)
-    chain = chain.finalized()
-    #probability
-    fig, ax = plt.subplots(dpi=300)
-    params["k"] = k
-    global eigenvector
-    eigenvector = plot_density(chain, params, n=1)
-    
-    #real part of the wavefunction
-    #fig, ax = plt.subplots(dpi=300)
-    #plot_wave_function_real(chain, params, n=0)
-    #plt.title("Real part of the wavefunction for spin up electron")
-    
-    #imaginary part of the wavefunction
-    #fig, ax = plt.subplots(dpi=300)
-    #plot_wave_function_imaginary(chain, params, n=0)
-    #plt.title("Imaginary part of the wavefunction for spin up electron")
-    
-#%%
-if __name__ == '__main__':
-    main()
+# without crossing 
+t = 1
+mu = -2*t
+Delta_0 = -0.4*t
+Delta_1 = 0.2*t
+lambda_R = 0.5*t
+
+# with crossing
+# t = 1
+# t_J = t
+# mu = t
+# Delta_0 = 0.4*t
+# Delta_1 = 0.4*t
+# lambda_R = 0.5*t
+
+#Aligia
+# t = 1
+# mu = 2*t
+# Delta_0 = 4*t
+# Delta_1 = 2.2*t
+# lambda_R = -7*t
+# k = 0.95*np.pi
+k = np.array([np.pi])
+L = 100
+theta = 0
+params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1,
+              lambda_R=lambda_R, L=L, theta=theta)
+energies, wave_function = wave_function(Hamiltonian, k_values=k, **params)
+
+#real part of the wavefunction
+fig, ax = plt.subplots(dpi=300)
+ax.plot(np.real(wave_function[0, :, 200]))
+plt.title("Real part of the wavefunction for spin up electron")
+
+#imaginary part of the wavefunction
+#fig, ax = plt.subplots(dpi=300)
+#plot_wave_function_imaginary(chain, params, n=0)
+#plt.title("Imaginary part of the wavefunction for spin up electron")

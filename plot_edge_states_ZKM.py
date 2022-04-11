@@ -56,7 +56,7 @@ def plot_wave_function(syst, k, params, n):
     # Sort according to the absolute values of energy
     eigenvectors = eigenvectors[:, np.argsort(np.abs(eigenvalues))]
     # Sort according to spin up electrons
-    eigenvectors = eigenvectors[::4, :]
+    #eigenvectors = eigenvectors[::4, :]
     plt.plot(np.abs(eigenvectors[:, n])) 
     return eigenvalues[np.argsort(np.abs(eigenvalues))], eigenvectors
 
@@ -83,7 +83,7 @@ Delta_0 = 4*t
 Delta_1 = 2.2*t
 lambda_R = 7*t
 
-k = np.pi
+k = 0.99*np.pi
 L = 200
 theta = 0
 n = 0

@@ -116,3 +116,4 @@ ax.plot(phi, current.T, linewidth=0.2)
 # ax.set_yticks(np.arange(-0.08,0.1,step=0.04))
 # ax.set_yticks(np.arange(-0.08,0.1,step=0.02), minor=True)
 plt.tight_layout()
+

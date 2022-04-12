@@ -60,7 +60,7 @@ def spectrum(system, k_values, **params):
 #%% Spectrum
 t = 1
 Delta = 1
-mu = -3
+mu = -3     #mu = -3  entre -4t y 4t hay estados de borde
 k = np.linspace(0, np.pi, 150)
 
 L = 100

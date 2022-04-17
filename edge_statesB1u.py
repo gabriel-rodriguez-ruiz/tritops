@@ -8,6 +8,7 @@ Created on Tue Mar 29 16:00:03 2022
 
 import numpy as np
 import matplotlib.pyplot as plt
+from functions import wave_function
 
 # Pauli matrices
 sigma_0 = np.eye(2)
@@ -19,24 +20,24 @@ tau_x = np.array([[0, 1], [1, 0]])
 tau_y = np.array([[0, -1j], [1j, 0]])
 tau_z = np.array([[1, 0], [0, -1]])
 
-def Hamiltonian_B2u(t, k, mu, L, Delta):
-    r"""Returns the H_k matrix for B2u model with:
+def Hamiltonian_B1u(t, k, mu, L, Delta):
+    r"""Returns the H_k matrix for B1u model with:
 
     .. math::
-        H_{ZKM} = \frac{1}{2}\sum_k H_k
+        H_{B1u} = \frac{1}{2}\sum_k H_k
         
         H_k = \sum_n^L \vec{c}^\dagger_n\left[ 
-            \xi_k\tau_z\sigma_0 +
+            \xi_k\tau_z\sigma_0 -
             \Delta sin(k_y)\tau_x\sigma_y \right] +
-            \sum_n^{L-1}\vec{c}^\dagger_n(-t\tau_z\sigma_0 + i\frac{\Delta}{2}\tau_x\sigma_x)\vec{c}_{n+1}
+            \sum_n^{L-1}\vec{c}^\dagger_n(-t\tau_z\sigma_0 + \frac{\Delta}{2i}\tau_x\sigma_x)\vec{c}_{n+1}
             + H.c.
             
        \vec{c} = (c_{k,\uparrow}, c_{k,\downarrow},c^\dagger_{-k,\downarrow},-c^\dagger_{-k,\uparrow})^T
     """
     chi_k = -mu - 2*t * np.cos(k)
-    onsite = chi_k * np.kron(tau_z, sigma_0) + \
+    onsite = chi_k * np.kron(tau_z, sigma_0) - \
             Delta *np.sin(k)* np.kron(tau_x, sigma_y)
-    hopping = -t*np.kron(tau_z, sigma_0) + 1j*Delta/2 * np.kron(tau_x, sigma_x)
+    hopping = -t*np.kron(tau_z, sigma_0) - 1j*Delta/2 * np.kron(tau_x, sigma_x)
     matrix_diagonal = np.kron(np.eye(L), onsite)     #diagonal part of matrix
     matrix_outside_diagonal = np.block([ [np.zeros((4*(L-1),4)),np.kron(np.eye(L-1), hopping)],
                                          [np.zeros((4,4*L))] ])     #upper diagonal part
@@ -59,16 +60,16 @@ def spectrum(system, k_values, **params):
 
 #%% Spectrum
 t = 1
-Delta = 1
+Delta = 1  #1
 mu = -3     #mu = -3  entre -4t y 4t hay estados de borde
 k = np.linspace(0, np.pi, 150)
 
-L = 100
+L = 200
 
 params = dict(t=t, mu=mu, Delta=    Delta,
               L=L)
 
-spectrum_B2u = spectrum(Hamiltonian_B2u, k, **params)
+spectrum_B1u = spectrum(Hamiltonian_B1u, k, **params)
 
 #%% Plotting of spectrum
 plt.close()
@@ -86,10 +87,10 @@ plt.rcParams['ytick.labelright'] = False
 fig, ax = plt.subplots(figsize=(4, 3), dpi=300)
 # fig.set_figwidth(246/72)    # in inches, \columnwith=246pt and 1pt=1/72 inch
 ax.plot(
-    k, spectrum_B2u, linewidth=0.5, color="m"
+    k, spectrum_B1u, linewidth=0.5, color="m"
 )  # each column in spectrum is a separate dataset
 ax.plot(
-    k, spectrum_B2u[:, 398:402], marker=".", markersize=0.5, color="c"
+    k, spectrum_B1u[:, 398:402], marker=".", markersize=0.5, color="c"
 )  # each column in spectrum is a separate dataset
 
 ax.set_ylim((-7, 7))
@@ -117,8 +118,8 @@ def Junction(t, k, mu, L, Delta, phi, t_J):
             \frac{\tau^z+\tau^0}{2} e^{i\phi/2} + \frac{\tau^z-\tau^0}{2} e^{-i\phi/2}
             \right)\vec{c}_{S2,k,1} + H.c.
     """
-    H_S1 = Hamiltonian_B2u(t, k, mu, L, Delta)
-    H_S2 = Hamiltonian_B2u(t, k, mu, L, Delta)
+    H_S1 = Hamiltonian_B1u(t, k, mu, L, Delta)
+    H_S2 = Hamiltonian_B1u(t, k, mu, L, Delta)
     block_diagonal_matrix = np.block([[H_S1, np.zeros((4*L,4*L))],
                              [np.zeros((4*L,4*L)), H_S2]]) 
     tau_phi = (np.kron((tau_z + np.eye(2))/2, np.eye(2))*np.exp(1j*phi/2)
@@ -192,3 +193,21 @@ ax.set_ylabel(r"$J(k)$")
 # ax.set_yticks(np.arange(-0.08,0.1,step=0.04))
 # ax.set_yticks(np.arange(-0.08,0.1,step=0.02), minor=True)
 plt.tight_layout()
+
+#%% Edge states spin structure
+t = 1
+Delta = 1
+mu = -3     #mu = -3  entre -4t y 4t hay estados de borde
+k = np.linspace(0, np.pi, 150)
+
+L = 200
+
+params = dict(t=t, mu=mu, Delta=    Delta,
+              L=L)
+k_value = 0.01
+eigenvalues, eigenvectors = np.linalg.eigh(Hamiltonian_B1u(t=t, k=k_value, mu=mu, L=L, Delta=Delta))
+eigenvectors = eigenvectors[:,(2*L-2):(2*L+2)]
+#eigenvalues = eigenvalues[np.argsort(np.abs(eigenvalues))]
+
+plt.figure()
+plt.plot(np.abs(eigenvectors[:,0]))

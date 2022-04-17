@@ -166,7 +166,7 @@ mu = -3
 phi = np.linspace(0, 2*np.pi, 240)
 #phi = np.linspace(0, 2*np.pi, 750)
 #k = np.linspace(0, np.pi, 75)
-k = np.array([0])
+k = np.array([0, 0.01, 0.02])*np.pi
 #k = np.linspace(-3, -, 5)
 
 L = 100
@@ -211,3 +211,23 @@ eigenvectors = eigenvectors[:,(2*L-2):(2*L+2)]
 
 plt.figure()
 plt.plot(np.abs(eigenvectors[:,0]))
+
+#%% Effective current
+
+def effective_current_A1u(k, phi, t_J, Delta):
+    """
+    Effective current for A1u.
+    """
+    E_k_plus = np.sqrt( (Delta*k)**2 + t_J**2*np.cos(phi/2)**2 + 2*t_J*Delta*k*np.cos(phi/2))
+    E_k_minus = np.sqrt( (Delta*k)**2 + t_J**2*np.cos(phi/2)**2 - 2*t_J*Delta*k*np.cos(phi/2))
+    J_plus = (t_J**2*np.cos(phi/2) + t_J*Delta*k)/E_k_plus
+    J_minus = (t_J**2*np.cos(phi/2) - t_J*Delta*k)/E_k_minus
+    return -1/2*np.sin(phi/2)*(J_plus+J_minus)
+
+k = np.linspace(0, 0.1*np.pi, 10)
+phi = np.linspace(0, 2*np.pi, 240)
+t_J = 0.5
+Delta = 1
+plt.figure()
+for k in k: 
+    plt.plot(phi, [effective_current_A1u(k, phi, t_J, Delta)for phi in phi])

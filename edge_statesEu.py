@@ -192,3 +192,21 @@ ax.set_ylabel(r"$J(k)$")
 # ax.set_yticks(np.arange(-0.08,0.1,step=0.04))
 # ax.set_yticks(np.arange(-0.08,0.1,step=0.02), minor=True)
 plt.tight_layout()
+
+#%% Edge states spin structure
+t = 1
+Delta = 1
+mu = -3     #mu = -3  entre -4t y 4t hay estados de borde
+k = np.linspace(0, np.pi, 150)
+
+L = 200
+
+params = dict(t=t, mu=mu, Delta=    Delta,
+              L=L)
+k_value = 0.1*np.pi
+eigenvalues, eigenvectors = np.linalg.eigh(Hamiltonian_Eu(t=t, k=k_value, mu=mu, L=L, Delta=Delta))
+eigenvectors = eigenvectors[:,(2*L-2):(2*L+2)]
+#eigenvalues = eigenvalues[np.argsort(np.abs(eigenvalues))]
+
+plt.figure()
+plt.plot(np.abs(eigenvectors[:,0]))

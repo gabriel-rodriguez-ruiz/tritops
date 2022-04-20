@@ -25,7 +25,7 @@ def Hamiltonian(t, k, mu, L, Delta_0, Delta_1, lambda_R, theta):
         
         H_k = \sum_n^L \vec{c}^\dagger_n\left[ 
             \xi_k\tau_z\sigma_0+\Delta_k\tau_x\sigma_0
-            +2\lambda\sin(k)\tau_z(cos(\theta)\sigma_x + sin(\theta)\sigma_y)\right]\vec{c}_n+
+            -2\lambda\sin(k)\tau_z(cos(\theta)\sigma_x + sin(\theta)\sigma_y)\right]\vec{c}_n+
             \sum_n^{L-1}\vec{c}^\dagger_n(-t\tau_z\sigma_0-i\lambda\tau_z\sigma_z + \Delta_1\tau_x\sigma_0 )\vec{c}_{n+1}
             + H.c.
             
@@ -34,7 +34,7 @@ def Hamiltonian(t, k, mu, L, Delta_0, Delta_1, lambda_R, theta):
     chi_k = -mu - 2*t * np.cos(k)
     Delta_k = Delta_0 + 2*Delta_1*np.cos(k)
     onsite = chi_k * np.kron(tau_z, sigma_0) + \
-            Delta_k * np.kron(tau_x, sigma_0) + \
+            Delta_k * np.kron(tau_x, sigma_0) - \
             2*lambda_R*np.sin(k) * (np.cos(theta)*np.kron(tau_z, sigma_x) + np.sin(theta)*np.kron(tau_z, sigma_y))
     hopping = -t*np.kron(tau_z, sigma_0) - 1j*lambda_R * np.kron(tau_z, sigma_z) + Delta_1*np.kron(tau_x, sigma_0)
     matrix_diagonal = np.kron(np.eye(L), onsite)     #diagonal part of matrix

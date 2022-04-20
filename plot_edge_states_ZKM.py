@@ -91,14 +91,14 @@ params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1,
               lambda_R=lambda_R, L=L, theta=theta)
 
 #real part of the wavefunction
-fig, ax = plt.subplots(dpi=300)
-eigenvalues, eigenvectors = plot_wave_function_real(Hamiltonian, k=k, params=params, n=n)
-plt.title("Real part of the wavefunction for spin up electron")
+#fig, ax = plt.subplots(dpi=300)
+#eigenvalues, eigenvectors = plot_wave_function_real(Hamiltonian, k=k, params=params, n=n)
+#plt.title("Real part of the wavefunction for spin up electron")
 
 #imaginary part of the wavefunction
-fig, ax = plt.subplots(dpi=300)
-eigenvalues, eigenvectors = plot_wave_function_imaginary(Hamiltonian, k=k, params=params, n=n)
-plt.title("Imaginary part of the wavefunction for spin up electron")
+#fig, ax = plt.subplots(dpi=300)
+#eigenvalues, eigenvectors = plot_wave_function_imaginary(Hamiltonian, k=k, params=params, n=n)
+#plt.title("Imaginary part of the wavefunction for spin up electron")
 
 #distribution probability
 fig, ax = plt.subplots(dpi=300)

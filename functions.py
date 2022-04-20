@@ -25,18 +25,26 @@ def Hamiltonian(t, k, mu, L, Delta_0, Delta_1, lambda_R, theta):
     .. math::
         H_{ZKM} = \frac{1}{2}\sum_k H_k
         
-        H_k = \sum_n^L \vec{c}^\dagger_n\left[ 
+        H_k = \sum_{n=1}^L 
+            \vec{c}^\dagger_n\left[ 
             \xi_k\tau_z\sigma_0+\Delta_k\tau_x\sigma_0
-            +2\lambda\sin(k)\tau_z(cos(\theta)\sigma_x + sin(\theta)\sigma_y)\right]\vec{c}_n+
-            \sum_n^{L-1}\vec{c}^\dagger_n(-t\tau_z\sigma_0-i\lambda\tau_z\sigma_z + \Delta_1\tau_x\sigma_0 )\vec{c}_{n+1}
+            -2\lambda\sin(k)\tau_z(cos(\theta)\sigma_x + sin(\theta)\sigma_y)\right]\vec{c}_n+
+            \sum_{n=1}^{L-1}             
+            \left[
+            \vec{c}^\dagger_n(-t\tau_z\sigma_0-i\lambda\tau_z\sigma_z + \Delta_1\tau_x\sigma_0 )\vec{c}_{n+1}
             + H.c.
+            \right]
             
        \vec{c} = (c_{k,\uparrow}, c_{k,\downarrow},c^\dagger_{-k,\downarrow},-c^\dagger_{-k,\uparrow})^T
+       
+       \xi_k = -\mu - 2t\cos(k)
+       
+       \Delta_k = \Delta_0+2\Delta_1\cos(k)
     """
     chi_k = -mu - 2*t * np.cos(k)
     Delta_k = Delta_0 + 2*Delta_1*np.cos(k)
     onsite = chi_k * np.kron(tau_z, sigma_0) + \
-            Delta_k * np.kron(tau_x, sigma_0) + \
+            Delta_k * np.kron(tau_x, sigma_0) - \
             2*lambda_R*np.sin(k) * (np.cos(theta)*np.kron(tau_z, sigma_x) + np.sin(theta)*np.kron(tau_z, sigma_y))
     hopping = -t*np.kron(tau_z, sigma_0) - 1j*lambda_R * np.kron(tau_z, sigma_z) + Delta_1*np.kron(tau_x, sigma_0)
     matrix_diagonal = np.kron(np.eye(L), onsite)     #diagonal part of matrix

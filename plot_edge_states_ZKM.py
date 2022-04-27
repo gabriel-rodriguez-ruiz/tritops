@@ -83,8 +83,8 @@ Delta_0 = 4*t
 Delta_1 = 2.2*t
 lambda_R = 7*t
 
-k = np.pi
-L = 200
+k = 2.5644837988488107
+L = 300
 theta = 0
 n = 0
 params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1,
@@ -139,17 +139,18 @@ def spin_structure(k_values, params):
     theta_k = []
     phi_r_k = []
     phi_l_k = []
-    delta_l_k = []
+    phase = []
     for k_value in k_values:
         print(k_value)
         states = edge_states(k_value, params)
         right_minus = states[:,2]
         left_minus = states[:,0]
+        left_plus = states[:, 1]
         theta_k.append(2*np.arctan(np.abs(right_minus[0])/np.abs(right_minus[1])))
         phi_r_k.append(np.angle(-right_minus[0]/right_minus[1]))
         phi_l_k.append(np.angle(-left_minus[0]/left_minus[1]))
-
-    return theta_k, phi_r_k, phi_l_k, delta_l_k
+        phase.append(np.angle(left_plus[0]/left_minus[1]))
+    return theta_k, phi_r_k, phi_l_k, phase
 #Aligia
 t = 1
 mu = 2*t
@@ -158,27 +159,18 @@ Delta_1 = 2.2*t
 lambda_R = 7*t
 
 k = 0.8*np.pi
-L = 300
+L = 400
 theta = 0
 n = 0
 params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1,
               lambda_R=lambda_R, L=L, theta=theta)
 
-H = Hamiltonian(k=k, **params)
-eigenvalues, eigenvectors = np.linalg.eigh(H)
-eigenvectors = eigenvectors[:,(2*L-2):(2*L+2)]
-right_minus = eigenvectors[4*L-4:,0]    # depends on parameters
-theta_k = 2*np.arctan(np.abs(right_minus[0])/np.abs(right_minus[1]))
-print(theta_k)
-phi_r_k = np.angle(-right_minus[0]/right_minus[1])
-print(phi_r_k)
+states = edge_states(k, params)
 
-#states = edge_states(k, params)
+k_values = np.linspace(0.81*np.pi, np.pi-0.001)
 
-k_values = np.linspace(0.8*np.pi, np.pi-0.001)
-
-theta_k, phi_r_k, phi_l_k, delta_l_k = spin_structure(k_values=k_values, params=params)
+theta_k, phi_r_k, phi_l_k, phase = spin_structure(k_values=k_values, params=params)
 
 fig, ax = plt.subplots()
-ax.plot(k_values, phi_r_k)
-#ax.plot(k_values, phi_l_k)
+ax.plot(k_values, phi_l_k)
+ax.plot(k_values, phase, "*")

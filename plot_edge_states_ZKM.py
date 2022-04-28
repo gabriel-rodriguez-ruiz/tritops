@@ -139,18 +139,22 @@ def spin_structure(k_values, params):
     theta_k = []
     phi_r_k = []
     phi_l_k = []
-    phase = []
+    delta_l_k = []
+    delta_r_k = []
     for k_value in k_values:
         print(k_value)
         states = edge_states(k_value, params)
         right_minus = states[:,2]
+        right_plus = states[:, 3]
         left_minus = states[:,0]
         left_plus = states[:, 1]
         theta_k.append(2*np.arctan(np.abs(right_minus[0])/np.abs(right_minus[1])))
         phi_r_k.append(np.angle(-right_minus[0]/right_minus[1]))
         phi_l_k.append(np.angle(-left_minus[0]/left_minus[1]))
-        phase.append(np.angle(left_plus[0]/left_minus[1]))
-    return theta_k, phi_r_k, phi_l_k, phase
+        delta_l_k.append(-1/2*np.angle(left_plus[0]/left_minus[1]))
+        delta_r_k.append(-1/2*np.angle(right_plus[0]/right_minus[1]))
+
+    return theta_k, phi_r_k, phi_l_k, delta_l_k, delta_r_k
 #Aligia
 t = 1
 mu = 2*t
@@ -161,7 +165,6 @@ lambda_R = 7*t
 k = 0.8*np.pi
 L = 400
 theta = 0
-n = 0
 params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1,
               lambda_R=lambda_R, L=L, theta=theta)
 
@@ -169,8 +172,13 @@ states = edge_states(k, params)
 
 k_values = np.linspace(0.81*np.pi, np.pi-0.001)
 
-theta_k, phi_r_k, phi_l_k, phase = spin_structure(k_values=k_values, params=params)
+theta_k, phi_r_k, phi_l_k, delta_l_k, delta_r_k = spin_structure(k_values=k_values, params=params)
 
 fig, ax = plt.subplots()
-ax.plot(k_values, phi_l_k)
-ax.plot(k_values, phase, "*")
+ax.text(0,0,f"sgn(lambda*Delta_1)={np.sign(lambda_R*Delta_1)}")
+ax.plot(k_values, phi_l_k, label=r"$\varphi_{l,k}$")
+ax.plot(k_values, phi_r_k, label=r"$\varphi_{r,k}$")
+ax.plot(k_values, delta_l_k, "*", label=r"$\delta_{l,k}$")
+ax.plot(k_values, delta_r_k, "*", label=r"$\delta_{r,k}$")
+ax.plot(k_values, theta_k, label=r"$\theta_k$")
+ax.legend()

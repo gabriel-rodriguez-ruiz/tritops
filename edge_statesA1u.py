@@ -128,8 +128,8 @@ def Junction(t, k, mu, L, Delta, phi, t_J):
     block_diagonal_matrix[4*L:4*(L+1), 4*(L-1):4*L] = t_J*tau_phi.conj().T
     return block_diagonal_matrix
 
-def phi_spectrum(k_value, phi_values, **params):
-    """Returns an array whose rows are the eigenvalues of the junction for
+def phi_spectrum(Junction, k_value, phi_values, **params):
+    """Returns an array whose rows are the eigenvalues of the junction (with function Junction) for
     a definite phi_value given a fixed k_value.
     """
     eigenvalues = []
@@ -143,7 +143,7 @@ def phi_spectrum(k_value, phi_values, **params):
     eigenvalues = np.array(eigenvalues)
     return eigenvalues
 
-def Josephson_current(k_values, phi_values, **params): 
+def Josephson_current(Junction, k_values, phi_values, **params): 
     """ Returns an array whose columns are the Josephson current for
     a definite phi_value and the rows are the current for
     a definite k_value.
@@ -152,8 +152,8 @@ def Josephson_current(k_values, phi_values, **params):
     current = []
     for k in k_values:
         fundamental_energy = []
-        eigenvalues_phi = phi_spectrum(k, phi_values, **params) #each row are the energies for a definite phi
-        for i in range(len(phi)):
+        eigenvalues_phi = phi_spectrum(Junction, k, phi_values, **params) #each row are the energies for a definite phi
+        for i in range(len(phi_values)):
             fundamental_energy.append(-np.sum(eigenvalues_phi[i,:], where=eigenvalues_phi[i,:]>0))  #the fundamental energy for each phi
         current.append(list(np.gradient(fundamental_energy, dphi)))
     current = np.array(current)
@@ -174,7 +174,7 @@ L = 100
 params = dict(t=t, mu=mu, Delta=Delta,
               L=L, phi=phi, t_J=t_J)
 
-current = Josephson_current(k, phi, **params)
+current = Josephson_current(Junction, k, phi, **params)
 print('\007')  # Ending bell
 
 #%%

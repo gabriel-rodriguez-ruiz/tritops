@@ -55,7 +55,7 @@ def Hamiltonian(t, k, mu, L, Delta_0, Delta_1, lambda_R, theta):
 
 def spectrum(system, k_values, **params):
     """Returns an array whose rows are the eigenvalues of the system for
-    for a definite k. System should be a function that returns an array.
+    a definite k. System should be a function that returns an array.
     """
     eigenvalues = []
     for k in k_values:
@@ -203,7 +203,7 @@ def Junction_ZKM_s(t, k, mu, L, Delta_0, Delta_1, lambda_R, theta, t_J, phi):
 
 def Junction_A1u_s(t, k, mu, L, Delta_0, Delta_1, lambda_R, theta, t_J, phi):
     r"""Returns the array for the Hamiltonian of Josephson junction
-     (TRITOPS-S) tilted in an angle theta.
+     (TRITOPS-S) tilted in an angle theta for A1u simmetry.
     
     .. math::
         H = H_k^{S1} + H_k^{S2} + H_{J,k}

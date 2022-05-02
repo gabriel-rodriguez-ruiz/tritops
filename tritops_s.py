@@ -22,7 +22,7 @@ phi = np.linspace(0, 2*np.pi, 240)
 
 k = np.linspace(-np.pi, 0, 75)
 
-L = 100
+L = 200
 theta = 0
 params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1,
               lambda_R=lambda_R, L=L,

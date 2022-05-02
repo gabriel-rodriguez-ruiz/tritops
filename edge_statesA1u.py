@@ -8,7 +8,7 @@ Created on Tue Mar 29 16:00:03 2022
 
 import numpy as np
 import matplotlib.pyplot as plt
-from functions import wave_function
+from functions import wave_function, Hamiltonian_A1u, spectrum
 
 # Pauli matrices
 sigma_0 = np.eye(2)
@@ -20,50 +20,14 @@ tau_x = np.array([[0, 1], [1, 0]])
 tau_y = np.array([[0, -1j], [1j, 0]])
 tau_z = np.array([[1, 0], [0, -1]])
 
-def Hamiltonian_A1u(t, k, mu, L, Delta):
-    r"""Returns the H_k matrix for A1u model with:
 
-    .. math::
-        H_{A1u} = \frac{1}{2}\sum_k H_k
-        
-        H_k = \sum_n^L \vec{c}^\dagger_n\left[ 
-            \xi_k\tau_z\sigma_0 +
-            \Delta sin(k_y)\tau_x\sigma_y \right] +
-            \sum_n^{L-1}\vec{c}^\dagger_n(-t\tau_z\sigma_0 + \frac{\Delta}{2i}\tau_x\sigma_x)\vec{c}_{n+1}
-            + H.c.
-            
-       \vec{c} = (c_{k,\uparrow}, c_{k,\downarrow},c^\dagger_{-k,\downarrow},-c^\dagger_{-k,\uparrow})^T
-    """
-    chi_k = -mu - 2*t * np.cos(k)
-    onsite = chi_k * np.kron(tau_z, sigma_0) + \
-            Delta *np.sin(k)* np.kron(tau_x, sigma_y)
-    hopping = -t*np.kron(tau_z, sigma_0) - 1j*Delta/2 * np.kron(tau_x, sigma_x)
-    matrix_diagonal = np.kron(np.eye(L), onsite)     #diagonal part of matrix
-    matrix_outside_diagonal = np.block([ [np.zeros((4*(L-1),4)),np.kron(np.eye(L-1), hopping)],
-                                         [np.zeros((4,4*L))] ])     #upper diagonal part
-    matrix = (matrix_diagonal + matrix_outside_diagonal + matrix_outside_diagonal.conj().T)
-    return matrix
-
-def spectrum(system, k_values, **params):
-    """Returns an array whose rows are the eigenvalues of the system for
-    for a definite k. System should be a function that returns an array.
-    """
-    eigenvalues = []
-    for k in k_values:
-        params["k"] = k
-        H = system(**params)
-        energies = np.linalg.eigvalsh(H)
-        energies = list(energies)
-        eigenvalues.append(energies)
-    eigenvalues = np.array(eigenvalues)
-    return eigenvalues
 
 #%% Spectrum
 t = 1
 Delta = 1  #1
 mu = -3     #mu = -3  entre -4t y 4t hay estados de borde
 k = np.linspace(0, np.pi, 150)
-
+#k = np.linspace(-np.pi, 0, 75)
 L = 200
 
 params = dict(t=t, mu=mu, Delta=    Delta,
@@ -94,7 +58,7 @@ ax.plot(
 )  # each column in spectrum is a separate dataset
 
 ax.set_ylim((-7, 7))
-ax.set_xlim((0, np.pi))
+ax.set_xlim((-np.pi, np.pi))
 ax.set_xticks(np.arange(0, 1.2, step=0.2) * np.pi)
 ax.set_xticklabels(
     ["0"] + list(np.array(np.round(np.arange(0.2, 1, step=0.2), 1), dtype=str)) + ["1"])

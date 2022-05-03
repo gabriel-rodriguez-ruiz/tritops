@@ -162,15 +162,15 @@ Delta_0 = 4*t
 Delta_1 = 2.2*t
 lambda_R = 7*t
 
-k = 0.8*np.pi
-L = 400
+k = 999/1000*np.pi
+L = 200
 theta = 0
 params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1,
               lambda_R=lambda_R, L=L, theta=theta)
 
 states = edge_states(k, params)
 
-k_values = np.linspace(0.81*np.pi, np.pi-0.001)
+k_values = np.linspace(0.99*np.pi, np.pi-0.001)
 
 theta_k, phi_r_k, phi_l_k, delta_l_k, delta_r_k = spin_structure(k_values=k_values, params=params)
 
@@ -209,10 +209,32 @@ ax.plot(
     k, spectrum[:, 398:402], linewidth=1, color="c"
 )  # each column in spectrum is a separate dataset
 
-k = 99/100*np.pi
+#%%
+import numpy.linalg
 
-H = Hamiltonian(k=k, **params)
-eigenvalues, eigenvectors = np.linalg.eigh(H)
-eigenvectors = eigenvectors[:, np.argsort(np.abs(eigenvalues))]
+#Aligia
+t = 1
+mu = 2*t
+Delta_0 = 4*t
+Delta_1 = 2.2*t
+lambda_R = 7*t
 
-Z = np.sum(eigenvectors[::4,0]**2)
+L = 200
+theta = 0
+params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1,
+              lambda_R=lambda_R, L=L, theta=theta)
+
+k_values = np.linspace(0, np.pi, 50)
+rho_k = []
+phi_k = []
+for k in k_values:
+    H = Hamiltonian(k=k, **params)
+    eigenvalues, eigenvectors = np.linalg.eigh(H)
+    eigenvectors = eigenvectors[:, np.argsort(np.abs(eigenvalues))]
+    Z = np.sum((eigenvectors[::4,0]/np.linalg.norm(eigenvectors[::4,0]))**2)
+    rho_k.append(np.abs(Z))
+    phi_k.append(np.angle(Z))
+    
+# print(rho_k)
+# print(phi_k)
+plt.plot(k_values, rho_k)

@@ -18,10 +18,10 @@ Delta_0 = 0.4    #0.4
 Delta_1 = 0.2     #0.4
 mu = t*Delta_0/Delta_1
 lambda_R = 0.5*t
-phi = np.linspace(0, 2*np.pi, 240)
+#phi = np.linspace(0, 2*np.pi, 240)
+phi = np.linspace(0, 2*np.pi, 480)
 
 k = np.linspace(-np.pi, 0, 75)
-
 L = 200
 theta = 0
 params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1,
@@ -47,9 +47,10 @@ print('\007')  # Ending bell
 
 #%% Plotting
 
-current = current_ZKM_s
+current = current_Eu_s
 
-phi = np.linspace(0, 2*np.pi, 240)
+#phi = np.linspace(0, 2*np.pi, 240)
+phi = np.linspace(0, 2*np.pi, 480)
 plt.rc('text', usetex=False)
 fig, ax = plt.subplots(figsize=(4,3), dpi=300)
 ax.plot(phi, current.T, linewidth=0.1)
@@ -64,9 +65,9 @@ ax.set_ylabel(r"$J(k)$")
 plt.tight_layout()
 
 #%% all three TRITOPS-S
-current_A1u_s = np.load("k_current_TRITOPS_S_A1u_L_100_Delta0_0.4_Delta1_0.2_lambda_0.5_mu_2_tJ_0.5_theta_0.npy")
-current_Eu_s = np.load("k_current_TRITOPS_S_Eu_L_100_Delta0_0.4_Delta1_0.2_lambda_0.5_mu_2_tJ_0.5_theta_0.npy")
-current_ZKM_s = np.load("k_current_TRITOPS_S_ZKM_L_100_Delta0_0.4_Delta1_0.2_lambda_0.5_mu_2_tJ_0.5_theta_0.npy")
+current_A1u_s = np.load("k_current_TRITOPS_S_A1u_L_200_Delta0_0.4_Delta1_0.2_lambda_0.5_mu_2_tJ_0.5_theta_0.npy")
+current_Eu_s = np.load("k_current_TRITOPS_S_Eu_L_200_Delta0_0.4_Delta1_0.2_lambda_0.5_mu_2_tJ_0.5_theta_0.npy")
+current_ZKM_s = np.load("k_current_TRITOPS_S_ZKM_L_200_Delta0_0.4_Delta1_0.2_lambda_0.5_mu_2_tJ_0.5_theta_0.npy")
 
 phi = np.linspace(0, 2*np.pi, 240)
 
@@ -82,7 +83,7 @@ plt.rcParams['ytick.labelright'] = False
 
 plt.close()
 
-fig = plt.figure(figsize=(4,3), dpi=300)
+fig = plt.figure(figsize=(4,3))
 gs = fig.add_gridspec(3, hspace=0)
 axs = gs.subplots(sharex=True, sharey=True)
 axs[0].plot(phi, current_A1u_s.T[:, 0], linewidth=1, color="c")
@@ -90,7 +91,7 @@ axs[0].plot(phi, current_A1u_s.T[:, 1:30], linewidth=0.1, color="m")
 axs[0].plot(phi, current_A1u_s.T[:, 30:], linewidth=0.1, color="r")
 
 axs[1].plot(phi, current_Eu_s.T[:, 0], linewidth=1, color="c")
-axs[1].plot(phi, current_Eu_s.T[:, 1:30], linewidth=0.1, color="m")
+axs[1].plot(phi, current_Eu_s.T[:, 1:30], linewidth=0.1, color="m", marker="o", markersize=0.1)
 axs[1].plot(phi, current_Eu_s.T[:, 30:], linewidth=0.1, color="r")
 
 axs[2].plot(phi, current_ZKM_s.T[:, 0], linewidth=1, color="c")

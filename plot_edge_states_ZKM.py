@@ -84,7 +84,7 @@ Delta_1 = 2.2*t
 lambda_R = 7*t
 
 k = 2.5644837988488107
-L = 300
+L = 200
 theta = 0
 n = 0
 params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1,
@@ -175,10 +175,44 @@ k_values = np.linspace(0.81*np.pi, np.pi-0.001)
 theta_k, phi_r_k, phi_l_k, delta_l_k, delta_r_k = spin_structure(k_values=k_values, params=params)
 
 fig, ax = plt.subplots()
-ax.text(0,0,f"sgn(lambda*Delta_1)={np.sign(lambda_R*Delta_1)}")
 ax.plot(k_values, phi_l_k, label=r"$\varphi_{l,k}$")
 ax.plot(k_values, phi_r_k, label=r"$\varphi_{r,k}$")
 ax.plot(k_values, delta_l_k, "*", label=r"$\delta_{l,k}$")
 ax.plot(k_values, delta_r_k, "*", label=r"$\delta_{r,k}$")
 ax.plot(k_values, theta_k, label=r"$\theta_k$")
 ax.legend()
+
+#%% Z = rho_k*e^iphi
+# Numerical calculation of Z
+from functions import spectrum, Hamiltonian
+#Aligia
+t = 1
+mu = 2*t
+Delta_0 = 4*t
+Delta_1 = 2.2*t
+lambda_R = 7*t
+
+L = 200
+theta = 0
+params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1,
+              lambda_R=lambda_R, L=L, theta=theta)
+
+k = np.linspace(0, np.pi, 150)
+spectrum = spectrum(Hamiltonian, k, **params)
+
+fig, ax = plt.subplots(figsize=(4, 3), dpi=300)
+# fig.set_figwidth(246/72)    # in inches, \columnwith=246pt and 1pt=1/72 inch
+ax.plot(
+    k, spectrum, linewidth=0.1, color="m"
+)  # each column in spectrum is a separate dataset
+ax.plot(
+    k, spectrum[:, 398:402], linewidth=1, color="c"
+)  # each column in spectrum is a separate dataset
+
+k = 99/100*np.pi
+
+H = Hamiltonian(k=k, **params)
+eigenvalues, eigenvectors = np.linalg.eigh(H)
+eigenvectors = eigenvectors[:, np.argsort(np.abs(eigenvalues))]
+
+Z = np.sum(eigenvectors[::4,0]**2)

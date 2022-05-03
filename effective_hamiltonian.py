@@ -13,14 +13,15 @@ def effective_current(k, phi, theta, w2, lambda_R, t_J, phi_k, rho_k):
     Equation (43) of [Schmalian] for the effective
     current for the ZKM model.
     """
-    t_1 = 2 * t_J * np.abs(np.real(w2*np.exp(-1j*(phi_k+theta/2))))
-    t_2 = 2 * t_J * np.abs(np.imag(w2*np.exp(-1j*(phi_k+theta/2))))
+    t_1 = t_J * np.real(w2*np.exp(-1j*(phi_k+theta/2)))
+    t_2 = t_J * np.imag(w2*np.exp(-1j*(phi_k+theta/2)))
     E_k = -2*rho_k*lambda_R*np.sin(k)
-    E_k_plus = np.sqrt( (t_1 * np.abs(np.cos(phi/2)) + E_k)**2 + t_2**2*np.cos(phi/2)**2 )
-    E_k_minus = np.sqrt( (t_1 * np.abs(np.cos(phi/2)) + E_k)**2 + t_2**2*np.cos(phi/2)**2 )
-    J_0 = ( ( ( t_1*np.abs(np.cos(phi/2)) + E_k )*t_1 + t_2**2 * np.cos(phi/2) )/E_k_plus +
-           ( ( t_1*np.abs(np.cos(phi/2)) - E_k )*t_1 + t_2**2 * np.cos(phi/2) )/E_k_minus )
-    return 1/2 * J_0 * np.sin(phi/2) * np.sign(np.cos(phi/2))
+    E_k_plus = np.sqrt( (t_1 * np.cos(phi/2) + E_k)**2 + t_2**2*np.cos(phi/2)**2 )
+    E_k_minus = np.sqrt( (t_1 * np.cos(phi/2) - E_k)**2 + t_2**2*np.cos(phi/2)**2 )
+    J_0 = ( ( ( t_1*np.cos(phi/2) + E_k )*t_1 + t_2**2 * np.cos(phi/2) )/E_k_plus +
+           ( ( t_1*np.cos(phi/2) - E_k )*t_1 + t_2**2 * np.cos(phi/2) )/E_k_minus )
+    return 1/2 * J_0 * np.sin(phi/2)
+
 
 # k = -np.pi+0.1
 # theta = np.pi/2
@@ -42,20 +43,20 @@ def effective_current(k, phi, theta, w2, lambda_R, t_J, phi_k, rho_k):
 #%% Determination of w2
 
 # without crossing 
+t = 1
+t_J = t/2
+Delta_0 = 0.4*t
+Delta_1 = 0.2*t
+mu = t*Delta_0/Delta_1
+lambda_R = 0.5*t
+
+#Aligia
 # t = 1
 # t_J = t/2
 # mu = 2*t
-# Delta_0 = 0.4*t
-# Delta_1 = 0.2*t
-# lambda_R = 0.5*t
-
-#Aligia
-t = 1
-t_J = t/2
-mu = 2*t
-Delta_0 = 4*t
-Delta_1 = 2.2*t
-lambda_R = 7*t
+# Delta_0 = 4*t
+# Delta_1 = 2.2*t
+# lambda_R = 7*t
 
 theta = 0
 phi = np.linspace(0, 2*np.pi, 240)
@@ -90,15 +91,18 @@ def parameters(k):
     phi_k = np.angle(Z)
     return w_k**2, rho_k, phi_k, z_1, z_2
 
-fig, ax = plt.subplots(figsize=(4,3), dpi=300)
+fig, ax = plt.subplots(figsize=(4,3))
 # fig.title(rf"Effective current for $\theta = {theta:.2f}$")
 ax.set_xlabel(r"$\phi$")
 ax.set_ylabel(r"$J_k$")
 ax.grid()
-ax.set_xlim([0, np.pi])
-k = np.linspace(-np.pi, -99/100*np.pi, 10)
+ax.set_xlim([0, 2*np.pi])
+#k = np.linspace(-np.pi, -99/100*np.pi, 10)
+k = np.linspace(-np.pi, 0, 75)[:20]
+
 for k in k:
-    plt.plot(phi, [1/2*effective_current(k, phi, theta, t_J=t_J, lambda_R=lambda_R, w2=parameters(k)[0], phi_k=parameters(k)[2], rho_k=parameters(k)[1]) for phi in phi], label=f"{k:.2f}")
+    effective = ax.plot(phi, [1.25*effective_current(k, phi, theta, t_J=t_J, lambda_R=lambda_R, w2=parameters(k)[0], phi_k=parameters(k)[2], rho_k=parameters(k)[1]) for phi in phi],
+            label=f"{k:.2f}", linestyle="dashed", linewidth=0.5)
 
 #%%
 current = np.load("k_current_L_200_Delta0_0.4_Delta1_0.2_lambda_0.5_mu_1_tJ_0.5_theta_0.npy")
@@ -106,7 +110,7 @@ phi = np.linspace(0, 2*np.pi, 240)
 
 #plt.rc('text', usetex=False)
 #fig, ax = plt.subplots(figsize=(4,3), dpi=300)
-ax.plot(phi, current.T, linewidth=0.2)
+numerical = ax.plot(phi, current[:20].T, linewidth=0.5, label="Numerical")
 #ax.set_xlabel(r"$\Phi/\pi$")
 #ax.set_ylabel(r"$J(k)$")
 # ax.set_xlim((0, 2*np.pi))
@@ -116,4 +120,4 @@ ax.plot(phi, current.T, linewidth=0.2)
 # ax.set_yticks(np.arange(-0.08,0.1,step=0.04))
 # ax.set_yticks(np.arange(-0.08,0.1,step=0.02), minor=True)
 plt.tight_layout()
-
+ax.legend([numerical[0], effective[0]], ["Numerical", "Effective"])

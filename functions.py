@@ -81,7 +81,7 @@ def wave_function(system, k_values, **params):
     eigenvectors = np.array(eigenvectors)
     return energies, eigenvectors
 
-def Junction(t, k, mu, L, Delta, phi, t_J):
+def Junction(t, k, mu, L, Delta_0, Delta_1, lambda_R, theta, t_J, phi):
     r"""Returns the array for the Hamiltonian of Josephson junction tilted in an angle theta.
     
     .. math::
@@ -91,8 +91,8 @@ def Junction(t, k, mu, L, Delta, phi, t_J):
             \frac{\tau^z+\tau^0}{2} e^{i\phi/2} + \frac{\tau^z-\tau^0}{2} e^{-i\phi/2}
             \right)\vec{c}_{S2,k,1} + H.c.
     """
-    H_S1 = Hamiltonian_A1u(t, k, mu, L, Delta)
-    H_S2 = Hamiltonian_A1u(t, k, mu, L, Delta)
+    H_S1 = Hamiltonian(t, k, mu, L, Delta_0, Delta_1, lambda_R, theta=0)
+    H_S2 = Hamiltonian(t, k, mu, L, Delta_0, Delta_1, lambda_R, theta=theta)
     block_diagonal_matrix = np.block([[H_S1, np.zeros((4*L,4*L))],
                              [np.zeros((4*L,4*L)), H_S2]]) 
     tau_phi = (np.kron((tau_z + np.eye(2))/2, np.eye(2))*np.exp(1j*phi/2)

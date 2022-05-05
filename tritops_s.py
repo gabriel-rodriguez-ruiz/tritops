@@ -90,13 +90,13 @@ axs[0].plot(phi, current_A1u_s.T[:, 0], linewidth=1, color="c")
 axs[0].plot(phi, current_A1u_s.T[:, 1:30], linewidth=0.1, color="m")
 axs[0].plot(phi, current_A1u_s.T[:, 30:], linewidth=0.1, color="r")
 
-axs[1].plot(phi, current_Eu_s.T[:, 0], linewidth=1, color="c")
-axs[1].plot(phi, current_Eu_s.T[:, 1:30], linewidth=0.1, color="m", marker="o", markersize=0.1)
 axs[1].plot(phi, current_Eu_s.T[:, 30:], linewidth=0.1, color="r")
+axs[1].plot(phi, current_Eu_s.T[:, 1:30], linewidth=0.1, color="m")
+axs[1].plot(phi, current_Eu_s.T[:, 0], linewidth=1, color="c")
 
-axs[2].plot(phi, current_ZKM_s.T[:, 0], linewidth=1, color="c")
-axs[2].plot(phi, current_ZKM_s.T[:, 1:30], linewidth=0.1, color="m")
 axs[2].plot(phi, current_ZKM_s.T[:, 30:], linewidth=0.1, color="r")
+axs[2].plot(phi, current_ZKM_s.T[:, 1:30], linewidth=0.1, color="m")
+axs[2].plot(phi, current_ZKM_s.T[:, 0], linewidth=1, color="c")
 
 axs[0].set_xlabel(r"$\Phi/\pi$")
 axs[0].set_ylabel(r"$J(k)$")

@@ -183,21 +183,37 @@ ax2.set_xticks(np.arange(0,2.5,step=0.5)*np.pi)
 ax2.set_xticklabels(["0"]+list(np.array(np.round(np.arange(0.5,2,step=0.5),1), dtype=str)) + ["2"])
 ax2.set_xticks(np.arange(0,2,step=0.25)*np.pi, minor=True)
 
-#ax2.set_xlim([0, np.pi])
-#ax2.set_ylim([0, 0.12])
-# ax2.set_xticks(np.arange(0,1.2,step=0.2)*np.pi)
-# ax2.set_xticklabels(["0", "0.2", "0.4", "0.6", "0.8", "1"])
-# ax2.set_xticks(np.arange(0,1,step=0.1)*np.pi, minor=True)
-#ax2.set_xticks(np.arange(0,1.2,step=0.5)*np.pi)
-#ax2.set_xticklabels(["0", "0.5", "1"])
-#ax2.set_xticks(np.arange(0,1,step=0.25)*np.pi, minor=True)
+from effective_hamiltonian import parameters, effective_current
 
+# without crossing 
+t = 1
+t_J = t/2
+Delta_0 = 0.4*t
+Delta_1 = 0.2*t
+mu = t*Delta_0/Delta_1
+lambda_R = 0.5*t
 
-#ax2.set_yticks(np.arange(0,0.15,step=0.05))
-#ax2.set_yticks(np.arange(0,0.15,step=0.025), minor=True)
-#ax2.set_yticklabels(["0", "0.05", "0.1"])
-#ax2.tick_params(axis='y', which='major', pad=0)
-#ax2.tick_params(axis='x', which='major', pad=0)
+ax3 = fig.add_axes([0.18, 0.21, 0.4*8/10, 0.3*9/10])
+theta = 0
+phi = np.linspace(0, 2*np.pi, 240)
+k = np.linspace(-np.pi, 0, 75)[1:50]
+
+for k in k:
+    effective = ax3.plot(phi, [1.25*effective_current(k, phi, theta, t_J=t_J, lambda_R=lambda_R, w2=parameters(k)[0], phi_k=parameters(k)[2], rho_k=parameters(k)[1]) for phi in phi],
+            label=f"{k:.2f}", linewidth=0.1, color="m")
+ax3.plot(phi, [1.25*effective_current(-np.pi, phi, theta, t_J=t_J, lambda_R=lambda_R, w2=parameters(-np.pi)[0], phi_k=parameters(-np.pi)[2], rho_k=parameters(-np.pi)[1]) for phi in phi],
+        label=f"{k:.2f}", linewidth=0.5, color="c")
+
+ax3.set_xticks(np.arange(0,2.5,step=0.5)*np.pi)
+ax3.set_xticklabels(["0"]+list(np.array(np.round(np.arange(0.5,2,step=0.5),1), dtype=str)) + ["2"])
+ax3.set_xticks(np.arange(0,2,step=0.25)*np.pi, minor=True)
+ax3.set_xlabel(r"$\Phi/\pi$", labelpad=0)
+ax3.set_ylabel(r"$J(k)$", labelpad=0)
+ax3.set_yticks(np.arange(-0.1,0.15,step=0.1))
+ax3.set_yticks(np.arange(-0.15,0.2,step=0.05), minor=True)
+ax3.set_yticklabels(["-0.1", "0", "0.1"])
+ax3.tick_params(axis='y', which='major', pad=0)
+ax3.tick_params(axis='x', which='major', pad=0)
 
 #%% Exchange inset crossing
 

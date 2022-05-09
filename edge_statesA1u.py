@@ -48,17 +48,17 @@ plt.rcParams['ytick.right'] = True    #ticks on left
 plt.rcParams['ytick.labelright'] = False
 
 
-fig, ax = plt.subplots(figsize=(4, 3), dpi=300)
+fig, ax = plt.subplots(figsize=(4, 3))
 # fig.set_figwidth(246/72)    # in inches, \columnwith=246pt and 1pt=1/72 inch
 ax.plot(
-    k, spectrum_A1u, linewidth=0.5, color="m"
+    k, spectrum_A1u, linewidth=0.1, color="m"
 )  # each column in spectrum is a separate dataset
 ax.plot(
-    k, spectrum_A1u[:, 398:402], marker=".", markersize=0.5, color="c"
+    k[:45], spectrum_A1u[:45, 398:402], linewidth=1, color="c"
 )  # each column in spectrum is a separate dataset
 
 ax.set_ylim((-7, 7))
-ax.set_xlim((-np.pi, np.pi))
+ax.set_xlim((0, np.pi))
 ax.set_xticks(np.arange(0, 1.2, step=0.2) * np.pi)
 ax.set_xticklabels(
     ["0"] + list(np.array(np.round(np.arange(0.2, 1, step=0.2), 1), dtype=str)) + ["1"])

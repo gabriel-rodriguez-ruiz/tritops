@@ -58,7 +58,7 @@ lambda_R = 0.5*t
 # Delta_1 = 2.2*t
 # lambda_R = 7*t
 
-theta = 0
+theta = np.pi/4
 phi = np.linspace(0, 2*np.pi, 240)
 
 def parameters(k):
@@ -106,6 +106,8 @@ for k in k:
 
 #%%
 current = np.load("k_current_L_200_Delta0_0.4_Delta1_0.2_lambda_0.5_mu_1_tJ_0.5_theta_0.npy")
+#current = np.load("k_current_L_200_Delta0_0.4_Delta1_0.2_lambda_0.5_mu_2_tJ_0.5_theta_pi_over_4.npy")
+
 phi = np.linspace(0, 2*np.pi, 240)
 
 #plt.rc('text', usetex=False)
@@ -121,3 +123,4 @@ numerical = ax.plot(phi, current[:20].T, linewidth=0.5, label="Numerical")
 # ax.set_yticks(np.arange(-0.08,0.1,step=0.02), minor=True)
 plt.tight_layout()
 ax.legend([numerical[0], effective[0]], ["Numerical", "Effective"])
+

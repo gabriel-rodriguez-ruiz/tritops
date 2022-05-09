@@ -30,14 +30,12 @@ t_J = t/2
 Delta_0 = 0.4*t
 Delta_1 = 0.2*t
 mu = t*Delta_0/Delta_1
-lambda_R = 0.5*t
+lambda_R = 5*t    #lambda_R=0.5*t
 
 phi = np.linspace(0, 2*np.pi, 240)
 #phi = np.linspace(0, 2*np.pi, 750)
-k = np.linspace(-np.pi, 0, 75)
-#k = np.array([0.75*np.pi])
-#k = np.array([np.pi])
-#k = np.linspace(-3, -, 5)
+#k = np.linspace(-np.pi, 0, 75)
+k = np.linspace(-np.pi, -np.pi/2, 5)
 
 L = 200
 theta = np.pi/4

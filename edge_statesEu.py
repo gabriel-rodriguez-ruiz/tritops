@@ -63,7 +63,7 @@ Delta = 1
 mu = -3     #mu = -3  entre -4t y 4t hay estados de borde
 k = np.linspace(0, np.pi, 150)
 
-L = 100
+L = 200
 
 params = dict(t=t, mu=mu, Delta=    Delta,
               L=L)
@@ -83,13 +83,13 @@ plt.rcParams['ytick.right'] = True    #ticks on left
 plt.rcParams['ytick.labelright'] = False
 
 
-fig, ax = plt.subplots(figsize=(4, 3), dpi=300)
+fig, ax = plt.subplots(figsize=(4, 3))
 # fig.set_figwidth(246/72)    # in inches, \columnwith=246pt and 1pt=1/72 inch
 ax.plot(
-    k, spectrum_Eu, linewidth=0.5, color="m"
+    k, spectrum_Eu, linewidth=0.1, color="m"
 )  # each column in spectrum is a separate dataset
 ax.plot(
-    k, spectrum_Eu[:, 398:402], marker=".", markersize=0.5, color="c"
+    k[:35], spectrum_Eu[:35, 398:402], linewidth=1, color="c"
 )  # each column in spectrum is a separate dataset
 
 ax.set_ylim((-7, 7))

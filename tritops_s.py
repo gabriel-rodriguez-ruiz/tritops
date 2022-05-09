@@ -133,3 +133,43 @@ axs[2].set_yticks(np.arange(-0.05,0.05,step=0.025), minor=True)
 axs[2].set_yticklabels(["-0.05"] + ["0"] + ["0.05"])
 
 plt.tight_layout()
+
+#%% Figure 8, total current
+
+plt.rc("font", family="serif")  # set font family
+plt.rc("xtick", labelsize="small")  # reduced tick label size
+plt.rc("ytick", labelsize="small")
+plt.rc("axes", labelsize="medium")
+plt.rc('text', usetex=True)
+plt.rcParams['xtick.top'] = True    #ticks on top
+plt.rcParams['xtick.labeltop'] = False
+plt.rcParams['ytick.right'] = True    #ticks on left
+plt.rcParams['ytick.labelright'] = False
+
+
+current_A1u_s = np.load("k_current_TRITOPS_S_A1u_L_200_Delta0_0.4_Delta1_0.2_lambda_0.5_mu_2_tJ_0.5_theta_0.npy")
+current_Eu_s = np.load("k_current_TRITOPS_S_Eu_L_200_Delta0_0.4_Delta1_0.2_lambda_0.5_mu_2_tJ_0.5_theta_0.npy")
+current_ZKM_s = np.load("k_current_TRITOPS_S_ZKM_L_200_Delta0_0.4_Delta1_0.2_lambda_0.5_mu_2_tJ_0.5_theta_0.npy")
+
+total_current_A1u_s = np.sum(current_A1u_s, axis=0)
+total_current_Eu_s = np.sum(current_Eu_s, axis=0)
+total_current_ZKM_s = np.sum(current_ZKM_s, axis=0)
+
+fig, ax = plt.subplots(figsize=(4,3))
+phi = np.linspace(0, 2*np.pi, 240)
+ax.plot(phi, total_current_A1u_s, label=r"$A_{1u}$")
+ax.plot(phi, total_current_Eu_s, label=r"$E_u$")
+ax.plot(phi, total_current_ZKM_s, label=r"$ZKM$")
+
+plt.legend()
+ax.set_xlabel(r"$\Phi/\pi$")
+ax.set_ylabel(r"$J$")
+ax.set_xlim((0, 2*np.pi))
+ax.set_xticks(np.arange(0,2.5,step=0.5)*np.pi)
+ax.set_xticklabels(["0"]+list(np.array(np.round(np.arange(0.5,2,step=0.5),1), dtype=str)) + ["2"])
+ax.set_xticks(np.arange(0,2,step=0.25)*np.pi, minor=True)
+ax.set_yticks(np.arange(-1.5,2,step=0.5))
+ax.set_yticks(np.arange(-1.5,1.5,step=0.25), minor=True)
+ax.set_yticklabels(["-1.5"] + ["-1"] + ["-0.5"]+ ["0"] + ["0.5"] + ["1"] + ["1.5"])
+
+plt.tight_layout()

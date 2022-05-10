@@ -97,7 +97,7 @@ ax.set_xlabel(r"$\phi$")
 ax.set_ylabel(r"$J_k$")
 ax.grid()
 ax.set_xlim([0, 2*np.pi])
-#k = np.linspace(-np.pi, -99/100*np.pi, 10)
+#k = np.linspace(-np.pi, -np.pi/2, 10)
 k = np.linspace(-np.pi, 0, 75)[:20]
 
 for k in k:

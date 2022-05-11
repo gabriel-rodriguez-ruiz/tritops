@@ -124,3 +124,26 @@ numerical = ax.plot(phi, current[:20].T, linewidth=0.5, label="Numerical")
 plt.tight_layout()
 ax.legend([numerical[0], effective[0]], ["Numerical", "Effective"])
 
+#%% Rho_k and phi_k
+plt.close("all")
+fig, ax = plt.subplots(figsize=(4,3))
+# fig.title(rf"Effective current for $\theta = {theta:.2f}$")
+ax.set_xlabel(r"$k$")
+ax.set_ylabel(r"$\rho_k$")
+ax.set_xlim([0, 2*np.pi])
+#k = np.linspace(-np.pi, -np.pi/2, 10)
+k = np.linspace(0, 2*np.pi, 1000)
+
+ax.plot(k, [parameters(k)[1] for k in k])
+
+fig, ax = plt.subplots(figsize=(4,3))
+# fig.title(rf"Effective current for $\theta = {theta:.2f}$")
+ax.set_xlabel(r"$k$")
+ax.set_yticks([-np.pi, -np.pi/2, -np.pi/4, 0, np.pi/4, np.pi/2, np.pi])
+ax.set_yticklabels([r"$-\pi$", r"$-\pi/2$", r"$-\pi/4$", "0", r"$\pi/4$", r"$\pi/2$", r"$\pi$"])
+ax.set_ylabel(r"$\varphi_k$")
+#k = np.linspace(-np.pi, -np.pi/2, 10)
+k = np.linspace(0, 2*np.pi, 1000)
+
+ax.plot(k, [parameters(k)[2] for k in k])
+

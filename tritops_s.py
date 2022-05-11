@@ -184,7 +184,7 @@ y1 = -0.3
 y2 = 0.1
 
 # Make the zoom-in plot:
-axins = zoomed_inset_axes(ax, 2, loc=4) # zoom = 2
+axins = zoomed_inset_axes(ax, 2.5, loc=4) # zoom = 2
 axins.plot(phi, total_current_A1u_s, label=r"$A_{1u}$", color="c", linewidth=1)
 axins.plot(phi, total_current_Eu_s, label=r"$E_u$", color="m", linewidth=1)
 axins.plot(phi, total_current_ZKM_s, label=r"$ZKM$", color="r", linewidth=1)

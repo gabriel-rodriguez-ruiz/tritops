@@ -157,13 +157,13 @@ total_current_ZKM_s = np.sum(current_ZKM_s, axis=0)
 
 fig, ax = plt.subplots(figsize=(4,3))
 phi = np.linspace(0, 2*np.pi, 240)
-ax.plot(phi, total_current_A1u_s, label=r"$A_{1u}$")
-ax.plot(phi, total_current_Eu_s, label=r"$E_u$")
-ax.plot(phi, total_current_ZKM_s, label=r"$ZKM$")
+ax.plot(phi, total_current_A1u_s, label=r"$A_{1u}$", color="c", linewidth=1)
+ax.plot(phi, total_current_Eu_s, label=r"$E_u$", color="m", linewidth=1)
+ax.plot(phi, total_current_ZKM_s, label=r"$ZKM$", color="r", linewidth=1)
 
-plt.legend()
+#plt.legend()
 ax.set_xlabel(r"$\Phi/\pi$")
-ax.set_ylabel(r"$J$")
+ax.set_ylabel(r"$J(\Phi)$")
 ax.set_xlim((0, 2*np.pi))
 ax.set_xticks(np.arange(0,2.5,step=0.5)*np.pi)
 ax.set_xticklabels(["0"]+list(np.array(np.round(np.arange(0.5,2,step=0.5),1), dtype=str)) + ["2"])
@@ -172,4 +172,39 @@ ax.set_yticks(np.arange(-1.5,2,step=0.5))
 ax.set_yticks(np.arange(-1.5,1.5,step=0.25), minor=True)
 ax.set_yticklabels(["-1.5"] + ["-1"] + ["-0.5"]+ ["0"] + ["0.5"] + ["1"] + ["1.5"])
 
+from mpl_toolkits.axes_grid1.inset_locator import zoomed_inset_axes 
+from mpl_toolkits.axes_grid1.inset_locator import mark_inset
+#I want to select the x-range for the zoomed region. I have figured it out suitable values
+# by trial and error. How can I pass more elegantly the dates as something like
+x1 = 0
+x2 = 0.25
+
+# select y-range for zoomed region
+y1 = -0.3
+y2 = 0.1
+
+# Make the zoom-in plot:
+axins = zoomed_inset_axes(ax, 2, loc=4) # zoom = 2
+axins.plot(phi, total_current_A1u_s, label=r"$A_{1u}$", color="c", linewidth=1)
+axins.plot(phi, total_current_Eu_s, label=r"$E_u$", color="m", linewidth=1)
+axins.plot(phi, total_current_ZKM_s, label=r"$ZKM$", color="r", linewidth=1)
+#Remove ticks
+plt.tick_params(right = False)
+plt.tick_params(top = False)
+plt.tick_params(bottom = False)
+
+
+axins.set_xlim(x1, x2)
+axins.set_ylim(y1, y2)
+plt.xticks(visible=False)
+plt.yticks([0, -0.25], ["0", ""], visible=True)
+
+plt.tick_params(labelright = False)
+
+box, c1, c2 = mark_inset(ax, axins, loc1=2, loc2=4, fc="none", ec="0.5")
+ax.indicate_inset_zoom(axins, edgecolor="black")
+
+# Change connector lines to dotted
+for c in [c1,c2]:
+    c.set_linestyle(":") 
 plt.tight_layout()

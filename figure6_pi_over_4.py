@@ -54,14 +54,13 @@ plt.rcParams['xtick.labeltop'] = False
 plt.rcParams['ytick.right'] = True    #ticks on left
 plt.rcParams['ytick.labelright'] = False
 
-fig, ax = plt.subplots(figsize=(4,3), dpi=300)
+fig = plt.figure(figsize=(4,3))
+ax = fig.add_subplot()
 ax.plot(phi, current.T[:,0], linewidth=1, color="c")
 ax.plot(phi, current.T[:,1:20], linewidth=0.1, color="m")
 ax.plot(phi, current.T[:,20:], linewidth=0.1, color="r")
 # ax.plot(phi, current.T[:,1:50], linewidth=0.1, color="m")
 # ax.plot(phi, current.T[:,50:], linewidth=0.1, color="r")
-
-
 
 ax.set_xlabel(r"$\Phi/\pi$")
 ax.set_ylabel(r"$J(k)$")
@@ -84,3 +83,43 @@ ax.set_yticks(np.arange(-0.15,0.2,step=0.05), minor=True)
 # ax.set_yticks(np.arange(-0.15,0.2,step=0.05), minor=True)
 
 plt.tight_layout()
+
+ax3 = fig.add_subplot()
+from effective_hamiltonian import parameters, effective_current
+
+# without crossing 
+t = 1
+t_J = t/2
+Delta_0 = 0.4*t
+Delta_1 = 0.2*t
+mu = t*Delta_0/Delta_1
+lambda_R = 0.5*t
+
+ax3 = fig.add_axes([0.65, 0.65, 0.4*7.5/10, 0.3*8/10])
+theta = np.pi/4
+phi_values = np.linspace(0, 2*np.pi, 240)
+#k = np.linspace(-np.pi, 0, 75)[1:10]
+k = np.linspace(-np.pi, 0, 75)[1:11]
+
+for k in k:
+    effective = ax3.plot(phi, [1.25*effective_current(k, phi, theta, t_J=t_J, lambda_R=lambda_R, w2=parameters(k)[0], phi_k=parameters(k)[2], rho_k=parameters(k)[1]) for phi in phi_values],
+            label=f"{k:.2f}", linestyle = "dashed", linewidth=0.5, color="m")
+ax3.plot(phi, [1.25*effective_current(-np.pi, phi, theta, t_J=t_J, lambda_R=lambda_R, w2=parameters(-np.pi)[0], phi_k=parameters(-np.pi)[2], rho_k=parameters(-np.pi)[1]) for phi in phi_values],
+        label=f"{k:.2f}", linestyle = "dashed", linewidth=0.5, color="c")
+
+ax3.plot(phi_values, current.T[:,0], linewidth=1, color="c")
+ax3.plot(phi_values, current.T[:,1:11], linewidth=0.1, color="m")
+
+
+ax3.set_xlim(0, np.pi+0.1)
+ax3.set_ylim(-0.02, 0.15)
+ax3.set_xticks(np.arange(0,1.5,step=0.5)*np.pi)
+ax3.set_xticklabels(["0"]+ ["0.5"] + ["1"])
+ax3.set_xticks(np.arange(0,1,step=0.25)*np.pi, minor=True)
+ax3.set_xlabel(r"$\Phi/\pi$", labelpad=0)
+ax3.set_ylabel(r"$J(k)$", labelpad=0)
+ax3.set_yticks(np.arange(0,0.15,step=0.1))
+ax3.set_yticks(np.arange(0,0.2,step=0.05), minor=True)
+ax3.set_yticklabels(["0", "0.1"])
+ax3.tick_params(axis='y', which='major', pad=0)
+ax3.tick_params(axis='x', which='major', pad=0)

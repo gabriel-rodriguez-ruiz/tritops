@@ -58,7 +58,7 @@ lambda_R = 0.5*t
 # Delta_1 = 2.2*t
 # lambda_R = 7*t
 
-theta = np.pi/4
+theta = 0
 phi = np.linspace(0, 2*np.pi, 240)
 
 def parameters(k):
@@ -147,3 +147,14 @@ k = np.linspace(0, 2*np.pi, 1000)
 
 ax.plot(k, [parameters(k)[2] for k in k])
 
+fig, ax = plt.subplots(figsize=(4,3))
+# fig.title(rf"Effective current for $\theta = {theta:.2f}$")
+ax.set_xlabel(r"$k$")
+ax.set_ylabel(r"$z_i$")
+ax.set_xlim([0, 2*np.pi])
+#k = np.linspace(-np.pi, -np.pi/2, 10)
+k = np.linspace(0, 2*np.pi, 1000)
+
+ax.plot(k, [abs(parameters(k)[3]) for k in k], label=r"$z_1$")
+ax.plot(k, [abs(parameters(k)[4]) for k in k], label=r"$z_2$")
+ax.legend()

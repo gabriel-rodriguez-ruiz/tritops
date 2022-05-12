@@ -69,22 +69,22 @@ def plot_wave_function(syst, k, params, n):
 # lambda_R = 0.5*t
 
 # with crossing
-# t = 1
-# t_J = t
-# mu = t
-# Delta_0 = 0.4*t
-# Delta_1 = 0.4*t
-# lambda_R = 0.5*t
+t = 1
+t_J = t
+mu = t
+Delta_0 = 0.4*t
+Delta_1 = 0.4*t
+lambda_R = 0.5*t
 
 #Aligia
-t = 1
-mu = 2*t
-Delta_0 = 4*t
-Delta_1 = 2.2*t
-lambda_R = 7*t
+# t = 1
+# mu = 2*t
+# Delta_0 = 4*t
+# Delta_1 = 2.2*t
+# lambda_R = 7*t
 
-k = 2.5644837988488107
-L = 200
+k = np.pi-0.01*np.pi
+L = 400
 theta = 0
 n = 0
 params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1,
@@ -209,8 +209,56 @@ ax.plot(
     k, spectrum[:, 398:402], linewidth=1, color="c"
 )  # each column in spectrum is a separate dataset
 
+
+
+#%% Plot of edge states for definite k
+
+# without crossing 
+t = 1
+t_J = t/2
+Delta_0 = 0.4*t
+Delta_1 = 0.2*t
+mu = t*Delta_0/Delta_1
+lambda_R = 0.5*t
+
+# k = np.pi/2
+k = np.pi-0.5*np.pi
+L = 300
+theta = 0
+params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1,
+              lambda_R=lambda_R, L=L, theta=theta)
+
+def zero_energy_states(k, params):
+    """ Returns the edge states in the following order
+      [left_minus, left_plus, right_minus, right_plus].
+    """
+    H = Hamiltonian(k=k, **params)
+    eigenvalues, eigenvectors = np.linalg.eigh(H)
+    eigenvectors = eigenvectors[:,(2*L-2):(2*L+2)]
+    left_minus = np.zeros(len(eigenvectors))
+    left_plus = np.zeros(len(eigenvectors))
+    right_minus = np.zeros(len(eigenvectors))
+    right_plus = np.zeros(len(eigenvectors))
+    for i in range(4):
+        if (np.abs(eigenvectors[0,i]) > 0.01): #If it is a left edge state
+            if i<2:
+                left_minus = eigenvectors[:,i]
+            else:
+                left_plus = eigenvectors[:,i]
+        else:
+            if i<2:
+                right_minus = eigenvectors[:,i]
+            else:
+                right_plus = eigenvectors[:,i]
+    return left_minus, left_plus, right_minus, right_plus
+
+
+fig, ax = plt.subplots()
+ax.plot(np.abs(zero_energy_states(k, params)[0][::4]))
+
 #%%
-import numpy.linalg
+plt.close
+plt.figure()
 
 #Aligia
 t = 1
@@ -219,22 +267,30 @@ Delta_0 = 4*t
 Delta_1 = 2.2*t
 lambda_R = 7*t
 
-L = 200
+# without crossing 
+# t = 1
+# t_J = t/2
+# Delta_0 = 0.4*t
+# Delta_1 = 0.2*t
+# mu = t*Delta_0/Delta_1
+# lambda_R = 0.5*t
+
+L = 400
 theta = 0
 params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1,
               lambda_R=lambda_R, L=L, theta=theta)
 
-k_values = np.linspace(0, np.pi, 50)
+k_values = np.linspace(0, np.pi-0.01*np.pi, 100)
 rho_k = []
 phi_k = []
 for k in k_values:
-    H = Hamiltonian(k=k, **params)
-    eigenvalues, eigenvectors = np.linalg.eigh(H)
-    eigenvectors = eigenvectors[:, np.argsort(np.abs(eigenvalues))]
-    Z = np.sum((eigenvectors[::4,0]/np.linalg.norm(eigenvectors[::4,0]))**2)
+    left_minus = zero_energy_states(k, params)[2]
+    Z = np.sum((left_minus[::4]/np.linalg.norm(left_minus[::4]))**2)
+    #Z = np.sum((eigenvectors[::4,0]/np.linalg.norm(eigenvectors[::4,0]))**2)
     rho_k.append(np.abs(Z))
     phi_k.append(np.angle(Z))
     
 # print(rho_k)
 # print(phi_k)
 plt.plot(k_values, rho_k)
+#plt.plot(k_values, rho_k)

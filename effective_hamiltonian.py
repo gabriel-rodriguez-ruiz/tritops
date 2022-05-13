@@ -43,22 +43,22 @@ def effective_current(k, phi, theta, w2, lambda_R, t_J, phi_k, rho_k):
 #%% Determination of w2
 
 # without crossing 
-t = 1
-t_J = t/2
-Delta_0 = 0.4*t
-Delta_1 = 0.2*t
-mu = t*Delta_0/Delta_1
-lambda_R = 0.5*t
-
-#Aligia
 # t = 1
 # t_J = t/2
-# mu = 2*t
-# Delta_0 = 4*t
-# Delta_1 = 2.2*t
-# lambda_R = 7*t
+# Delta_0 = 0.4*t
+# Delta_1 = 0.2*t
+# mu = t*Delta_0/Delta_1
+# lambda_R = 0.5*t
 
-theta = 0
+#Aligia
+t = 1
+t_J = t/2
+mu = 2*t
+Delta_0 = 4*t
+Delta_1 = 2.2*t
+lambda_R = 7*t
+
+theta = -np.pi/4
 phi = np.linspace(0, 2*np.pi, 240)
 
 def parameters(k):
@@ -98,10 +98,11 @@ ax.set_ylabel(r"$J_k$")
 ax.grid()
 ax.set_xlim([0, 2*np.pi])
 #k = np.linspace(-np.pi, -np.pi/2, 10)
-k = np.linspace(-np.pi, 0, 75)[:20]
+#k = np.linspace(-np.pi, 0, 75)[:20]
+k = [-np.pi, -np.pi+0.001*np.pi, -np.pi+0.002*np.pi]
 
 for k in k:
-    effective = ax.plot(phi, [1.25*effective_current(k, phi, theta, t_J=t_J, lambda_R=lambda_R, w2=parameters(k)[0], phi_k=parameters(k)[2], rho_k=parameters(k)[1]) for phi in phi],
+    effective = ax.plot(phi, [1.32*effective_current(k, phi, theta, t_J=t_J, lambda_R=lambda_R, w2=parameters(k)[0], phi_k=parameters(k)[2], rho_k=parameters(k)[1]) for phi in phi],
             label=f"{k:.2f}", linestyle="dashed", linewidth=0.5)
 
 #%%

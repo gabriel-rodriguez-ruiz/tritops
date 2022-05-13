@@ -261,21 +261,21 @@ plt.close
 plt.figure()
 
 #Aligia
-t = 1
-mu = 2*t
-Delta_0 = 4*t
-Delta_1 = 2.2*t
-lambda_R = 7*t
+# t = 1
+# mu = 2*t
+# Delta_0 = 4*t
+# Delta_1 = 2.2*t
+# lambda_R = 7*t
 
 # without crossing 
-# t = 1
-# t_J = t/2
-# Delta_0 = 0.4*t
-# Delta_1 = 0.2*t
-# mu = t*Delta_0/Delta_1
-# lambda_R = 0.5*t
+t = 1
+t_J = t/2
+Delta_0 = 0.4*t
+Delta_1 = 0.2*t
+mu = t*Delta_0/Delta_1
+lambda_R = 0.5*t
 
-L = 400
+L = 200
 theta = 0
 params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1,
               lambda_R=lambda_R, L=L, theta=theta)
@@ -284,7 +284,7 @@ k_values = np.linspace(0, np.pi-0.01*np.pi, 100)
 rho_k = []
 phi_k = []
 for k in k_values:
-    left_minus = zero_energy_states(k, params)[2]
+    left_minus = zero_energy_states(k, params)[0]
     Z = np.sum((left_minus[::4]/np.linalg.norm(left_minus[::4]))**2)
     #Z = np.sum((eigenvectors[::4,0]/np.linalg.norm(eigenvectors[::4,0]))**2)
     rho_k.append(np.abs(Z))

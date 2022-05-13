@@ -86,6 +86,12 @@ plt.tight_layout()
 
 #%% All together
 plt.close()
+k_x = np.linspace(-np.pi, np.pi)
+t = 1
+mu = 0
+lambda_R = 0.5
+E_plus = np.array([-2*t*(np.cos(k_x) + 1) - mu + 2*lambda_R*np.sin(k_x) for k_x in k_x])
+E_minus = np.array([-2*t*(np.cos(k_x) + 1) - mu - 2*lambda_R*np.sin(k_x) for k_x in k_x])
 
 plt.rc("xtick", labelsize="xx-small")  # reduced tick label size
 plt.rc("ytick", labelsize="xx-small")
@@ -115,7 +121,7 @@ ax1.plot(k_x, E_minus, color="r", linewidth = 0.8)
 ax1.arrow(0.4*np.pi, -4, 0, 0.6, width = 0.01, color="r", head_width=18*0.01, head_length=27*0.01)
 ax1.arrow(0.4*np.pi, -1, 0, -0.6, width = 0.01, color="b", head_width=18*0.01, head_length=27*0.01)
 ax1.text(0.8*np.pi, -1.8, r"$\mu$", size="small")
-ax1.text(0.7*np.pi, -2.8, r"$\mu_c$", size="small")
+#ax1.text(0.7*np.pi, -2.8, r"$\mu_c$", size="small")
 ax1.text(-4.5,1.5,"(a)", size="small")
 ax1.axvline(-0.5*np.pi, color="k", linestyle="--", linewidth = 0.8)
 ax1.axvline(0.5*np.pi, color="k", linestyle="--", linewidth = 0.8)
@@ -124,10 +130,10 @@ ax1.plot(np.arctan(t/lambda_R),-2, "ob", markersize=2)
 ax1.plot(np.arctan(t/lambda_R)-np.pi,-2, "ob", markersize=2)
 ax1.plot(np.arctan(-t/lambda_R),-2, "or", markersize=2)
 ax1.plot(np.arctan(-t/lambda_R)+np.pi,-2, "or", markersize=2)
-ax1.text(np.arctan(t/lambda_R),-2.5, r"$k^F_2$", size="x-small", color="blue")
-ax1.text(-np.pi,-2.5, r"$-k^F_1$", size="x-small", color="blue")
-ax1.text(-np.pi,-2.5, r"$-k^F_1$", size="x-small", color="blue")
-ax1.text(-np.pi/3,-1.8, r"$-k^F_2$", size="x-small", color="red")
+# ax1.text(np.arctan(t/lambda_R),-2.5, r"$k^F_2$", size="x-small", color="blue")
+# ax1.text(-np.pi,-2.5, r"$-k^F_1$", size="x-small", color="blue")
+# ax1.text(-np.pi,-2.5, r"$-k^F_1$", size="x-small", color="blue")
+# ax1.text(-np.pi/3,-1.8, r"$-k^F_2$", size="x-small", color="red")
 
 
 
@@ -162,8 +168,8 @@ ax3.set_xticklabels(
 ax3.set_xticks(np.arange(0, 1.1, step=0.1) * np.pi, minor=True)
 ax3.set_yticks(np.arange(-2, 3, step=1))
 ax3.set_yticks(np.arange(-2, 3, step=0.5), minor=True)
-ax3.set_xlabel(r"$k_z/\pi$", labelpad=0)
-ax3.set_ylabel(r"$E(k_z)$", labelpad=0)
+ax3.set_xlabel(r"$k_y/\pi$", labelpad=0)
+ax3.set_ylabel(r"$E(k_y)$", labelpad=0)
 ax3.text(-0.7,2,"(c)", size="small")
 ax3.tick_params(axis='y', which='major', pad=0)
 ax3.tick_params(axis='x', which='major', pad=0)

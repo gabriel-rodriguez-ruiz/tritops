@@ -17,25 +17,25 @@ from functions import Hamiltonian, spectrum, Junction, phi_spectrum, Josephson_c
 # lambda_R = 0.5*t
 
 #Aligia
-# t = 1
-# t_J = t/2
-# mu = 2*t
-# Delta_0 = 4*t
-# Delta_1 = 2.2*t
-# lambda_R = 7*t
-
-# without crossing 
 t = 1
 t_J = t/2
-Delta_0 = 0.4*t
-Delta_1 = 0.2*t
-mu = t*Delta_0/Delta_1
-lambda_R = 0.5*t    #lambda_R=0.5*t
+mu = 2*t
+Delta_0 = 4*t
+Delta_1 = 2.2*t
+lambda_R = 7*t
+
+# without crossing 
+# t = 1
+# t_J = t/2
+# Delta_0 = 0.4*t
+# Delta_1 = 0.2*t
+# mu = t*Delta_0/Delta_1
+# lambda_R = 0.5*t    #lambda_R=0.5*t
 
 phi = np.linspace(0, 2*np.pi, 240)
 #phi = np.linspace(0, 2*np.pi, 750)
-k = np.linspace(-np.pi, 0, 75)
-#k = np.linspace(-np.pi, 0, 10)
+#k = np.linspace(-np.pi, 0, 75)
+k = [-np.pi, -np.pi+0.001*np.pi, -np.pi+0.002*np.pi]
 
 L = 200
 theta = np.pi/4
@@ -45,12 +45,12 @@ params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1,
               t_J=t_J, theta=theta, phi=phi)
 
 current = Josephson_current(Junction, k, phi, **params)
-print('\007')  # Ending bell
+print('\007')  # Ending bells
 
 #%%
 phi = np.linspace(0, 2*np.pi, 240)
 plt.rc('text', usetex=False)
-fig, ax = plt.subplots(figsize=(4,3), dpi=300)
+fig, ax = plt.subplots(figsize=(4,3))
 ax.plot(phi, current.T, linewidth=0.1)
 ax.set_xlabel(r"$\Phi/\pi$")
 ax.set_ylabel(r"$J(k)$")

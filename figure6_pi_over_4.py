@@ -42,6 +42,8 @@ print('\007')  # Ending bell
 
 #%%
 current = np.load("k_current_L_200_Delta0_0.4_Delta1_0.2_lambda_0.5_mu_2_tJ_0.5_theta_pi_over_4.npy")
+#current_bis = np.load("k_current_L_200_Delta0_0.4_Delta1_0.2_lambda_0.5_mu_1_tJ_0.5_theta_0.npy")
+
 phi = np.linspace(0, 2*np.pi, 240)
 
 plt.rc("font", family="serif")  # set font family

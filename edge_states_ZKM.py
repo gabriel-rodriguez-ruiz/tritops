@@ -35,10 +35,10 @@ lambda_R = 7*t
 phi = np.linspace(0, 2*np.pi, 240)
 #phi = np.linspace(0, 2*np.pi, 750)
 #k = np.linspace(-np.pi, 0, 75)
-k = [-np.pi, -np.pi+0.001*np.pi, -np.pi+0.002*np.pi]
+k = [-np.pi, -np.pi+0.01*np.pi, -np.pi+0.02*np.pi]
 
 L = 200
-theta = np.pi/4
+theta = np.pi
 
 params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1,
               lambda_R=lambda_R, L=L,

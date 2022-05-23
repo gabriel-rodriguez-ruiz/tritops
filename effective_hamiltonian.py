@@ -19,10 +19,24 @@ def effective_current(k, phi, theta, w2, lambda_R, t_J, phi_k, rho_k):
     E_k_plus = np.sqrt( (t_1 * np.cos(phi/2) + E_k)**2 + t_2**2*np.cos(phi/2)**2 )
     E_k_minus = np.sqrt( (t_1 * np.cos(phi/2) - E_k)**2 + t_2**2*np.cos(phi/2)**2 )
     J_0 = ( ( ( t_1*np.cos(phi/2) + E_k )*t_1 + t_2**2 * np.cos(phi/2) )/E_k_plus +
-           ( ( t_1*np.cos(phi/2) - E_k )*t_1 + t_2**2 * np.cos(phi/2) )/E_k_minus )
+            ( ( t_1*np.cos(phi/2) - E_k )*t_1 + t_2**2 * np.cos(phi/2) )/E_k_minus )
     return 1/2 * J_0 * np.sin(phi/2)
 
-
+# def effective_current(k, phi, theta, w2, lambda_R, t_J, phi_k, rho_k):
+#     """
+#     Equation (43) of [Schmalian] for the effective
+#     current for the ZKM model.
+#     """
+#     t_1 = t_J * np.real(w2*np.exp(-1j*(phi_k)))
+#     t_2 = t_J * np.imag(w2*np.exp(-1j*(phi_k)))
+#     E_k = -2*rho_k*lambda_R*np.sin(k)
+#     cos = np.cos(phi/2)*np.cos(theta/2)
+#     sin = np.sin(phi/2)*np.sin(theta/2)
+#     E_k_plus = np.sqrt( (t_1*cos + t_2*sin + E_k)**2 + (cos*t_2 - sin*t_1)**2 )
+#     E_k_minus = np.sqrt( (t_1*cos + t_2*sin - E_k)**2 + (cos*t_2 - sin*t_1)**2 )
+#     J_0 = ( ( ( t_1*np.cos(phi/2) + E_k )*t_1 + t_2**2 * np.cos(phi/2) )/E_k_plus +
+#            ( ( t_1*np.cos(phi/2) - E_k )*t_1 + t_2**2 * np.cos(phi/2) )/E_k_minus )
+#     return 1/2 * J_0 * np.sin(phi/2)
 # k = -np.pi+0.1
 # theta = np.pi/2
 #plt.plot(phi, [effective_current(k, phi, theta) for phi in phi])
@@ -58,10 +72,10 @@ Delta_0 = 4*t
 Delta_1 = 2.2*t
 lambda_R = 7*t
 
-theta = -np.pi/4
+theta = 0
 phi = np.linspace(0, 2*np.pi, 240)
 
-def parameters(k):
+def parameters(k, lambda_R, Delta_0, Delta_1, mu, t):
     s = np.sign(lambda_R*Delta_1)
     Delta_k = Delta_0 + 2*Delta_1*np.cos(k)
     chi_k = -2*t*np.cos(k) - mu
@@ -98,11 +112,13 @@ ax.set_ylabel(r"$J_k$")
 ax.grid()
 ax.set_xlim([0, 2*np.pi])
 #k = np.linspace(-np.pi, -np.pi/2, 10)
-#k = np.linspace(-np.pi, 0, 75)[:20]
-k = [-np.pi, -np.pi+0.001*np.pi, -np.pi+0.002*np.pi]
+k = np.linspace(-np.pi, 0, 75)[:20]
+#k = [-np.pi, -np.pi+0.001*np.pi, -np.pi+0.002*np.pi]
 
 for k in k:
-    effective = ax.plot(phi, [1.32*effective_current(k, phi, theta, t_J=t_J, lambda_R=lambda_R, w2=parameters(k)[0], phi_k=parameters(k)[2], rho_k=parameters(k)[1]) for phi in phi],
+    effective = ax.plot(phi, [1.25*effective_current(k, phi, theta, t_J=t_J, lambda_R=lambda_R, w2=parameters(k, lambda_R, Delta_0, Delta_1, mu, t)[0],
+                                                     phi_k=parameters(k, lambda_R, Delta_0, Delta_1, mu, t)[2],
+                                                     rho_k=parameters(k, lambda_R, Delta_0, Delta_1, mu, t)[1]) for phi in phi],
             label=f"{k:.2f}", linestyle="dashed", linewidth=0.5)
 
 #%%
@@ -135,7 +151,7 @@ ax.set_xlim([0, 2*np.pi])
 #k = np.linspace(-np.pi, -np.pi/2, 10)
 k = np.linspace(0, 2*np.pi, 1000)
 
-ax.plot(k, [parameters(k)[1] for k in k])
+ax.plot(k, [parameters(k, lambda_R, Delta_0, Delta_1, mu, t)[1] for k in k])
 
 fig, ax = plt.subplots(figsize=(4,3))
 # fig.title(rf"Effective current for $\theta = {theta:.2f}$")
@@ -146,7 +162,7 @@ ax.set_ylabel(r"$\varphi_k$")
 #k = np.linspace(-np.pi, -np.pi/2, 10)
 k = np.linspace(0, 2*np.pi, 1000)
 
-ax.plot(k, [parameters(k)[2] for k in k])
+ax.plot(k, [parameters(k, lambda_R, Delta_0, Delta_1, mu, t)[2] for k in k])
 
 fig, ax = plt.subplots(figsize=(4,3))
 # fig.title(rf"Effective current for $\theta = {theta:.2f}$")
@@ -156,6 +172,6 @@ ax.set_xlim([0, 2*np.pi])
 #k = np.linspace(-np.pi, -np.pi/2, 10)
 k = np.linspace(0, 2*np.pi, 1000)
 
-ax.plot(k, [abs(parameters(k)[3]) for k in k], label=r"$z_1$")
-ax.plot(k, [abs(parameters(k)[4]) for k in k], label=r"$z_2$")
+ax.plot(k, [abs(parameters(k, lambda_R, Delta_0, Delta_1, mu, t)[3]) for k in k], label=r"$z_1$")
+ax.plot(k, [abs(parameters(k, lambda_R, Delta_0, Delta_1, mu, t)[4]) for k in k], label=r"$z_2$")
 ax.legend()

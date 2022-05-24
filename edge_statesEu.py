@@ -163,12 +163,12 @@ t_J = 0.5
 Delta = 1
 mu = -3
 phi = np.linspace(0, 2*np.pi, 240)
-#phi = np.linspace(0, 2*np.pi, 750)
-#k = np.linspace(0, np.pi, 75)
-k = np.array([0])
+#phi = np.linspace(0, 2*np.pi, 750)f
+k = np.linspace(0, np.pi, 75)
+#k = np.array([0])
 #k = np.linspace(-3, -, 5)
 
-L = 100
+L = 200
 
 params = dict(t=t, mu=mu, Delta=Delta,
               L=L, phi=phi, t_J=t_J)

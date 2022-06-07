@@ -27,7 +27,7 @@ def Hamiltonian_Eu(t, k, mu, L, Delta):
         
         H_k = \sum_n^L \vec{c}^\dagger_n\left[ 
             \xi_k\tau_z\sigma_0 +
-            \Delta sin(k_y)\tau_x\sigma_z \right] +
+            \Delta sin(k_y)\tau_x\sigma_z \right] \vec{c}_n +
             \sum_n^{L-1}\vec{c}^\dagger_n(-t\tau_z\sigma_0 + i\frac{\Delta}{2}\tau_x\sigma_z)\vec{c}_{n+1}
             + H.c.
             

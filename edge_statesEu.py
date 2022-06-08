@@ -60,7 +60,7 @@ def spectrum(system, k_values, **params):
 #%% Spectrum
 t = 1
 Delta = 1
-mu = -3     #mu = -3  entre -4t y 4t hay estados de borde
+mu = -4.5     #mu = -3  entre -4t y 0 hay estados de borde
 k = np.linspace(0, np.pi, 150)
 
 L = 200
@@ -203,7 +203,7 @@ L = 200
 
 params = dict(t=t, mu=mu, Delta=    Delta,
               L=L)
-k_value = 0.1*np.pi
+k_value = 0.1*np.pi     #0.1*np.pi
 eigenvalues, eigenvectors = np.linalg.eigh(Hamiltonian_Eu(t=t, k=k_value, mu=mu, L=L, Delta=Delta))
 eigenvectors = eigenvectors[:,(2*L-2):(2*L+2)]
 #eigenvalues = eigenvalues[np.argsort(np.abs(eigenvalues))]

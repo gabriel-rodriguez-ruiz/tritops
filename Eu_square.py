@@ -19,7 +19,7 @@ tau_x = np.array([[0, 1], [1, 0]])
 tau_y = np.array([[0, -1j], [1j, 0]])
 tau_z = np.array([[1, 0], [0, -1]])
 
-def Hamiltonian_Eu(t, k, mu, L_x, L_y, Delta):
+def Hamiltonian_Eu(t, mu, L_x, L_y, Delta):
     r"""Returns the H_nm matrix for Eu model with:
 
     .. math::
@@ -36,7 +36,40 @@ def Hamiltonian_Eu(t, k, mu, L_x, L_y, Delta):
     hopping_x = -t*np.kron(tau_z, sigma_0) + 1j*Delta/2 * np.kron(tau_x, sigma_z)
     hopping_y = -t*np.kron(tau_z, sigma_0) - 1j*Delta/2 * np.kron(tau_x, sigma_z)
     matrix_diagonal = np.kron(np.eye(L_x*L_y), onsite)     #diagonal part of matrix
-    matrix_outside_diagonal_y = np.block([ [np.zeros((4*L_y,4)),np.kron(np.eye(L_y), hopping_y), np.zeros((4*L_y,4*(L_x-1)*L_y-4))],
-                                         [np.zeros((4*(L_x-1)*L_y, 4*L_x*L_y))] ])     #upper diagonal part
-    matrix = (matrix_diagonal + matrix_outside_diagonal + matrix_outside_diagonal.conj().T)
+    matrix_outside_diagonal_x = np.block([ [np.zeros((4*(L_x-1)*L_y,4*L_y)),np.kron(np.eye((L_x-1)*L_y), hopping_x)],
+                                         [np.zeros((4*L_y, 4*L_x*L_y))] ])     #upper diagonal part
+    Z = np.zeros((L_x*L_y-1, (L_x*L_y-1)))
+    np.fill_diagonal(Z, np.append(np.ones(L_y-1), 0))            
+    matrix_outside_diagonal_y = np.block([ [np.zeros((4*(L_x*L_y-1),4)),np.kron(Z, hopping_y)],
+                                         [np.zeros((4, 4*L_x*L_y))] ])    #upper diagonal part
+            #upper diagonal part
+    #L_>=3
+    matrix = (matrix_diagonal + matrix_outside_diagonal_x + matrix_outside_diagonal_x.conj().T +
+              matrix_outside_diagonal_y + matrix_outside_diagonal_y.conj().T)
     return matrix
+
+t = 1
+Delta = 1
+mu = -3   #mu = -3  entre -4t y 0 hay estados de borde
+
+L_x = 20
+L_y = 20
+
+params = dict(t=t, mu=mu, Delta=Delta,
+              L_x=L_x, L_y=L_y)
+
+H = Hamiltonian_Eu(t, mu, L_x, L_y, Delta)
+eigenvalues, eigenvectors = np.linalg.eigh(H)
+zero_modes = eigenvectors[:,(2*L_x*L_y-2):(2*L_x*L_y+2)]    # I extract the eigenvectors asociated to zero energy
+zero_mode_up = zero_modes[::4,0].reshape((L_x,L_y)) # I choose one zero mode and reshape to sites in real space
+majorana_up_minus = (zero_modes[0::4,0]+1j*zero_modes[3::4,0]).reshape((L_x,L_y))
+majorana_up_plus = (zero_modes[0::4,2]+1j*zero_modes[3::4,2]).reshape((L_x,L_y))
+
+majorana_down_minus = (zero_modes[1::4,0]+1j*zero_modes[2::4,0]).reshape((L_x,L_y))
+majorana_down_plus = (zero_modes[1::4,2]+1j*zero_modes[2::4,2]).reshape((L_x,L_y))
+
+#plt.imshow(np.abs(zero_mode_up))
+#plt.imshow(np.abs(majorana_up))
+plt.imshow(np.abs(majorana_up_plus))
+
+plt.colorbar()

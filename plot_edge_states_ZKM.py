@@ -8,7 +8,7 @@ Created on Mon Mar  7 15:32:18 2022
 
 import numpy as np
 import matplotlib.pyplot as plt
-import kwant
+#import kwant
 import os
 import scipy.linalg
 from functions import wave_function, Hamiltonian

@@ -14,14 +14,18 @@ from functions import Josephson_current, Junction_ZKM_s, Junction_A1u_s, Junctio
 #with crossing
 t = 1
 t_J = t/2
+#t_J = 5
 Delta_0 = 0.4    #0.4
 Delta_1 = 0.2     #0.4
 mu = t*Delta_0/Delta_1
 lambda_R = 0.5*t
 #phi = np.linspace(0, 2*np.pi, 240)
 phi = np.linspace(0, 2*np.pi, 480)
+#phi = np.linspace(0, 0.1, 10)
 
 k = np.linspace(-np.pi, 0, 75)
+#k = [-np.pi]
+
 L = 200
 theta = 0
 params = dict(t=t, mu=mu, Delta_0=Delta_0, Delta_1=Delta_1,
@@ -47,10 +51,11 @@ print('\007')  # Ending bell
 
 #%% Plotting
 
-current = current_Eu_s
+current = current_A1u_s
 
-#phi = np.linspace(0, 2*np.pi, 240)
-phi = np.linspace(0, 2*np.pi, 480)
+phi = np.linspace(0, 2*np.pi, 240)
+#phi = np.linspace(0, 2*np.pi, 480)
+#phi = np.linspace(0, 0.1, 10)
 plt.rc('text', usetex=False)
 fig, ax = plt.subplots(figsize=(4,3), dpi=300)
 ax.plot(phi, current.T, linewidth=0.1)

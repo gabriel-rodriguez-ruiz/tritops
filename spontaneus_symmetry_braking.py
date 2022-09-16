@@ -145,7 +145,7 @@ print('\007')  # Ending bell
 #%%
 #plotting Eu
 
-phi = np.linspace(0, 2*np.pi, 240)
+phi = np.linspace(0, 0.1*np.pi, 240)
 #phi = np.linspace(0, 2*np.pi, 480)
 #phi = np.linspace(0, 0.1, 10)
 plt.rc('text', usetex=False)

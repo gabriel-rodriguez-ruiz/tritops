@@ -71,20 +71,47 @@ majorana_down_plus = (zero_modes[1::4,2]+1j*zero_modes[2::4,2]).reshape((L_x,L_y
 #plt.imshow(np.abs(zero_mode_up))
 #plt.imshow(np.abs(majorana_up))
 plt.imshow(np.abs(majorana_up_plus))
-plt.title(rf"$\mu$={mu}t")
 plt.colorbar()
+plt.title(rf"$\mu$={mu}t")
+
+# plt.figure()
+# plt.imshow(np.abs(zero_modes[0::4,2].reshape((L_x,L_y))))
+# plt.title("up destruction")
+# plt.colorbar()
+
+# plt.figure()
+# plt.imshow(np.abs(zero_modes[3::4,2].reshape((L_x,L_y))))
+# plt.title("up creation")
+# plt.colorbar()
+
+# plt.figure()
+# plt.imshow(np.abs(zero_modes[1::4,2].reshape((L_x,L_y))))
+# plt.title("down destruction")
+# plt.colorbar()
+
+
+# plt.figure()
+# plt.imshow(np.abs(zero_modes[2::4,2].reshape((L_x,L_y))))
+# plt.title("down creation")
+# plt.colorbar()
     
 #plt.figure()
 #plt.plot(eigenvalues)
 #%%
-def plot_majorana(mu):
+def plot_majorana(mu, index_zero):
     H = Hamiltonian_Eu(t, mu, L_x, L_y, Delta)
     eigenvalues, eigenvectors = np.linalg.eigh(H)
-    zero_modes = eigenvectors[:,(2*L_x*L_y-2):(2*L_x*L_y+2)]    # I extract the eigenvectors asociated to zero energy
+    zero_modes = eigenvectors[:,(2*L_x*L_y-2+index_zero):(2*L_x*L_y+2+index_zero)]    # I extract the eigenvectors asociated to zero energy
     majorana_up_plus = (zero_modes[0::4,2]+1j*zero_modes[3::4,2]).reshape((L_x,L_y))
     plt.imshow(np.abs(majorana_up_plus))
     plt.title(rf"$\mu$={mu}t")
-    plt.colorbar()
-    
 
-plot_majorana(mu)
+H = Hamiltonian_Eu(t, mu, L_x, L_y, Delta)
+eigenvalues, eigenvectors = np.linalg.eigh(H)
+fig, axs = plt.subplots(2, 3)
+index_zero = [0, 5, 10, 15, 20, 25]
+for i in range(len(index_zero)):
+    zero_modes = eigenvectors[:,(2*L_x*L_y-2+index_zero[i]):(2*L_x*L_y+2+index_zero[i])]    # I extract the eigenvectors asociated to zero energy
+    majorana_up_plus = (zero_modes[0::4,2]+1j*zero_modes[3::4,2]).reshape((L_x,L_y))
+    axs[i//3,i%3].imshow(np.abs(majorana_up_plus))
+    axs[i//3,i%3].title.set_text(f"E={eigenvalues[2*L_x*L_y+index_zero[i]]:.1e}")

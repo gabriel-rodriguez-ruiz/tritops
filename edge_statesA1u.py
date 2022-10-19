@@ -195,3 +195,29 @@ Delta = 1
 plt.figure()
 for k in k: 
     plt.plot(phi, [effective_current_A1u(k, phi, t_J, Delta)for phi in phi])
+    
+#%% phi_spectrum
+plt.rc("font", family="serif")  # set font family
+plt.rc("xtick", labelsize="xx-large")  # reduced tick label size
+plt.rc("ytick", labelsize="xx-large")
+plt.rc("axes", labelsize="xx-large")
+
+plt.rc("text", usetex=True) # for better LaTex (slower)
+plt.rcParams['xtick.top'] = True    #ticks on top
+plt.rcParams['xtick.labeltop'] = False
+plt.rcParams['ytick.right'] = True    #ticks on left
+plt.rcParams['ytick.labelright'] = False
+plt.figure()
+L = 30
+k = np.linspace(0, 0.1*np.pi, 10)
+phi = np.linspace(0, 2*np.pi, 240)
+t_J = 1
+Delta = 1
+mu = -3
+plt.plot(phi, phi_spectrum(Junction, k_value=np.pi/10, phi_values=phi, t_J=t_J, t=t, mu=mu, Delta=Delta,
+              L=L))
+plt.xlim([0,np.pi])
+plt.xlabel(r"$\phi/ \pi$")
+plt.ylabel(r"$\epsilon_{k=0,n}$")
+plt.xticks([0,np.pi/2,np.pi,3/2*np.pi,2*np.pi], ["0","0.5","1","1.5","2"])
+plt.tight_layout()

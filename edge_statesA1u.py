@@ -121,7 +121,7 @@ def Josephson_current(Junction, k_values, phi_values, **params):
             fundamental_energy.append(-np.sum(eigenvalues_phi[i,:], where=eigenvalues_phi[i,:]>0))  #the fundamental energy for each phi
         current.append(list(np.gradient(fundamental_energy, dphi)))
     current = np.array(current)
-    return current
+    return current, fundamental_energy
 
 t = 1
 t_J = 0.5
@@ -129,7 +129,8 @@ Delta = 1
 mu = -3
 phi = np.linspace(0, 2*np.pi, 240)
 #phi = np.linspace(0, 2*np.pi, 750)
-k = np.linspace(0, np.pi, 75)
+#k = np.linspace(0, np.pi, 75)
+k = [np.pi/4]
 #k = np.array([0, 0.01, 0.02])*np.pi
 #k = np.linspace(-3, -, 5)
 
@@ -138,18 +139,19 @@ L = 200
 params = dict(t=t, mu=mu, Delta=Delta,
               L=L, phi=phi, t_J=t_J)
 
-current = Josephson_current(Junction, k, phi, **params)
+current, fundamental_energy = Josephson_current(Junction, k, phi, **params)
 print('\007')  # Ending bell
 
 #%%
 phi = np.linspace(0, 2*np.pi, 240)
 #phi = np.linspace(0, 2*np.pi, 750)
 
-plt.rc('text', usetex=False)
+#plt.rc('text', usetex=False)
 fig, ax = plt.subplots(figsize=(4,3), dpi=300)
 ax.plot(phi, current.T, linewidth=0.1)
 ax.set_xlabel(r"$\Phi/\pi$")
 ax.set_ylabel(r"$J(k)$")
+plt.tight_layout()
 # ax.set_xlim((0, 2*np.pi))
 # ax.set_xticks(np.arange(0,2.5,step=0.5)*np.pi)
 # ax.set_xticklabels(["0"]+list(np.array(np.round(np.arange(0.5,2,step=0.5),1), dtype=str)) + ["2"])
@@ -208,16 +210,51 @@ plt.rcParams['xtick.labeltop'] = False
 plt.rcParams['ytick.right'] = True    #ticks on left
 plt.rcParams['ytick.labelright'] = False
 plt.figure()
-L = 30
+L = 50
 k = np.linspace(0, 0.1*np.pi, 10)
 phi = np.linspace(0, 2*np.pi, 240)
 t_J = 1
 Delta = 1
-mu = -3
-plt.plot(phi, phi_spectrum(Junction, k_value=np.pi/10, phi_values=phi, t_J=t_J, t=t, mu=mu, Delta=Delta,
-              L=L))
+mu = -3    #mu=-3
+k_value = 0.1*np.pi
+
+plt.plot(phi, phi_spectrum(Junction, k_value, phi_values=phi, t_J=t_J, t=t, mu=mu, Delta=Delta,
+              L=L), color="m", linewidth=0.1)
+plt.plot(phi, phi_spectrum(Junction, k_value, phi_values=phi, t_J=t_J, t=t, mu=mu, Delta=Delta,
+              L=L)[:,198:202], color="c", linewidth=2)
+plt.plot(phi, phi_spectrum(Junction, k_value, phi_values=phi, t_J=t_J, t=t, mu=mu, Delta=Delta,
+              L=L)[:,196:198], color="r",linewidth=2)
+plt.plot(phi, phi_spectrum(Junction, k_value, phi_values=phi, t_J=t_J, t=t, mu=mu, Delta=Delta,
+              L=L)[:,202:204], color="r",linewidth=2)
+
+
 plt.xlim([0,np.pi])
-plt.xlabel(r"$\phi/ \pi$")
-plt.ylabel(r"$\epsilon_{k=0,n}$")
+plt.xlabel(r"$\phi/\pi$")
+plt.ylabel(r"$\epsilon_{k=0\pi,n}$")
 plt.xticks([0,np.pi/2,np.pi,3/2*np.pi,2*np.pi], ["0","0.5","1","1.5","2"])
 plt.tight_layout()
+
+#%% Fundamental energy
+
+fig, ax = plt.subplots(figsize=(4,3), dpi=300)
+ax.plot(phi/np.pi, fundamental_energy)
+ax.set_xlabel(r"$\phi/\pi$")
+ax.set_ylabel(r"$E_0(k=0,\phi)$")
+plt.tight_layout()
+
+#%% Localization
+L = 50
+k = np.linspace(0, 0.1*np.pi, 10)
+phi = np.linspace(0, 2*np.pi, 240)
+t_J = 1
+Delta = 1
+mu = -3    #mu=-3
+k_value = 0*np.pi
+phi = 0
+eigenvalues, eigenvectors = np.linalg.eigh(Junction(t, k_value, mu, L, Delta, phi, t_J))
+zero_modes = eigenvectors[:, 4*L-2:4*L+2]      #4 (2) modes with zero energy (with Zeeman)
+andreev_modes_negative = eigenvectors[:, 4*L-4:4*L-2]
+andreev_modes_positive = eigenvectors[:, 4*L-4:4*L-2]
+
+plt.plot(np.abs(zero_modes[:,0])**2)
+#plt.plot(np.abs(andreev_modes_negative[:,1])**2)

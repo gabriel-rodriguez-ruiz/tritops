@@ -61,7 +61,7 @@ ax.set_ylabel(r"$E(k_z)$")
 
 k_x = np.linspace(-np.pi, np.pi)
 t = 1
-mu = 0
+mu = -2*t  #0
 lambda_R = 0.5
 E_plus = np.array([-2*t*(np.cos(k_x) + 1) - mu + 2*lambda_R*np.sin(k_x) for k_x in k_x])
 E_minus = np.array([-2*t*(np.cos(k_x) + 1) - mu - 2*lambda_R*np.sin(k_x) for k_x in k_x])
@@ -88,7 +88,7 @@ plt.tight_layout()
 plt.close()
 k_x = np.linspace(-np.pi, np.pi)
 t = 1
-mu = 0
+mu = 0      #0
 lambda_R = 0.5
 E_plus = np.array([-2*t*(np.cos(k_x) + 1) - mu + 2*lambda_R*np.sin(k_x) for k_x in k_x])
 E_minus = np.array([-2*t*(np.cos(k_x) + 1) - mu - 2*lambda_R*np.sin(k_x) for k_x in k_x])
